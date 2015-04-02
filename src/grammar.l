@@ -19,13 +19,14 @@ IS  (((u|U)(l|L|ll|LL)?)|((l|L|ll|LL)(u|U)?))
 CP  (u|U|L)
 SP  (u8|u|U|L)
 ES  (\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
-WS  [\t\v\n\f]
+WS  [ \t\v\n\f]
 
 %{
 #include <stdio.h>
 #include "grammar.tab.h"
 
 extern void yyerror(const char *);  /* prints grammar violation message */
+extern int yylineno;
 
 extern int sym_type(const char *);  /* returns type from symbol table */
 
@@ -38,6 +39,7 @@ int indent;
 void indentThat();
 void jumpLine();
 %}
+%option yylineno
 %x DEBUTLIGNE
 %%
 "/*"                                    { comment(); }
@@ -94,7 +96,7 @@ void jumpLine();
 {HP}{H}+{IS}?				{ ECHO; return I_CONSTANT; }
 {NZ}{D}*{IS}?				{ ECHO; return I_CONSTANT; }
 "0"{O}*{IS}?				{ ECHO; return I_CONSTANT; }
-{CP}?"'"([^'\\\n]|{ES})+"'"		{ ECHO; return I_CONSTANT; }
+{CP}?"'"([^'\\\n]|{ES})+"'"		{ return I_CONSTANT; }
 
 {D}+{E}{FS}?				{ ECHO; return F_CONSTANT; }
 {D}*"."{D}+{E}?{FS}?			{ ECHO; return F_CONSTANT; }
@@ -102,9 +104,12 @@ void jumpLine();
 {HP}{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
 {HP}{H}*"."{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
-
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ ECHO; return STRING_LITERAL; }
-<DEBUTLIGNE>[ \t\f\n]*[^}] 		{indentThat();BEGIN INITIAL;REJECT}
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
+<DEBUTLIGNE>[^{]			{
+					indentThat();
+					BEGIN INITIAL;
+					yyless(0);
+					}
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -128,7 +133,7 @@ void jumpLine();
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
 ";"					{ ECHO; printf("\n");BEGIN DEBUTLIGNE;return ';';}
-("{"|"<%")				{ ECHO; indent+=_REGULARINDENT;printf("\n");BEGIN DEBUTLIGNE;return '{';}
+("{"|"<%")				{ ECHO; indent+=_REGULARINDENT;BEGIN DEBUTLIGNE;return '{';}
 ("}"|"%>")				{ indent-=_REGULARINDENT;indentThat();ECHO;return '}';}
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
@@ -151,9 +156,7 @@ void jumpLine();
 "^"					{ ECHO; return '^'; }
 "|"					{ ECHO; return '|'; }
 "?"					{ ECHO; return '?'; }
-"\n"					{}
-[[:space:]]+ 				{printf(" ");}
-{WS}					{ /* whitespace separates tokens */ }
+{WS}					{ fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
 .					{ /* discard bad characters */ }
 
 %%
@@ -203,3 +206,11 @@ static int check_type(void)
         return IDENTIFIER;
     }
 }
+
+void yyerror(const char *s)
+{
+	
+	fflush(stdout);
+	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
+}
+

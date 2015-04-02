@@ -2,7 +2,8 @@
 #include <sys/types.h>		
 #include <sys/stat.h>		
 #include <fcntl.h>		
-#include <stdio.h>		
+#include <stdio.h>
+void yyerror(char*s);	
 %}
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
 %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -540,9 +541,3 @@ int main()
   close(fd);		
   return 0;		
 }
-void yyerror(const char *s)
-{
-	fflush(stdout);
-	fprintf(stderr, "*** %s\n", s);
-}
-
