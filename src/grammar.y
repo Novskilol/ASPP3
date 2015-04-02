@@ -1,9 +1,3 @@
-%{
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdio.h>
-  %}
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
 %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token	AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -511,7 +505,7 @@ jump_statement
 	;
 
 translation_unit
-: external_declaration {printf("%c",$1);}
+	: external_declaration
 	| translation_unit external_declaration
 	;
 
@@ -537,12 +531,4 @@ void yyerror(const char *s)
 {
 	fflush(stdout);
 	fprintf(stderr, "*** %s\n", s);
-}
-int main()
-{
-  int fd=open("fichier.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
-  dup2(fd,1);
-  yyparse();
-  close(fd);
-  return 0;
 }
