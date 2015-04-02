@@ -123,8 +123,8 @@ static int check_type(void);
 ">="					{ ECHO; return GE_OP; }
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
-";"					{ printf("<body>");ECHO;printf("</body>"); return ';';}
-("{"|"<%")				{ ECHO;printf("\n");return '{'; }
+";"					{ ECHO; return ';';}
+("{"|"<%")				{ ECHO;printf("\n");return '{';}
 ("}"|"%>")				{ ECHO; return '}'; }
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
