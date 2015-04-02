@@ -19,7 +19,7 @@ IS  (((u|U)(l|L|ll|LL)?)|((l|L|ll|LL)(u|U)?))
 CP  (u|U|L)
 SP  (u8|u|U|L)
 ES  (\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
-WS  [ \t\v\n\f]
+WS  [\t\v\n\f]
 
 %{
 #include <stdio.h>
@@ -30,11 +30,15 @@ extern void yyerror(const char *);  /* prints grammar violation message */
 extern int sym_type(const char *);  /* returns type from symbol table */
 
 #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
+#define _REGULARINDENT 4
 
 static void comment(void);
 static int check_type(void);
+int indent;
+void indentThat();
+void jumpLine();
 %}
-
+%x DEBUTLIGNE
 %%
 "/*"                                    { comment(); }
 "//".*                                  { /* consume //-comment */ }
@@ -100,7 +104,7 @@ static int check_type(void);
 {HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
 
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ ECHO; return STRING_LITERAL; }
-
+<DEBUTLIGNE>[ \t\f\n]*[^}] 		{indentThat();BEGIN INITIAL;REJECT}
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -123,9 +127,9 @@ static int check_type(void);
 ">="					{ ECHO; return GE_OP; }
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
-";"					{ ECHO; return ';';}
-("{"|"<%")				{ ECHO;printf("\n");return '{';}
-("}"|"%>")				{ ECHO; return '}'; }
+";"					{ ECHO; printf("\n");BEGIN DEBUTLIGNE;return ';';}
+("{"|"<%")				{ ECHO; indent+=_REGULARINDENT;printf("\n");BEGIN DEBUTLIGNE;return '{';}
+("}"|"%>")				{ indent-=_REGULARINDENT;indentThat();ECHO;return '}';}
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
 "="					{ ECHO; return '='; }
@@ -147,12 +151,22 @@ static int check_type(void);
 "^"					{ ECHO; return '^'; }
 "|"					{ ECHO; return '|'; }
 "?"					{ ECHO; return '?'; }
-
+"\n"					{}
+[[:space:]]+ 				{printf(" ");}
 {WS}					{ /* whitespace separates tokens */ }
 .					{ /* discard bad characters */ }
 
 %%
-
+void indentThat(){
+     int i=0;
+     for(;i<indent;i++){
+     	     printf(" ");
+	     }
+}
+void jumpLine(){
+     printf("\n");
+     indentThat();
+}
 int yywrap(void)        /* called at end of input */
 {
     return 1;           /* terminate now */
