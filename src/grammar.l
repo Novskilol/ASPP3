@@ -105,16 +105,16 @@ void jumpLine();
 {HP}{H}*"."{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
-<DEBUTLIGNE>[^}]			{
+<DEBUTLIGNE>{WS}*[^}]			{
 					indentThat();
 					BEGIN INITIAL;
-					yyless(0);
+					yyless(yyleng-1);
 					}
 <DEBUTLIGNE>{WS}*"}"                    {
                                         
                                         fprintf(stderr,"FINE");
                                         BEGIN INITIAL;
-                                        yyless(0);
+                                        yyless(yyleng-1);
 
 
                                         }
@@ -164,6 +164,7 @@ void jumpLine();
 "^"					{ ECHO; return '^'; }
 "|"					{ ECHO; return '|'; }
 "?"					{ ECHO; return '?'; }
+[ ]+                            { ECHO;}
 {WS}					{ fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
 .					{ /* discard bad characters */ }
 
