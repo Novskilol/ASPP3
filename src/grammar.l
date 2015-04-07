@@ -105,11 +105,19 @@ void jumpLine();
 {HP}{H}*"."{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
-<DEBUTLIGNE>[^{]			{
+<DEBUTLIGNE>[^}]			{
 					indentThat();
 					BEGIN INITIAL;
 					yyless(0);
 					}
+<DEBUTLIGNE>{WS}*"}"                    {
+                                        
+                                        fprintf(stderr,"FINE");
+                                        BEGIN INITIAL;
+                                        yyless(0);
+
+
+                                        }
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -133,8 +141,8 @@ void jumpLine();
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
 ";"					{ ECHO; printf("\n");BEGIN DEBUTLIGNE;return ';';}
-("{"|"<%")				{ ECHO; indent+=_REGULARINDENT;BEGIN DEBUTLIGNE;return '{';}
-("}"|"%>")				{ indent-=_REGULARINDENT;indentThat();ECHO;return '}';}
+("{"|"<%")				{ ECHO;printf("\n"); indent+=_REGULARINDENT;BEGIN DEBUTLIGNE;return '{';}
+("}"|"%>")				{indent-=_REGULARINDENT;indentThat();ECHO;printf("\n");BEGIN DEBUTLIGNE; return '}';}
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
 "="					{ ECHO; return '='; }
