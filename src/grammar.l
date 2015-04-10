@@ -105,17 +105,19 @@ void jumpLine();
 {HP}{H}*"."{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
-
-<DEBUTLIGNE>[[:space:]]*		{}
-<DEBUTLIGNE>\} 				{
-					BEGIN INITIAL;					
-					yyless(0);
-					}
-<DEBUTLIGNE>[^{]			{
+<DEBUTLIGNE>{WS}*[^}]			{
 					indentThat();
 					BEGIN INITIAL;
-					yyless(0);
+					yyless(yyleng-1);
 					}
+<DEBUTLIGNE>{WS}*"}"                    {
+                                        
+                                        fprintf(stderr,"FINE");
+                                        BEGIN INITIAL;
+                                        yyless(yyleng-1);
+
+
+                                        }
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -138,28 +140,9 @@ void jumpLine();
 ">="					{ ECHO; return GE_OP; }
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
-";"					{
-					ECHO;
-					printf("\n");
-					BEGIN DEBUTLIGNE;
-					return ';';
-					}
-("{"|"<%")				{
-					printf("\n");
-					indentThat();
-					ECHO;
-					printf("\n");
-					indent+=_REGULARINDENT;
-					BEGIN DEBUTLIGNE;
-					return'{';
-					}
-("}"|"%>")				{
-					indent-=_REGULARINDENT;
-					indentThat();
-					ECHO;
-					printf("\n");
-					return '}';
-					}
+";"					{ ECHO; printf("\n");BEGIN DEBUTLIGNE;return ';';}
+("{"|"<%")				{ ECHO;printf("\n"); indent+=_REGULARINDENT;BEGIN DEBUTLIGNE;return '{';}
+("}"|"%>")				{indent-=_REGULARINDENT;indentThat();ECHO;printf("\n");BEGIN DEBUTLIGNE; return '}';}
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
 "="					{ ECHO; return '='; }
@@ -181,8 +164,8 @@ void jumpLine();
 "^"					{ ECHO; return '^'; }
 "|"					{ ECHO; return '|'; }
 "?"					{ ECHO; return '?'; }
-[[:space:]]+				{printf(" ");}
-{WS}					{/*nothing*/}
+[ ]+                            { ECHO;}
+{WS}					{ fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
 .					{ /* discard bad characters */ }
 
 %%
