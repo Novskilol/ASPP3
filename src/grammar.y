@@ -535,9 +535,23 @@ declaration_list
 #include <stdio.h>
 int main()		
 {		
-  int fd=open("fichier.html",O_WRONLY|O_TRUNC|O_CREAT,0666);		
-  dup2(fd,1);		
-  yyparse();		
-  close(fd);		
+  int fd = open("fichier.html",O_WRONLY|O_TRUNC|O_CREAT,0666);		
+  int begin = open("begin.html", O_RDONLY, 0444);
+  int end = open("end.html", O_RDONLY, 0444);
+
+  dup2(fd, 1);
+  
+  char c;
+  while(read(begin, &c, 1) != 0)
+    printf("%c", c);
+  
+  yyparse();
+    
+  while(read(end, &c, 1) != 0)
+    printf("%c", c);
+
+  close(fd);
+  close(end);
+  close(begin);
   return 0;		
 }

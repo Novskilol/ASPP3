@@ -37,8 +37,9 @@ static void comment(void);
 static int check_type(void);
 int indent;
 void indentThat();
-void jumpLine();
+
 %}
+
 %option yylineno
 %x DEBUTLIGNE
 %%
@@ -140,9 +141,27 @@ void jumpLine();
 ">="					{ ECHO; return GE_OP; }
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
-";"					{ ECHO; printf("\n");BEGIN DEBUTLIGNE;return ';';}
-("{"|"<%")				{ ECHO;printf("\n"); indent+=_REGULARINDENT;BEGIN DEBUTLIGNE;return '{';}
-("}"|"%>")				{indent-=_REGULARINDENT;indentThat();ECHO;printf("\n");BEGIN DEBUTLIGNE; return '}';}
+";"					{ 
+                                        ECHO; 
+                                        printf("\n");
+                                        BEGIN DEBUTLIGNE;
+                                        return ';';
+                                        }
+("{"|"<%")				{
+                                        ECHO;
+                                        printf("\n");
+                                        indent+=_REGULARINDENT;
+                                        BEGIN DEBUTLIGNE;
+                                        return '{';
+                                        }
+("}"|"%>")				{
+                                        indent-=_REGULARINDENT;
+                                        indentThat();
+                                        ECHO;
+                                        printf("\n");
+                                        BEGIN DEBUTLIGNE; 
+                                        return '}';
+                                        }
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
 "="					{ ECHO; return '='; }
@@ -175,10 +194,7 @@ void indentThat(){
      	     printf(" ");
 	     }
 }
-void jumpLine(){
-     printf("\n");
-     indentThat();
-}
+
 int yywrap(void)        /* called at end of input */
 {
     return 1;           /* terminate now */
