@@ -1,18 +1,25 @@
 %{		
 #include <sys/types.h>		
-#include <sys/stat.h>		
+#include <sys/stat.h>
+#include <string.h>
 #include <fcntl.h>		
 #include <stdio.h>
-
+#include "foo.h"
 #include "commun.h"
 #include <stdbool.h>
+
+int currentName=0;
+void addnames(char *name);
 
 int indentToBeRemoved;
 int indentLocked=0;
 void yyerror(char*s);
  
 %}
-%token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
+%union{
+	char *s;
+	}
+%token <s> IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
 %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token	AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
 %token	SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
@@ -589,6 +596,12 @@ maybenewlineforward:
 };
 
 %%
+
+void addnames(char *name){
+     namesdef[currentName]=name;
+     currentName++;
+}
+
 #include <stdio.h>
 int main()		
 {
@@ -611,5 +624,21 @@ int main()
   close(fd);
   close(end);
   close(begin);
+
+  int fdl = open("lexAfter.l",O_WRONLY|O_TRUNC|O_CREAT,0666);
+  char *lex="%{\n#include \"foo.h\"\n%}\n%%\n";
+  write(fdl,lex,strlen(lex));
+  int j=0;
+  while(namesdef[j]!=NULL)
+  {
+	write(fdl,"\n",strlen("\n"));
+	write(fdl,"\"",strlen("\""));
+	write(fdl,namesdef[j],strlen(namesdef[j]));
+	write(fdl,"\"",strlen("\""));
+  	lex=" {printf(\"<script>\");ECHO;printf(\"</script>\");}";
+ 	write(fdl,lex,strlen(lex));
+ 	j++;
+  }
+  write(fdl,"\n",strlen("\n"));
   return 0;		
 }

@@ -25,7 +25,7 @@ WS  [ \t\v\n\f]
 #include <stdio.h>
 #include "grammar.tab.h"
 #include "commun.h"
-
+#include "foo.h"
 extern void yyerror(const char *);  /* prints grammar violation message */
 extern int yylineno;
 
