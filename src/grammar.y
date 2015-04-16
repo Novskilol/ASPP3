@@ -542,12 +542,12 @@ int main()
   dup2(fd, 1);
   
   char c;
-  while(read(begin, &c, 1) != 0)
+  while(read(begin, &c, 1) > 0)
     printf("%c", c);
   
   yyparse();
     
-  while(read(end, &c, 1) != 0)
+  while(read(end, &c, 1) > 0)
     printf("%c", c);
 
   close(fd);

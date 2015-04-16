@@ -36,13 +36,17 @@ extern int sym_type(const char *);  /* returns type from symbol table */
 static void comment(void);
 static int check_type(void);
 int indent;
+int parenthesis = 0;
 void indentThat();
 
 %}
 
 %option yylineno
 %x DEBUTLIGNE
+%s FOR_S
+
 %%
+
 "/*"                                    { comment(); }
 "//".*                                  { /* consume //-comment */ }
 
@@ -59,7 +63,11 @@ void indentThat();
 "enum"					{ ECHO; return(ENUM); }
 "extern"				{ ECHO; return(EXTERN); }
 "float"					{ ECHO; return(FLOAT); }
-"for"					{ ECHO; return(FOR); }
+"for"					{ 
+					ECHO;
+					BEGIN FOR_S;
+					return(FOR); 
+					}
 "goto"					{ ECHO; return(GOTO); }
 "if"					{ ECHO; return(IF); }
 "inline"				{ ECHO; return(INLINE); }
@@ -112,12 +120,9 @@ void indentThat();
 					yyless(yyleng-1);
 					}
 <DEBUTLIGNE>{WS}*"}"                    {
-                                        
                                         fprintf(stderr,"FINE");
                                         BEGIN INITIAL;
                                         yyless(yyleng-1);
-
-
                                         }
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
@@ -141,6 +146,7 @@ void indentThat();
 ">="					{ ECHO; return GE_OP; }
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
+<FOR_S>";"                              { ECHO; return ';'; }
 ";"					{ 
                                         ECHO; 
                                         printf("\n");
@@ -165,7 +171,19 @@ void indentThat();
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
 "="					{ ECHO; return '='; }
+<FOR_S>"("                              { 
+                                        ECHO; 
+                                        parenthesis++;
+                                        return '('; 
+                                        }
 "("					{ ECHO; return '('; }
+<FOR_S>")"                              { 
+                                        ECHO;
+                                        parenthesis--;
+                                        if (parenthesis == 0)
+                                            BEGIN INITIAL;
+                                        return '('; 
+                                        }
 ")"					{ ECHO; return ')'; }
 ("["|"<:")				{ ECHO; return '['; }
 ("]"|":>")				{ ECHO; return ']'; }
@@ -183,7 +201,7 @@ void indentThat();
 "^"					{ ECHO; return '^'; }
 "|"					{ ECHO; return '|'; }
 "?"					{ ECHO; return '?'; }
-[ ]+                            { ECHO;}
+[ ]+                                    { ECHO;}
 {WS}					{ fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
 .					{ /* discard bad characters */ }
 
@@ -234,7 +252,6 @@ static int check_type(void)
 
 void yyerror(const char *s)
 {
-	
 	fflush(stdout);
 	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
 }
