@@ -1,0 +1,1 @@
+char *namesdef[500];
