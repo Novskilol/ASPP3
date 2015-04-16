@@ -24,6 +24,7 @@ WS  [ \t\v\n\f]
 %{
 #include <stdio.h>
 #include "grammar.tab.h"
+#include "commun.h"
 
 extern void yyerror(const char *);  /* prints grammar violation message */
 extern int yylineno;
@@ -36,8 +37,8 @@ extern int sym_type(const char *);  /* returns type from symbol table */
 static void comment(void);
 static int check_type(void);
 int indent;
-int parenthesis = 0;
 void indentThat();
+
 
 %}
 
@@ -114,16 +115,18 @@ void indentThat();
 {HP}{H}*"."{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
-<DEBUTLIGNE>{WS}*[^}]			{
+
+
+<DEBUTLIGNE>{WS}*("}"|"{")                    {
+                                       // fprintf(stderr,"FINE");
+                                        BEGIN INITIAL;
+                                        yyless(yyleng-1);
+                                        }
+<DEBUTLIGNE>{WS}*.		{
 					indentThat();
 					BEGIN INITIAL;
 					yyless(yyleng-1);
 					}
-<DEBUTLIGNE>{WS}*"}"                    {
-                                        fprintf(stderr,"FINE");
-                                        BEGIN INITIAL;
-                                        yyless(yyleng-1);
-                                        }
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -149,41 +152,24 @@ void indentThat();
 <FOR_S>";"                              { ECHO; return ';'; }
 ";"					{ 
                                         ECHO; 
-                                        printf("\n");
+                                        printf(NEWLINE);
                                         BEGIN DEBUTLIGNE;
                                         return ';';
                                         }
 ("{"|"<%")				{
-                                        ECHO;
-                                        printf("\n");
-                                        indent+=_REGULARINDENT;
-                                        BEGIN DEBUTLIGNE;
+                    
                                         return '{';
                                         }
 ("}"|"%>")				{
-                                        indent-=_REGULARINDENT;
-                                        indentThat();
-                                        ECHO;
-                                        printf("\n");
-                                        BEGIN DEBUTLIGNE; 
+                                
                                         return '}';
                                         }
 ","					{ ECHO; return ','; }
 ":"					{ ECHO; return ':'; }
 "="					{ ECHO; return '='; }
-<FOR_S>"("                              { 
-                                        ECHO; 
-                                        parenthesis++;
-                                        return '('; 
-                                        }
+
 "("					{ ECHO; return '('; }
-<FOR_S>")"                              { 
-                                        ECHO;
-                                        parenthesis--;
-                                        if (parenthesis == 0)
-                                            BEGIN INITIAL;
-                                        return '('; 
-                                        }
+
 ")"					{ ECHO; return ')'; }
 ("["|"<:")				{ ECHO; return '['; }
 ("]"|":>")				{ ECHO; return ']'; }
@@ -206,12 +192,6 @@ void indentThat();
 .					{ /* discard bad characters */ }
 
 %%
-void indentThat(){
-     int i=0;
-     for(;i<indent;i++){
-     	     printf(" ");
-	     }
-}
 
 int yywrap(void)        /* called at end of input */
 {
@@ -256,3 +236,21 @@ void yyerror(const char *s)
 	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
 }
 
+void indentThat(){
+     int i=0;
+     for(;i<indent;i++){
+     	     printf(" ");
+	     }
+}
+void deleteIndent(){
+indent -= _REGULARINDENT;
+BEGIN DEBUTLIGNE;
+}
+void addIndent(){
+indent += _REGULARINDENT;
+BEGIN DEBUTLIGNE;
+}
+void beginLigne()
+{
+BEGIN DEBUTLIGNE;
+}

@@ -3,7 +3,7 @@ all: testDir
 
 	flex grammar.l
 
-	gcc grammar.tab.c lex.yy.c -lfl -ly -o grammaireC
+	gcc grammar.tab.c lex.yy.c -g -lfl -ly -o grammaireC
 	mv grammaireC ../bin
 
 testDir:

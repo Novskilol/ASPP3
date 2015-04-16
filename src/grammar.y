@@ -3,7 +3,14 @@
 #include <sys/stat.h>		
 #include <fcntl.h>		
 #include <stdio.h>
-void yyerror(char*s);	
+
+#include "commun.h"
+#include <stdbool.h>
+
+int indentToBeRemoved;
+int indentLocked=0;
+void yyerror(char*s);
+ 
 %}
 %token	IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
 %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -71,8 +78,8 @@ postfix_expression
 	| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP
 	| postfix_expression DEC_OP
-	| '(' type_name ')' '{' initializer_list '}'
-	| '(' type_name ')' '{' initializer_list ',' '}'
+	| '(' type_name ')' maybenewlineforward '{' initializer_list newlinebackward '}'
+	| '(' type_name ')' maybenewlineforward '{' initializer_list ',' newlinebackward '}'
 	;
 
 argument_expression_list
@@ -253,8 +260,8 @@ type_specifier
 	;
 
 struct_or_union_specifier
-	: struct_or_union '{' struct_declaration_list '}'
-	| struct_or_union IDENTIFIER '{' struct_declaration_list '}'
+	: struct_or_union maybenewlineforward '{' struct_declaration_list newlinebackward '}'
+	| struct_or_union IDENTIFIER maybenewlineforward '{' struct_declaration_list newlinebackward '}'
 	| struct_or_union IDENTIFIER
 	;
 
@@ -293,10 +300,10 @@ struct_declarator
 	;
 
 enum_specifier
-	: ENUM '{' enumerator_list '}'
-	| ENUM '{' enumerator_list ',' '}'
-	| ENUM IDENTIFIER '{' enumerator_list '}'
-	| ENUM IDENTIFIER '{' enumerator_list ',' '}'
+	: ENUM maybenewlineforward '{' enumerator_list newlinebackward '}'
+	| ENUM maybenewlineforward '{' enumerator_list ',' newlinebackward '}'
+	| ENUM IDENTIFIER maybenewlineforward '{' enumerator_list newlinebackward '}'
+	| ENUM IDENTIFIER maybenewlineforward '{' enumerator_list ',' newlinebackward '}'
 	| ENUM IDENTIFIER
 	;
 
@@ -423,8 +430,8 @@ direct_abstract_declarator
 	;
 
 initializer
-	: '{' initializer_list '}'
-	| '{' initializer_list ',' '}'
+	: maybenewlineforward '{' initializer_list newlinebackward '}'
+	| maybenewlineforward '{' initializer_list ',' newlinebackward '}'
 	| assignment_expression
 	;
 
@@ -464,13 +471,13 @@ statement
 
 labeled_statement
 	: IDENTIFIER ':' statement
-	| CASE constant_expression ':' statement
+	| CASE constant_expression ':' newlineforward statement newlinebackwardhidden
 	| DEFAULT ':' statement
 	;
 
 compound_statement
-	: '{' '}'
-	| '{'  block_item_list '}'
+	: maybenewlineforward '{' newlinebackward '}'
+	| maybenewlineforward '{'  block_item_list newlinebackward '}'
 	;
 
 block_item_list
@@ -489,18 +496,18 @@ expression_statement
 	;
 
 selection_statement
-	: IF '(' expression ')' statement ELSE statement
-	| IF '(' expression ')' statement
-	| SWITCH '(' expression ')' statement
+: IF '(' expression ')' newlineforward statement newlinebackward ELSE  newlineforward statement newlinebackwardhidden
+| IF '(' expression ')' newlineforward statement newlinebackwardhidden
+| SWITCH '(' expression ')' newlineforward statement newlinebackwardhidden
 	;
 
 iteration_statement
-	: WHILE '(' expression ')' statement
-	| DO statement WHILE '(' expression ')' ';'
-	| FOR '(' expression_statement expression_statement ')' statement
-	| FOR '(' expression_statement expression_statement expression ')' statement
-	| FOR '(' declaration expression_statement ')' statement
-	| FOR '(' declaration expression_statement expression ')' statement
+	: WHILE '(' expression ')' newlineforward statement newlinebackwardhidden
+	| DO newlineforward statement WHILE '(' expression ')' ';'
+	| FOR '(' expression_statement expression_statement ')' newlineforward statement newlinebackwardhidden
+	| FOR '(' expression_statement expression_statement expression ')' newlineforward statement newlinebackwardhidden
+	| FOR '(' declaration expression_statement ')' newlineforward statement newlinebackwardhidden
+	| FOR '(' declaration expression_statement expression ')' newlineforward statement newlinebackwardhidden
 	;
 
 jump_statement
@@ -531,14 +538,65 @@ declaration_list
 	| declaration_list declaration
 	;
 
+newlineforward: {
+ addIndent();
+   printf(NEWLINE);
+  indentLocked+=1;
+
+};
+newlinebackwardhidden:{
+  if (indentLocked>0){
+     deleteIndent();
+     indentLocked-=1;
+  }
+
+};
+newlinebackward:{
+  deleteIndent();
+  
+
+    indentThat();
+      printf("}");
+      
+    printf(NEWLINE);
+    
+
+};
+maybenewlineforward:
+{
+  if(indentLocked == 0 ){
+    indentThat();
+    addIndent();
+    printf("{");
+    printf(NEWLINE);
+    
+    
+  
+  }
+  else{
+    indentLocked-=1;
+    // fprintf(stderr,"jump");
+    deleteIndent();
+    indentThat();
+    addIndent();
+    printf("{");
+    printf(NEWLINE);
+    beginLigne();
+  }
+  
+
+
+};
+
 %%
 #include <stdio.h>
 int main()		
-{		
+{
+  indentLocked=0;
   int fd = open("fichier.html",O_WRONLY|O_TRUNC|O_CREAT,0666);		
   int begin = open("begin.html", O_RDONLY, 0444);
   int end = open("end.html", O_RDONLY, 0444);
-
+  indentToBeRemoved=0;
   dup2(fd, 1);
   
   char c;
