@@ -53,56 +53,50 @@ void indentThat();
 "//".*                  { /* consume //-comment */ }
 
 "auto"					{ ECHO; return(AUTO); }
-"break"					{ ECHO; return(BREAK); }
-"case"					{ ECHO; return(CASE); }
-"char"					{ ECHO; return(CHAR); }
+"break"					{ yylval.s = yytext; return(BREAK); }
+"case"					{ yylval.s = yytext; return(CASE); }
+"char"					{ yylval.s = yytext; return(CHAR); }
 "const"					{ ECHO; return(CONST); }
-"continue"				{ ECHO; return(CONTINUE); }
-"default"				{ ECHO; return(DEFAULT); }
-"do"					{ ECHO; return(DO); }
-"double"				{ ECHO; return(DOUBLE); }
-"else"					{ ECHO; return(ELSE); }
+"continue"				{ yylval.s = yytext; return(CONTINUE); }
+"default"				{ yylval.s = yytext; return(DEFAULT); }
+"do"					{ yylval.s = yytext; return(DO); }
+"double"				{ yylval.s = yytext; return(DOUBLE); }
+"else"					{ yylval.s = yytext; return(ELSE); }
 "enum"					{ ECHO; return(ENUM); }
 "extern"				{ ECHO; return(EXTERN); }
-"float"					{ ECHO; return(FLOAT); }
+"float"					{ yylval.s = yytext; return(FLOAT); }
 "for"					{ 
-                            ECHO;
+                            yylval.s = yytext;
                             BEGIN FOR_S;
                             return(FOR); 
                         }
-"goto"					{ ECHO; return(GOTO); }
-"if"					{ ECHO; return(IF); }
+"goto"					{ yylval.s = yytext; return(GOTO); }
+"if"					{ yylval.s = yytext; return(IF); }
 "inline"				{ ECHO; return(INLINE); }
-"int"					{ ECHO; return(INT); }
-"long"					{ ECHO; return(LONG); }
+"int"					{ yylval.s = yytext; return(INT); }
+"long"					{ yylval.s = yytext; return(LONG); }
 "register"				{ ECHO; return(REGISTER); }
 "restrict"				{ ECHO; return(RESTRICT); }
-"return"				{ ECHO; return(RETURN); }
-"short"					{ ECHO; return(SHORT); }
-"signed"				{ ECHO; return(SIGNED); }
+"return"				{ yylval.s = yytext; return(RETURN); }
+"short"					{ yylval.s = yytext; return(SHORT); }
+"signed"				{ yylval.s = yytext; return(SIGNED); }
 "sizeof"				{ ECHO; return(SIZEOF); }
-"static"				{ ECHO; return(STATIC); }
+"static"				{ yylval.s = yytext; return(STATIC); }
 "struct"				{ ECHO; return(STRUCT); }
-"switch"				{ ECHO; return(SWITCH); }
+"switch"				{ yylval.s = yytext; return(SWITCH); }
 "typedef"				{ ECHO; return(TYPEDEF); }
 "union"					{ ECHO; return(UNION); }
-"unsigned"				{ ECHO; return(UNSIGNED); }
-"void"					{ 
-                            ECHO; //yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
-                            return(VOID); 
-                        }
+"unsigned"				{ yylval.s = yytext; return(UNSIGNED); }
+"void"					{ yylval.s = yytext; return(VOID); }
 "volatile"				{ ECHO; return(VOLATILE); }
-"while"					{ 
-                          ECHO; //yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
-                          return(WHILE); 
-                        }
+"while"					{ yylval.s = yytext; return(WHILE); }
 "_Alignas"              { ECHO; return ALIGNAS; }
 "_Alignof"              { ECHO; return ALIGNOF; }
 "_Atomic"               { ECHO; return ATOMIC; }
 "_Bool"                 { ECHO; return BOOL; }
-"_Complex"              { ECHO; return COMPLEX; }
+"_Complex"              { yylval.s = yytext; return COMPLEX; }
 "_Generic"              { ECHO; return GENERIC; }
-"_Imaginary"            { ECHO; return IMAGINARY; }
+"_Imaginary"            { yylval.s = yytext; return IMAGINARY; }
 "_Noreturn"             { ECHO; return NORETURN; }
 "_Static_assert"        { ECHO; return STATIC_ASSERT; }
 "_Thread_local"         { ECHO; return THREAD_LOCAL; }
@@ -120,7 +114,7 @@ void indentThat();
 {HP}{H}*"."{H}+{P}{FS}?			    { ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			        { ECHO; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ 
-                                      yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+                                      yylval.s = yytext; //strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
                                       return STRING_LITERAL; 
                                     }
 
@@ -221,13 +215,13 @@ static int check_type(void)
     switch (sym_type(yytext))
     {
     case TYPEDEF_NAME:                /* previously defined */
-        ECHO;
+        yylval.s = yytext;
         return TYPEDEF_NAME;
     case ENUMERATION_CONSTANT:        /* previously defined */
         ECHO;
         return ENUMERATION_CONSTANT;
     default:                          /* includes undefined */
-        yylval.s = yytext;//strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+        yylval.s = yytext; //strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
         return IDENTIFIER;
     }
 }

@@ -21,6 +21,7 @@
     %union{
        char *s;
    }
+
    %token <s> IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
    %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
    %token	AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -30,11 +31,11 @@
 
    %token	TYPEDEF EXTERN STATIC AUTO REGISTER INLINE
    %token	CONST RESTRICT VOLATILE
-   %token	BOOL CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE VOID
-   %token	COMPLEX IMAGINARY 
+   %token	<s> BOOL CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE VOID
+   %token	<s> COMPLEX IMAGINARY 
    %token	STRUCT UNION ENUM ELLIPSIS
 
-   %token	CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
+   %token	<s> CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
    %token	ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
 
@@ -76,7 +77,7 @@
 
    generic_association
    : type_name ':' assignment_expression
-   | DEFAULT ':' assignment_expression
+   | default ':' assignment_expression
    ;
 
    postfix_expression
@@ -251,22 +252,22 @@
    ;
 
    type_specifier
-   : VOID       /*{ printf("<type>%s</type>", $1); }*/
-   | CHAR       /*{ printf("<type>%s</type>", $1); }*/
-   | SHORT      /*{ printf("<type>%s</type>", $1); }*/
-   | INT        /*{ printf("<type>%s</type>", $1); }*/
-   | LONG       /*{ printf("<type>%s</type>", $1); }*/
-   | FLOAT      /*{ printf("<type>%s</type>", $1); }*/
-   | DOUBLE     /*{ printf("<type>%s</type>", $1); }*/
-   | SIGNED     /*{ printf("<type>%s</type>", $1); }*/
-   | UNSIGNED   /*{ printf("<type>%s</type>", $1); }*/
-   | BOOL       /*{ printf("<type>%s</type>", $1); }*/
-   | COMPLEX    /*{ printf("<type>%s</type>", $1); }*/
-   | IMAGINARY  /*{ printf("<type>%s</type>", $1); }*/
-   | atomic_type_specifier
+   : VOID       { printf("<type>%s</type>", $1); }
+   | CHAR       { printf("<type>%s</type>", $1); }
+   | SHORT      { printf("<type>%s</type>", $1); }
+   | INT        { printf("<type>%s</type>", $1); }
+   | LONG       { printf("<type>%s</type>", $1); }
+   | FLOAT      { printf("<type>%s</type>", $1); }
+   | DOUBLE     { printf("<type>%s</type>", $1); }
+   | SIGNED     { printf("<type>%s</type>", $1); }
+   | UNSIGNED   { printf("<type>%s</type>", $1); }
+   | BOOL       { printf("<type>%s</type>", $1); }
+   | COMPLEX    { printf("<type>%s</type>", $1); }
+   | IMAGINARY  { printf("<type>%s</type>", $1); }
+   | atomic_type_specifier    
    | struct_or_union_specifier
-   | enum_specifier
-   | TYPEDEF_NAME		/* after it has been defined as such */
+   | enum_specifier           
+   | TYPEDEF_NAME		          
    ;
 
    struct_or_union_specifier
@@ -482,8 +483,8 @@
 
    labeled_statement
    : identifier ':' statement
-   | CASE constant_expression ':' newlineforward statement newlinebackwardhidden
-   | DEFAULT ':' statement
+   | case constant_expression ':' newlineforward statement newlinebackwardhidden
+   | default ':' statement
    ;
 
    compound_statement
@@ -507,26 +508,26 @@
    ;
 
    selection_statement
-   : IF '(' expression ')' newlineforward statement newlinebackward ELSE  newlineforward statement newlinebackwardhidden
-   | IF '(' expression ')' newlineforward statement newlinebackwardhidden
-   | SWITCH '(' expression ')' newlineforward statement newlinebackwardhidden
+   : if '(' expression ')' newlineforward statement newlinebackward else  newlineforward statement newlinebackwardhidden
+   | if '(' expression ')' newlineforward statement newlinebackwardhidden
+   | switch '(' expression ')' newlineforward statement newlinebackwardhidden
    ;
 
    iteration_statement
-   : WHILE '(' expression ')' newlineforward statement newlinebackwardhidden
-   | DO newlineforward statement WHILE '(' expression ')' ';'
-   | FOR '(' expression_statement expression_statement ')' newlineforward statement newlinebackwardhidden
-   | FOR '(' expression_statement expression_statement expression ')' newlineforward statement newlinebackwardhidden
-   | FOR '(' declaration expression_statement ')' newlineforward statement newlinebackwardhidden
-   | FOR '(' declaration expression_statement expression ')' newlineforward statement newlinebackwardhidden
+   : while '(' expression ')' newlineforward statement newlinebackwardhidden
+   | do newlineforward statement while '(' expression ')' ';'
+   | for '(' expression_statement expression_statement ')' newlineforward statement newlinebackwardhidden
+   | for '(' expression_statement expression_statement expression ')' newlineforward statement newlinebackwardhidden
+   | for '(' declaration expression_statement ')' newlineforward statement newlinebackwardhidden
+   | for '(' declaration expression_statement expression ')' newlineforward statement newlinebackwardhidden
    ;
 
    jump_statement
-   : GOTO identifier ';'
-   | CONTINUE ';'
-   | BREAK ';'
-   | RETURN ';'
-   | RETURN expression ';'
+   : goto identifier ';'
+   | continue ';'
+   | break ';'
+   | return ';'
+   | return expression ';'
    ;
 
    translation_unit
@@ -602,7 +603,7 @@ else{
 identifier
 : IDENTIFIER { 
   if (identifierLock==false){
-    printf("<type id=\"%d\" onclick=\"coloration(%d,%d)\">%s</type>",uniqueId,indentLvl,uniqueId,$1); 
+    printf("<identifier id=\"%d\" onclick=\"coloration(%d,%d)\">%s</identifier>",uniqueId,indentLvl,uniqueId,$1); 
     uniqueId+=1;
   }
   else
@@ -612,12 +613,56 @@ identifier
 };
 
 string_literal
-: STRING_LITERAL { printf ("<string>%s</string>", $1); free($1); }
+: STRING_LITERAL { printf ("<string>%s</string>", $1); }
 ;
 
-/*keyword
+case
+: CASE { printf("<keyword>%s</keyword>", $1); }
+;
+
+default
+: DEFAULT { printf("<keyword>%s</keyword>", $1); }
+;
+
+if
+: IF { printf("<keyword>%s</keyword>", $1); }
+;
+
+else
+: ELSE { printf("<keyword>%s</keyword>", $1); }
+;
+
+switch
+: SWITCH { printf("<keyword>%s</keyword>", $1); }
+;
+
+while
 : WHILE { printf("<keyword>%s</keyword>", $1); }
-; */
+;
+
+do
+: DO { printf("<keyword>%s</keyword>", $1); }
+;
+
+for
+: FOR { printf("<keyword>%s</keyword>", $1); }
+;
+
+goto
+: GOTO { printf("<keyword>%s</keyword>", $1); }
+;
+
+continue
+: CONTINUE { printf("<keyword>%s</keyword>", $1); }
+;
+
+break 
+: BREAK { printf("<keyword>%s</keyword>", $1); }
+;
+
+return
+: RETURN { printf("<keyword>%s</keyword>", $1); }
+;
 
 %%
 
