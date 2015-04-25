@@ -10,7 +10,7 @@
 
     int currentName = 0;
     void addnames(char *name);
-
+    bool identifierLock=false;
     int indentToBeRemoved;
     int indentLocked=0;
     void yyerror(char*s);
@@ -349,7 +349,7 @@
    : pointer direct_declarator
    | direct_declarator
    ;
-
+//direct_declarator_aux:lockFunction direct_declarator unlockFunction;
    direct_declarator
    : identifier
    | '(' declarator ')'
@@ -362,11 +362,14 @@
    | direct_declarator '[' type_qualifier_list assignment_expression ']'
    | direct_declarator '[' type_qualifier_list ']'
    | direct_declarator '[' assignment_expression ']'
-   | direct_declarator '(' parameter_type_list ')'
-   | direct_declarator '(' ')'
-   | direct_declarator '(' identifier_list ')'
+   | direct_declarator '(' parameter_type_list ')' 
+   | direct_declarator '(' ')' 
+   | direct_declarator '(' identifier_list ')' 
    ;
 
+//direct_declarator_aux: lockFunction direct_declarator {identifierLock=false;};
+lockFunction: {identifierLock=true;};
+unlockFunction:{identifierLock=false;};
    pointer
    : '*' type_qualifier_list pointer
    | '*' type_qualifier_list
@@ -536,8 +539,8 @@
    ;
 
    function_definition
-   : declaration_specifiers declarator declaration_list compound_statement
-   | declaration_specifiers declarator compound_statement
+   : declaration_specifiers declarator unlockFunction declaration_list compound_statement
+   | declaration_specifiers declarator unlockFunction compound_statement
    ;
 
    declaration_list
@@ -569,7 +572,17 @@ newlinebackward:{
 
 
 };
-identifier: IDENTIFIER{printf("<type>") ; printf("%s </type>",$1);};
+identifier: IDENTIFIER{ 
+  if (identifierLock==false){
+    printf("<type>") ; 
+    printf("%s </type>",$1);
+  }
+  else
+    {
+      printf("%s" ,$1);
+    }
+
+};
 
 maybenewlineforward:
 {
