@@ -9,5 +9,4 @@ all: testDir
 testDir:
 	if (test ! -d ../bin);then mkdir ../bin;fi
 clean:
-	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c fichier.html ../bin/grammaireC
-
+	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c index.html ../bin/grammaireC
