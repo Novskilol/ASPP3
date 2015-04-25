@@ -48,7 +48,7 @@ void indentThat();
 
 %%
 
-"#."                    { /* consume directive */ }
+"#.*"                   { /* consume directive */ }
 "/*"                    { comment(); }
 "//".*                  { /* consume //-comment */ }
 
@@ -102,7 +102,7 @@ void indentThat();
 "_Thread_local"         { ECHO; return THREAD_LOCAL; }
 "__func__"              { ECHO; return FUNC_NAME; }
 
-{L}{A}*					            {yylval.s=strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);return check_type(); }
+{L}{A}*					            { return check_type(); }
 {HP}{H}+{IS}?				        { ECHO; return I_CONSTANT; }
 {NZ}{D}*{IS}?				        { ECHO; return I_CONSTANT; }
 "0"{O}*{IS}?				        { ECHO; return I_CONSTANT; }
@@ -212,10 +212,13 @@ static int check_type(void)
     switch (sym_type(yytext))
     {
     case TYPEDEF_NAME:                /* previously defined */
+        ECHO;
         return TYPEDEF_NAME;
     case ENUMERATION_CONSTANT:        /* previously defined */
+        ECHO;
         return ENUMERATION_CONSTANT;
     default:                          /* includes undefined */
+        yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
         return IDENTIFIER;
     }
 }

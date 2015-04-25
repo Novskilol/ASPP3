@@ -1,3 +1,4 @@
+//#include <stdio.h> #include "stdlib.h" 
 int main(int argc,char **argv){int variable; { {char test;if (a==b) {yolo();}} for(int i = 0; i < b; i++){return a;printfg(yolo);}}{int main(variable,test);}return 0;for(int i=0;i<10;i++)for(int i=0;i<10;i++)a="fairedespates";int x = 0;
   while(1) while(1) while(1) toto(); x = a;
 

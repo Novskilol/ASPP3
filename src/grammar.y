@@ -16,7 +16,7 @@
     int indentLvl=0;
     void yyerror(char*s);
 
-    %}
+%}
     %union{
        char *s;
    }
@@ -547,42 +547,43 @@
    | declaration_list declaration
    ;
 
-   newlineforward: {
+   newlineforward
+   : {
        addIndent();
        printf(C_NEWLINE);
        indentLocked+=1;
        indentLvl+=1;
+   }
+   ;
 
-   };
-   newlinebackwardhidden:{
+   newlinebackwardhidden
+   : {
       if (indentLocked>0){
        deleteIndent();
        indentLocked-=1;
        indentLvl-=1;
-   }
+      }
+  };
 
-};
-newlinebackward:{
+newlinebackward
+:
+{
   deleteIndent();
-  
-
   indentThat();
   printf("}");
   indentLvl-=1;
   printf(C_NEWLINE);
-
-
 };
-identifier: IDENTIFIER{ 
-  if (identifierLock==false){
-    printf("<type id=%d>",indentLvl) ; 
-    printf("%s </type>",$1);
+
+identifier
+: IDENTIFIER { 
+  if (identifierLock==false) {
+    printf("<type id=%d>%s</type>",indentLvl,$1);
   }
   else
     {
       printf("%s" ,$1);
     }
-
 };
 
 maybenewlineforward:
