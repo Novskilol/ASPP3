@@ -13,6 +13,7 @@
     bool identifierLock=false;
     int indentToBeRemoved;
     int indentLocked=0;
+    int indentLvl=0;
     void yyerror(char*s);
 
     %}
@@ -367,9 +368,7 @@
    | direct_declarator '(' identifier_list ')' 
    ;
 
-//direct_declarator_aux: lockFunction direct_declarator {identifierLock=false;};
-lockFunction: {identifierLock=true;};
-unlockFunction:{identifierLock=false;};
+
    pointer
    : '*' type_qualifier_list pointer
    | '*' type_qualifier_list
@@ -539,8 +538,8 @@ unlockFunction:{identifierLock=false;};
    ;
 
    function_definition
-   : declaration_specifiers declarator unlockFunction declaration_list compound_statement
-   | declaration_specifiers declarator unlockFunction compound_statement
+   : declaration_specifiers declarator  declaration_list compound_statement
+   | declaration_specifiers declarator  compound_statement
    ;
 
    declaration_list
@@ -552,12 +551,14 @@ unlockFunction:{identifierLock=false;};
        addIndent();
        printf(C_NEWLINE);
        indentLocked+=1;
+       indentLvl+=1;
 
    };
    newlinebackwardhidden:{
       if (indentLocked>0){
        deleteIndent();
        indentLocked-=1;
+       indentLvl-=1;
    }
 
 };
@@ -567,14 +568,14 @@ newlinebackward:{
 
   indentThat();
   printf("}");
-
+  indentLvl-=1;
   printf(C_NEWLINE);
 
 
 };
 identifier: IDENTIFIER{ 
   if (identifierLock==false){
-    printf("<type>") ; 
+    printf("<type id=%d>",indentLvl) ; 
     printf("%s </type>",$1);
   }
   else
@@ -592,7 +593,7 @@ maybenewlineforward:
     printf("{");
     printf(C_NEWLINE);
     
-    
+    indentLvl+=1;
 
 }
 else{
