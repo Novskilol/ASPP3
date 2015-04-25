@@ -24,13 +24,13 @@ WS  [ \t\v\n\f]
 %{
 #include <stdio.h>
 #include "grammar.tab.h"
+#include <string.h>
 #include "commun.h"
 #include "foo.h"
 extern void yyerror(const char *);  /* prints grammar violation message */
 extern int yylineno;
 
 extern int sym_type(const char *);  /* returns type from symbol table */
-
 #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
 #define _REGULARINDENT 4
 
@@ -102,7 +102,7 @@ void indentThat();
 "_Thread_local"         { ECHO; return THREAD_LOCAL; }
 "__func__"              { ECHO; return FUNC_NAME; }
 
-{L}{A}*					            { ECHO; return check_type(); }
+{L}{A}*					            {yylval.s=strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);return check_type(); }
 {HP}{H}+{IS}?				        { ECHO; return I_CONSTANT; }
 {NZ}{D}*{IS}?				        { ECHO; return I_CONSTANT; }
 "0"{O}*{IS}?				        { ECHO; return I_CONSTANT; }

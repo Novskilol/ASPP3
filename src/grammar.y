@@ -40,7 +40,7 @@
    %%
 
    primary_expression
-   : IDENTIFIER
+   : identifier
    | constant
    | string
    | '(' expression ')'
@@ -54,7 +54,7 @@
    ;
 
    enumeration_constant		/* before it has been defined as such */
-   : IDENTIFIER
+   : identifier
    ;
 
    string
@@ -81,8 +81,8 @@
    | postfix_expression '[' expression ']'
    | postfix_expression '(' ')'
    | postfix_expression '(' argument_expression_list ')'
-   | postfix_expression '.' IDENTIFIER
-   | postfix_expression PTR_OP IDENTIFIER
+   | postfix_expression '.' identifier
+   | postfix_expression PTR_OP identifier
    | postfix_expression INC_OP
    | postfix_expression DEC_OP
    | '(' type_name ')' maybenewlineforward '{' initializer_list newlinebackward '}'
@@ -268,8 +268,8 @@
 
    struct_or_union_specifier
    : struct_or_union maybenewlineforward '{' struct_declaration_list newlinebackward '}'
-   | struct_or_union IDENTIFIER maybenewlineforward '{' struct_declaration_list newlinebackward '}'
-   | struct_or_union IDENTIFIER
+   | struct_or_union identifier maybenewlineforward '{' struct_declaration_list newlinebackward '}'
+   | struct_or_union identifier
    ;
 
    struct_or_union
@@ -309,9 +309,9 @@
    enum_specifier
    : ENUM maybenewlineforward '{' enumerator_list newlinebackward '}'
    | ENUM maybenewlineforward '{' enumerator_list ',' newlinebackward '}'
-   | ENUM IDENTIFIER maybenewlineforward '{' enumerator_list newlinebackward '}'
-   | ENUM IDENTIFIER maybenewlineforward '{' enumerator_list ',' newlinebackward '}'
-   | ENUM IDENTIFIER
+   | ENUM identifier maybenewlineforward '{' enumerator_list newlinebackward '}'
+   | ENUM identifier maybenewlineforward '{' enumerator_list ',' newlinebackward '}'
+   | ENUM identifier
    ;
 
    enumerator_list
@@ -351,7 +351,7 @@
    ;
 
    direct_declarator
-   : IDENTIFIER
+   : identifier
    | '(' declarator ')'
    | direct_declarator '[' ']'
    | direct_declarator '[' '*' ']'
@@ -397,8 +397,8 @@
    ;
 
    identifier_list
-   : IDENTIFIER
-   | identifier_list ',' IDENTIFIER
+   : identifier
+   | identifier_list ',' identifier
    ;
 
    type_name
@@ -460,7 +460,7 @@
 
    designator
    : '[' constant_expression ']'
-   | '.' IDENTIFIER
+   | '.' identifier
    ;
 
    static_assert_declaration
@@ -477,7 +477,7 @@
    ;
 
    labeled_statement
-   : IDENTIFIER ':' statement
+   : identifier ':' statement
    | CASE constant_expression ':' newlineforward statement newlinebackwardhidden
    | DEFAULT ':' statement
    ;
@@ -518,7 +518,7 @@
    ;
 
    jump_statement
-   : GOTO IDENTIFIER ';'
+   : GOTO identifier ';'
    | CONTINUE ';'
    | BREAK ';'
    | RETURN ';'
@@ -569,6 +569,8 @@ newlinebackward:{
 
 
 };
+identifier: IDENTIFIER{printf("<type>") ; printf("%s </type>",$1);};
+
 maybenewlineforward:
 {
   if(indentLocked == 0 ){
