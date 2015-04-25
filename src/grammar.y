@@ -598,32 +598,41 @@ else{
 %%
 
 void addnames(char *name){
-   namesdef[currentName]=name;
-   currentName++;
+ namesdef[currentName]=name;
+ currentName++;
 }
 
-#include <stdio.h>
-int main()		
-{
-  indentLocked=0;
-  int fd = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);		
+printBeginFile(int output) {
   int begin = open("html/begin.html", O_RDONLY, 0444);
-  int end = open("html/end.html", O_RDONLY, 0444);
-  indentToBeRemoved=0;
-  dup2(fd, 1);
-  
   char c;
   while(read(begin, &c, 1) > 0)
   printf("%c", c);
-  
-  yyparse();
+  close(begin);
+}
 
+printEndFile(int output) {
+  int end = open("html/end.html", O_RDONLY, 0444);
+  char c;
   while(read(end, &c, 1) > 0)
   printf("%c", c);
-
-  close(fd);
   close(end);
-  close(begin);
+}
+
+int main()    
+{
+  indentLocked = 0;
+  indentToBeRemoved=0;
+
+  int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
+  dup2(output, 1);
+  
+  printBeginFile(output);
+
+  yyparse();
+
+  printEndFile(output);
+
+  close(output);
 
   int fdl = open("lexAfter.l",O_WRONLY|O_TRUNC|O_CREAT,0666);
   char *lex="%{\n#include \"foo.h\"\n%}\n%%\n";
@@ -638,7 +647,8 @@ int main()
    lex=" {printf(\"<script>\");ECHO;printf(\"</script>\");}";
    write(fdl,lex,strlen(lex));
    j++;
-}
-write(fdl,"\n",strlen("\n"));
-return 0;		
+ }
+ write(fdl,"\n",strlen("\n"));
+
+ return 0;    
 }
