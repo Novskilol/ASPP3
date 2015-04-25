@@ -14,6 +14,7 @@
     int indentToBeRemoved;
     int indentLocked=0;
     int indentLvl=0;
+    int uniqueId=0;
     void yyerror(char*s);
 
 %}
@@ -575,10 +576,11 @@ newlinebackward
   printf(C_NEWLINE);
 };
 
-identifier
-: IDENTIFIER { 
-  if (identifierLock==false) {
-    printf("<type id=%d>%s</type>",indentLvl,$1);
+identifier: IDENTIFIER{ 
+  if (identifierLock==false){
+    printf("<type id=\"%d\" onclick=\"coloration(%d,%d)\">",uniqueId,indentLvl,uniqueId,indentLvl) ; 
+    uniqueId+=1;
+    printf("%s</type>",$1);
   }
   else
     {
