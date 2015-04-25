@@ -47,10 +47,3 @@ body {
 .code braces {
 	cursor: pointer;
 }
-
-.code .expand {
-	cursor: pointer;
-	vertical-align: text-top;
-	width: 0.35em;
-	height: 0.35em;
-}

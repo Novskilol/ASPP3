@@ -622,11 +622,11 @@ string_literal
 %%
 
 open_braces() {
-  printf("<braces>{</braces>\n<item>\n<block>\n");
+  printf("<block>\n<braces>{</braces>\n<item>\n<block>\n");
 }
 
 close_braces() {
-  printf("</block>\n</item>\n}");
+  printf("</block>\n</item>\n}</block>");
 }
 
 void addnames(char *name){
