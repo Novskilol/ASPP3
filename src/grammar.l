@@ -43,11 +43,12 @@ void indentThat();
 %}
 
 %option yylineno
-%x DEBUTLIGNE
+%x NEWLINE
 %s FOR_S
 
 %%
 
+"#."                    { /* consume directive */ }
 "/*"                    { comment(); }
 "//".*                  { /* consume //-comment */ }
 
@@ -89,44 +90,41 @@ void indentThat();
 "void"					{ ECHO; return(VOID); }
 "volatile"				{ ECHO; return(VOLATILE); }
 "while"					{ ECHO; return(WHILE); }
-"_Alignas"                              { ECHO; return ALIGNAS; }
-"_Alignof"                              { ECHO; return ALIGNOF; }
-"_Atomic"                               { ECHO; return ATOMIC; }
-"_Bool"                                 { ECHO; return BOOL; }
-"_Complex"                              { ECHO; return COMPLEX; }
-"_Generic"                              { ECHO; return GENERIC; }
-"_Imaginary"                            { ECHO; return IMAGINARY; }
-"_Noreturn"                             { ECHO; return NORETURN; }
-"_Static_assert"                        { ECHO; return STATIC_ASSERT; }
-"_Thread_local"                         { ECHO; return THREAD_LOCAL; }
-"__func__"                              { ECHO; return FUNC_NAME; }
+"_Alignas"              { ECHO; return ALIGNAS; }
+"_Alignof"              { ECHO; return ALIGNOF; }
+"_Atomic"               { ECHO; return ATOMIC; }
+"_Bool"                 { ECHO; return BOOL; }
+"_Complex"              { ECHO; return COMPLEX; }
+"_Generic"              { ECHO; return GENERIC; }
+"_Imaginary"            { ECHO; return IMAGINARY; }
+"_Noreturn"             { ECHO; return NORETURN; }
+"_Static_assert"        { ECHO; return STATIC_ASSERT; }
+"_Thread_local"         { ECHO; return THREAD_LOCAL; }
+"__func__"              { ECHO; return FUNC_NAME; }
 
-{L}{A}*					{ ECHO; return check_type(); }
-
-{HP}{H}+{IS}?				{ ECHO; return I_CONSTANT; }
-{NZ}{D}*{IS}?				{ ECHO; return I_CONSTANT; }
-"0"{O}*{IS}?				{ ECHO; return I_CONSTANT; }
-{CP}?"'"([^'\\\n]|{ES})+"'"		{ return I_CONSTANT; }
-
-{D}+{E}{FS}?				{ ECHO; return F_CONSTANT; }
-{D}*"."{D}+{E}?{FS}?			{ ECHO; return F_CONSTANT; }
-{D}+"."{E}?{FS}?			{ ECHO; return F_CONSTANT; }
-{HP}{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
-{HP}{H}*"."{H}+{P}{FS}?			{ ECHO; return F_CONSTANT; }
-{HP}{H}+"."{P}{FS}?			{ ECHO; return F_CONSTANT; }
+{L}{A}*					            { ECHO; return check_type(); }
+{HP}{H}+{IS}?				        { ECHO; return I_CONSTANT; }
+{NZ}{D}*{IS}?				        { ECHO; return I_CONSTANT; }
+"0"{O}*{IS}?				        { ECHO; return I_CONSTANT; }
+{CP}?"'"([^'\\\n]|{ES})+"'"		    { return I_CONSTANT; }
+{D}+{E}{FS}?				        { ECHO; return F_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?			    { ECHO; return F_CONSTANT; }
+{D}+"."{E}?{FS}?		            { ECHO; return F_CONSTANT; }
+{HP}{H}+{P}{FS}?		            { ECHO; return F_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?			    { ECHO; return F_CONSTANT; }
+{HP}{H}+"."{P}{FS}?			        { ECHO; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
 
 
-<DEBUTLIGNE>{WS}*("}"|"{")                    {
-                                       // fprintf(stderr,"FINE");
-                                        BEGIN INITIAL;
-                                        yyless(yyleng-1);
-                                        }
-<DEBUTLIGNE>{WS}*.		{
-					indentThat();
-					BEGIN INITIAL;
-					yyless(yyleng-1);
-					}
+<NEWLINE>{WS}*("}"|"{") {
+                            BEGIN INITIAL;
+                            yyless(yyleng-1);
+                        }
+<NEWLINE>{WS}*.		    {
+					       indentThat();
+					       BEGIN INITIAL;
+					       yyless(yyleng-1);
+					    }
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -149,47 +147,39 @@ void indentThat();
 ">="					{ ECHO; return GE_OP; }
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
-<FOR_S>";"                              { ECHO; return ';'; }
-";"					{ 
-                                        ECHO; 
-                                        printf(NEWLINE);
-                                        BEGIN DEBUTLIGNE;
-                                        return ';';
-                                        }
-("{"|"<%")				{
-                    
-                                        return '{';
-                                        }
-("}"|"%>")				{
-                                
-                                        return '}';
-                                        }
-","					{ ECHO; return ','; }
-":"					{ ECHO; return ':'; }
-"="					{ ECHO; return '='; }
-
-"("					{ ECHO; return '('; }
-
-")"					{ ECHO; return ')'; }
-("["|"<:")				{ ECHO; return '['; }
-("]"|":>")				{ ECHO; return ']'; }
-"."					{ ECHO; return '.'; }
-"&"					{ ECHO; return '&'; }
-"!"					{ ECHO; return '!'; }
-"~"					{ ECHO; return '~'; }
-"-"					{ ECHO; return '-'; }
-"+"					{ ECHO; return '+'; }
-"*"					{ ECHO; return '*'; }
-"/"					{ ECHO; return '/'; }
-"%"					{ ECHO; return '%'; }
-"<"					{ ECHO; return '<'; }
-">"					{ ECHO; return '>'; }
-"^"					{ ECHO; return '^'; }
-"|"					{ ECHO; return '|'; }
-"?"					{ ECHO; return '?'; }
-[ ]+                                    { ECHO;}
-{WS}					{ fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
-.					{ /* discard bad characters */ }
+<FOR_S>";"              { ECHO; return ';'; }
+";"					    { 
+                            ECHO; 
+                            printf(C_NEWLINE);
+                            BEGIN NEWLINE;
+                            return ';';
+                        }
+("{"|"<%")			    { return '{'; }
+("}"|"%>")			    { return '}'; }
+","					    { ECHO; return ','; }
+":"					    { ECHO; return ':'; }
+"="					    { ECHO; return '='; }
+"("					    { ECHO; return '('; }
+")"					    { ECHO; return ')'; }
+("["|"<:")			    { ECHO; return '['; }
+("]"|":>")			    { ECHO; return ']'; }
+"."					    { ECHO; return '.'; }
+"&"					    { ECHO; return '&'; }
+"!"					    { ECHO; return '!'; }
+"~"					    { ECHO; return '~'; }
+"-"					    { ECHO; return '-'; }
+"+"					    { ECHO; return '+'; }
+"*"					    { ECHO; return '*'; }
+"/"					    { ECHO; return '/'; }
+"%"					    { ECHO; return '%'; }
+"<"					    { ECHO; return '<'; }
+">"					    { ECHO; return '>'; }
+"^"					    { ECHO; return '^'; }
+"|"					    { ECHO; return '|'; }
+"?"					    { ECHO; return '?'; }
+[ ]+                    { ECHO;}
+{WS}				    { fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
+.					    { /* discard bad characters */ }
 
 %%
 
@@ -239,18 +229,18 @@ void yyerror(const char *s)
 void indentThat(){
      int i=0;
      for(;i<indent;i++){
-     	     printf(SPACE);
+     	     printf(C_SPACE);
 	     }
 }
 void deleteIndent(){
 indent -= _REGULARINDENT;
-BEGIN DEBUTLIGNE;
+BEGIN NEWLINE;
 }
 void addIndent(){
 indent += _REGULARINDENT;
-BEGIN DEBUTLIGNE;
+BEGIN NEWLINE;
 }
 void beginLigne()
 {
-BEGIN DEBUTLIGNE;
+BEGIN NEWLINE;
 }

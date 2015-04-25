@@ -547,7 +547,7 @@
 
    newlineforward: {
        addIndent();
-       printf(NEWLINE);
+       printf(C_NEWLINE);
        indentLocked+=1;
 
    };
@@ -565,7 +565,7 @@ newlinebackward:{
   indentThat();
   printf("}");
 
-  printf(NEWLINE);
+  printf(C_NEWLINE);
 
 
 };
@@ -575,7 +575,7 @@ maybenewlineforward:
     indentThat();
     addIndent();
     printf("{");
-    printf(NEWLINE);
+    printf(C_NEWLINE);
     
     
 
@@ -587,7 +587,7 @@ else{
     indentThat();
     addIndent();
     printf("{");
-    printf(NEWLINE);
+    printf(C_NEWLINE);
     beginLigne();
 }
 
