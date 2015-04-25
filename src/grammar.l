@@ -48,8 +48,8 @@ void indentThat();
 
 %%
 
-"/*"                                    { comment(); }
-"//".*                                  { /* consume //-comment */ }
+"/*"                    { comment(); }
+"//".*                  { /* consume //-comment */ }
 
 "auto"					{ ECHO; return(AUTO); }
 "break"					{ ECHO; return(BREAK); }
@@ -65,10 +65,10 @@ void indentThat();
 "extern"				{ ECHO; return(EXTERN); }
 "float"					{ ECHO; return(FLOAT); }
 "for"					{ 
-					ECHO;
-					BEGIN FOR_S;
-					return(FOR); 
-					}
+                            ECHO;
+                            BEGIN FOR_S;
+                            return(FOR); 
+                        }
 "goto"					{ ECHO; return(GOTO); }
 "if"					{ ECHO; return(IF); }
 "inline"				{ ECHO; return(INLINE); }
@@ -239,7 +239,7 @@ void yyerror(const char *s)
 void indentThat(){
      int i=0;
      for(;i<indent;i++){
-     	     printf(" ");
+     	     printf(SPACE);
 	     }
 }
 void deleteIndent(){

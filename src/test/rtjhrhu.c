@@ -7,6 +7,7 @@ int main(int argc,char **argv){int variable; { {char test;if (a==b) {yolo();}} f
   switch(1){case 1: break; case 2: break;}
   switch(1)case 1: break;
   }
-
+  if (a == 1) return; if (b == 1) return; 
+  
 }
 

@@ -1,0 +1,45 @@
+@font-face {
+	font-family: 'DroidSansMono';
+	src: url('..fonts/DroidSansMono.ttf') format('truetype');
+}
+
+body {
+	background-color: #181818;
+	color: #D4D6D7;
+}
+
+.code {
+	font-family: DroidSansMono;
+}
+
+.code integer{
+	color : #DC9656;
+}
+
+.code keyword{
+	color : #BA8BAF;
+}
+
+.code type{ 
+	color : #BA8BAF;
+}
+
+.code identifier{
+	color : #BA8BAF;
+}
+
+.code string{
+	color : #A1B56C;
+}
+
+.code function{
+	color : #7CAFC2;
+}
+
+.code comment{
+	color : #585858;
+}
+
+.code directive{
+	color : #BA8BAF;
+}

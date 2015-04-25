@@ -1,12 +1,11 @@
 *~
 *.o
 *.a
-build/
 bin/*
-src/grammar.tab.c
-src/grammar.tab.h
-src/fichier.html
-src/lex.yy.c
+src/*.tab.c
+src/*.tab.h
+src/index.html
+src/*.yy.c
 src/*.output
 #*
 *#
