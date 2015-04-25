@@ -38,6 +38,7 @@
 
    %token	ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
 
+
    %start translation_unit
    %%
 
@@ -60,7 +61,7 @@
    ;
 
    string
-   : STRING_LITERAL
+   : string_literal
    | FUNC_NAME
    ;
 
@@ -250,18 +251,18 @@
    ;
 
    type_specifier
-   : VOID
-   | CHAR
-   | SHORT
-   | INT
-   | LONG
-   | FLOAT
-   | DOUBLE
-   | SIGNED
-   | UNSIGNED
-   | BOOL
-   | COMPLEX
-   | IMAGINARY	  	/* non-mandated extension */
+   : VOID       /*{ printf("<type>%s</type>", $1); }*/
+   | CHAR       /*{ printf("<type>%s</type>", $1); }*/
+   | SHORT      /*{ printf("<type>%s</type>", $1); }*/
+   | INT        /*{ printf("<type>%s</type>", $1); }*/
+   | LONG       /*{ printf("<type>%s</type>", $1); }*/
+   | FLOAT      /*{ printf("<type>%s</type>", $1); }*/
+   | DOUBLE     /*{ printf("<type>%s</type>", $1); }*/
+   | SIGNED     /*{ printf("<type>%s</type>", $1); }*/
+   | UNSIGNED   /*{ printf("<type>%s</type>", $1); }*/
+   | BOOL       /*{ printf("<type>%s</type>", $1); }*/
+   | COMPLEX    /*{ printf("<type>%s</type>", $1); }*/
+   | IMAGINARY  /*{ printf("<type>%s</type>", $1); }*/
    | atomic_type_specifier
    | struct_or_union_specifier
    | enum_specifier
@@ -353,7 +354,7 @@
    ;
 //direct_declarator_aux:lockFunction direct_declarator unlockFunction;
    direct_declarator
-   : identifier
+   : IDENTIFIER { printf("<function>%s</function>", $1); }
    | '(' declarator ')'
    | direct_declarator '[' ']'
    | direct_declarator '[' '*' ']'
@@ -571,21 +572,9 @@ newlinebackward
 {
   deleteIndent();
   indentThat();
-  printf("}");
+  close_braces();
   indentLvl-=1;
   printf(C_NEWLINE);
-};
-
-identifier: IDENTIFIER{ 
-  if (identifierLock==false){
-    printf("<type id=\"%d\" onclick=\"coloration(%d,%d)\">",uniqueId,indentLvl,uniqueId,indentLvl) ; 
-    uniqueId+=1;
-    printf("%s</type>",$1);
-  }
-  else
-    {
-      printf("%s" ,$1);
-    }
 };
 
 maybenewlineforward:
@@ -593,9 +582,8 @@ maybenewlineforward:
   if(indentLocked == 0 ){
     indentThat();
     addIndent();
-    printf("{");
-    printf(C_NEWLINE);
-    
+    open_braces();
+    printf(C_NEWLINE);    
     indentLvl+=1;
 
 }
@@ -605,16 +593,41 @@ else{
     deleteIndent();
     indentThat();
     addIndent();
-    printf("{");
+    open_braces();
     printf(C_NEWLINE);
     beginLigne();
 }
-
-
-
 };
 
+identifier
+: IDENTIFIER { 
+  if (identifierLock==false){
+    printf("<type id=\"%d\" onclick=\"coloration(%d,%d)\">%s</type>",uniqueId,indentLvl,uniqueId,$1); 
+    uniqueId+=1;
+  }
+  else
+    {
+      printf("%s" ,$1);
+    }
+};
+
+string_literal
+: STRING_LITERAL { printf ("<string>%s</string>", $1); free($1); }
+;
+
+/*keyword
+: WHILE { printf("<keyword>%s</keyword>", $1); }
+; */
+
 %%
+
+open_braces() {
+  printf("<braces>{</braces>\n<item>\n<block>\n");
+}
+
+close_braces() {
+  printf("</block>\n</item>\n}");
+}
 
 void addnames(char *name){
  namesdef[currentName]=name;

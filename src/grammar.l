@@ -87,9 +87,15 @@ void indentThat();
 "typedef"				{ ECHO; return(TYPEDEF); }
 "union"					{ ECHO; return(UNION); }
 "unsigned"				{ ECHO; return(UNSIGNED); }
-"void"					{ ECHO; return(VOID); }
+"void"					{ 
+                            ECHO; //yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+                            return(VOID); 
+                        }
 "volatile"				{ ECHO; return(VOLATILE); }
-"while"					{ ECHO; return(WHILE); }
+"while"					{ 
+                          ECHO; //yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+                          return(WHILE); 
+                        }
 "_Alignas"              { ECHO; return ALIGNAS; }
 "_Alignof"              { ECHO; return ALIGNOF; }
 "_Atomic"               { ECHO; return ATOMIC; }
@@ -113,7 +119,10 @@ void indentThat();
 {HP}{H}+{P}{FS}?		            { ECHO; return F_CONSTANT; }
 {HP}{H}*"."{H}+{P}{FS}?			    { ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			        { ECHO; return F_CONSTANT; }
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ return STRING_LITERAL; }
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ 
+                                      yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+                                      return STRING_LITERAL; 
+                                    }
 
 
 <NEWLINE>{WS}*("}"|"{") {
@@ -218,7 +227,7 @@ static int check_type(void)
         ECHO;
         return ENUMERATION_CONSTANT;
     default:                          /* includes undefined */
-        yylval.s = strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+        yylval.s = yytext;//strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
         return IDENTIFIER;
     }
 }
