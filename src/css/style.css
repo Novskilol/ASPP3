@@ -54,3 +54,9 @@ identifier.declaration{
 .code braces {
 	cursor: pointer;
 }
+
+.doc {
+	margin: 40px;
+	font-family: DroidSansMono;
+	background-color: #282828;
+}

@@ -11,4 +11,10 @@ int main(int argc,char **argv){int variable; { {char test;if (a==b) {yolo();}} f
   }
   if (a == 1) return; if (b == 1) return; 
   
+  struct Yolo{
+  	int a;
+  	int b;
+  };
+
+  int y = malloc(sizeof(*toto));
 }

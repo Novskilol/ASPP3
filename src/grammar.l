@@ -22,35 +22,44 @@ ES  (\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
 WS  [ \t\v\n\f]
 
 %{
-#include <stdio.h>
+    
 #include "grammar.tab.h"
-#include <string.h>
 #include "commun.h"
 #include "foo.h"
+
+extern int sym_type(const char *);  /* returns type from symbol table */
 extern void yyerror(const char *);  /* prints grammar violation message */
 extern int yylineno;
 
-extern int sym_type(const char *);  /* returns type from symbol table */
 #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
-#define _REGULARINDENT 4
 
 static void comment(void);
 static int check_type(void);
-int indent;
-void indentThat();
-
+void begin_block_comment();
+void end_block_comment();
 
 %}
 
-%option yylineno
+%option yylineno nounput
+
 %x NEWLINE
 %s FOR_S
+%x COMMENT COMMENT_ARGS
 
 %%
 
-"#.*"                   { /* consume directive */ }
-"/*"                    { comment(); }
+"/*"                        { comment(); }
+"/**"                       { BEGIN COMMENT; begin_block_comment(); }
+<COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; end_block_comment(); }
+<COMMENT>"\return"          { ECHO;BEGIN COMMENT_ARGS; }
+<COMMENT>"\param"           { BEGIN COMMENT_ARGS; }
+<COMMENT>"\brief"           { BEGIN COMMENT_ARGS; }
+<COMMENT_ARGS>.             { ECHO; printf(NEWLINE_C); }
+<COMMENT_ARGS>\n            { BEGIN COMMENT; }
+<COMMENT>.|\n               ;
+
 "//".*                  { /* consume //-comment */ }
+".#*"                   { /* consume directive */ }
 
 "auto"					{ ECHO; return(AUTO); }
 "break"					{ yylval.s = yytext; return(BREAK); }
@@ -182,11 +191,7 @@ void indentThat();
 .					    { /* discard bad characters */ }
 
 %%
-
-int yywrap(void)        /* called at end of input */
-{
-    return 1;           /* terminate now */
-}
+int yywrap(void) { return 1; }
 
 static void comment(void)
 {
@@ -229,21 +234,24 @@ void yyerror(const char *s)
 	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
 }
 
-void indentThat(){
-     int i=0;
-     for(;i<indent;i++){
-     	     printf(SPACE_C);
-	     }
-}
 void deleteIndent(){
-indent -= _REGULARINDENT;
-BEGIN NEWLINE;
+    indent -= REGULAR_INDENT;
+    BEGIN NEWLINE;
 }
 void addIndent(){
-indent += _REGULARINDENT;
-BEGIN NEWLINE;
+    indent += REGULAR_INDENT;
+    BEGIN NEWLINE;
 }
-void beginLigne()
+void beginLine()
 {
-BEGIN NEWLINE;
+    BEGIN NEWLINE;
 }
+
+void begin_block_comment() {
+    printf("<div class=\"doc\">%s", NEWLINE_C);
+}
+
+void end_block_comment() {
+    printf("%s</div>", NEWLINE_C);
+}
+
