@@ -3,10 +3,9 @@
 #include <assert.h>
 #include <stdbool.h>
 
-typedef struct symboleList * SymboleList;
-struct symboleList{
+typedef struct SymboleList_t {
   struct list
-};
+}* SymboleList;
 
 struct stack_cell{
   struct stack_cell *next;

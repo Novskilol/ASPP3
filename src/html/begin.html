@@ -15,11 +15,11 @@
 			}
 		}
 
-		// function removeHighlight() {
-		// 	$(".code identifier").each(function removeHighlight() {
-		// 		$(this).css("background", "none");
-		// 	});
-		// }
+		function removeHighlight() {
+			$(".code identifier").each(function removeHighlight() {
+				$(this).css("background", "none");
+			});
+		}
 
 		$(function expandCollapse(){
 			$('.code').find('braces').click(function toggleBlock(){
@@ -27,18 +27,15 @@
 			});
 		});
 
-		$(document).ready(function onHover(){
-			$("identifier").hover(function(){
-
-			// highlight identifier with the same class where the class of an identifier can be his name + an Id
-			highlight($(this).attr('class'));
-		},
-			function removeHighlight(){ 
-			// j'arrive pas à faire un appel à la fonction définie plus haut... surement un bug dans mon cerveau 
-			$(".code identifier").each(function removeHighlight() {
-				$(this).css("background", "none");
-			});
-		});
+		// highlight identifier with the same class where the class of an identifier can be his name + an Id
+		$(document).ready(function highlightIdentifiers(){
+			$("identifier").hover(
+				function (){
+					highlight($(this).attr('class'));
+				},
+				function (){ 
+					removeHighlight();
+				});
 		});
 	</script>
 
@@ -68,13 +65,7 @@
 		});
 	</script> -->
 
-	<script>
-
-	</script>
-	
-
 </head>
 
 <body>
-
 	<div class="code">
