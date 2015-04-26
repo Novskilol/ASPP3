@@ -5,32 +5,76 @@
 	<meta charset="utf-8" lang="us"/>
 	<link rel="stylesheet" type="text/css" href="css/style.css"/>
 	<script src="js/jquery-1.11.2.min.js"></script>
-<!-- 	<script src="js/function.js"></script>
- -->
-
-
-	<!-- <script src="js/defun.js"></script>
 	<title>Doc C</title>
+
 	<script>
-		function coloration(indentLvl,id){
-			document.getElementById(id).style.color="red";
-
-
+		function highlight(name){
+			var list = document.getElementsByClassName(name);
+			for (var i = 0; i < list.length; i++) {
+				list[i].style.background = "#fff";
+			}
 		}
-	</script> -->
 
-	<script>
-		$(function(){
-			$('#code_tree').find('BRACES').click(function(e){
+		// function removeHighlight() {
+		// 	$(".code identifier").each(function removeHighlight() {
+		// 		$(this).css("background", "none");
+		// 	});
+		// }
+
+		$(function expandCollapse(){
+			$('.code').find('braces').click(function toggleBlock(){
 				$(this).parent().children('item').toggle();
 			});
 		});
+
+		$(document).ready(function onHover(){
+			$("identifier").hover(function(){
+
+			// highlight identifier with the same class where the class of an identifier can be his name + an Id
+			highlight($(this).attr('class'));
+		},
+			function removeHighlight(){ 
+			// j'arrive pas à faire un appel à la fonction définie plus haut... surement un bug dans mon cerveau 
+			$(".code identifier").each(function removeHighlight() {
+				$(this).css("background", "none");
+			});
+		});
+		});
+	</script>
+
+	<!-- <script>
+		$(".declaration").each(function addIdToDeclaration(i, v) {
+			$(this).parent('declaration').data('identifier', $(this).text());
+		});
+	</script> -->
+
+	<!-- <script>
+		function simple_tooltip(target_items, name){
+			$(target_items).each(function(i){
+				$("body").append("<div class='"+name+"' id='"+name+i+"'><p>"+$(this).attr('title')+"</p></div>");
+				var my_tooltip = $("#"+name+i);
+
+				$(this).removeAttr("title").mouseover(function(){
+					my_tooltip.css({opacity:0.8, display:"none"}).fadeIn(0);
+				}).mousemove(function(kmouse){
+					my_tooltip.css({left:kmouse.pageX+15, top:kmouse.pageY+15});
+				}).mouseout(function(){
+					my_tooltip.fadeOut(0);
+				});
+			});
+		}
+		$(document).ready(function(){
+			simple_tooltip("identifier","tooltip");
+		});
+	</script> -->
+
+	<script>
+
 	</script>
 	
-
 
 </head>
 
 <body>
-	<item id="code_tree">
-		<div class="code">
+
+	<div class="code">

@@ -353,9 +353,10 @@
    : pointer direct_declarator
    | direct_declarator
    ;
+
 //direct_declarator_aux:lockFunction direct_declarator unlockFunction;
    direct_declarator
-   : IDENTIFIER { printf("<function>%s</function>", $1); }
+   : IDENTIFIER { printf("<identifier id=\"%d\" class=\"declaration\">%s</identifier>", uniqueId++, $1); }
    | '(' declarator ')'
    | direct_declarator '[' ']'
    | direct_declarator '[' '*' ']'
@@ -553,7 +554,7 @@
    newlineforward
    : {
        addIndent();
-       printf(C_NEWLINE);
+       printf(NEWLINE_C);
        indentLocked+=1;
        indentLvl+=1;
    }
@@ -575,7 +576,7 @@ newlinebackward
   indentThat();
   close_braces();
   indentLvl-=1;
-  printf(C_NEWLINE);
+  printf(NEWLINE_C);
 };
 
 maybenewlineforward:
@@ -584,7 +585,7 @@ maybenewlineforward:
     indentThat();
     addIndent();
     open_braces();
-    printf(C_NEWLINE);    
+    printf(NEWLINE_C);    
     indentLvl+=1;
 
 }
@@ -595,22 +596,14 @@ else{
     indentThat();
     addIndent();
     open_braces();
-    printf(C_NEWLINE);
+    printf(NEWLINE_C);
     beginLigne();
 }
 };
 
 identifier
-: IDENTIFIER { 
-  if (identifierLock==false){
-    printf("<identifier id=\"%d\" onclick=\"coloration(%d,%d)\">%s</identifier>",uniqueId,indentLvl,uniqueId,$1); 
-    uniqueId+=1;
-  }
-  else
-    {
-      printf("%s" ,$1);
-    }
-};
+: IDENTIFIER { printf("<identifier id=\"%d\">%s</identifier>", uniqueId++, $1); }
+;
 
 string_literal
 : STRING_LITERAL { printf ("<string>%s</string>", $1); }

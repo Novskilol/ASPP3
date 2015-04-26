@@ -12,29 +12,36 @@ body {
 	font-family: DroidSansMono;
 }
 
-.code integer{
-	color : #DC9656;
-}
-
 .code keyword{
 	color : #DC9656;
 }
 
 .code type{ 
-	color : #006E2F;
+	color : #F0C3F3;
 }
 
 .code identifier{
 	color : #BA8BAF;
 }
 
+identifier.declaration{
+	color : #7CAFC2;
+}
+
+.tooltip { 
+	display: none;
+	position: absolute;
+	font-family: DroidSansMono;
+	font-size: 1em;
+	padding: 10px;
+	color: #D4D6D7;
+	background-color: #282828
+}
+
 .code string{
 	color : #A1B56C;
 }
 
-.code function{
-	color : #7CAFC2;
-}
 
 .code comment{
 	color : #585858;

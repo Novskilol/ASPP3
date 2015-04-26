@@ -1,8 +1,8 @@
 #ifndef COMMUN_H
 #define COMMUN_H
 
-#define C_NEWLINE "\n<br>"
-#define C_SPACE "&nbsp"
+#define NEWLINE_C "\n<br>"
+#define SPACE_C "&nbsp"
 
 extern void addIndent();
 extern void beginLigne();

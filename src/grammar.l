@@ -113,10 +113,7 @@ void indentThat();
 {HP}{H}+{P}{FS}?		            { ECHO; return F_CONSTANT; }
 {HP}{H}*"."{H}+{P}{FS}?			    { ECHO; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			        { ECHO; return F_CONSTANT; }
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ 
-                                      yylval.s = yytext; //strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
-                                      return STRING_LITERAL; 
-                                    }
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ yylval.s = yytext; return STRING_LITERAL; }
 
 
 <NEWLINE>{WS}*("}"|"{") {
@@ -153,7 +150,7 @@ void indentThat();
 <FOR_S>";"              { ECHO; return ';'; }
 ";"					    { 
                             ECHO; 
-                            printf(C_NEWLINE);
+                            printf(NEWLINE_C);
                             BEGIN NEWLINE;
                             return ';';
                         }
@@ -235,7 +232,7 @@ void yyerror(const char *s)
 void indentThat(){
      int i=0;
      for(;i<indent;i++){
-     	     printf(C_SPACE);
+     	     printf(SPACE_C);
 	     }
 }
 void deleteIndent(){
