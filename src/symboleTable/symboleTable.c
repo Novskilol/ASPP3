@@ -4,8 +4,6 @@
 
 #include "symboleTable.h"
 
-
-
 static int compareObject(void * a, void * b)
 {
   TableObject to1 = (TableObject)a;
@@ -13,11 +11,19 @@ static int compareObject(void * a, void * b)
   return strcmp(to1->name, to2->name) == 0;
 }
 
-static void destroyObject(void * this)
+TableObject createTableObject(char * name, char * class)
+{
+  TableObject res = malloc(sizeof(*res));
+  res->name = name;
+  res->class = class;
+  return res;
+}
+
+void destroyTableObject(void * this)
 {
   TableObject t=(TableObject)this;
-  free(t->name);
-  free(t->class);
+  //free(t->name);
+  //free(t->class);
   free(t);
 }
 
@@ -45,10 +51,10 @@ void addDeclarationTable(SymboleTable this, TableObject var, int indent)
     destroySymboleList(s);
   }
   while(getSizeSymboleStack(this) < indent) {
-    pushSymboleStack(this, createSymboleList(compareObject, destroyObject));
+    pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
   }
   if (getSizeSymboleStack(this) == 0 && indent == 0)
-    pushSymboleStack(this, createSymboleList(compareObject, destroyObject));
+    pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
 
   SymboleList list = topSymboleStack(this);
   addSymboleList(list, var);
