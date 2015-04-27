@@ -1,11 +1,11 @@
 /* test_stack.c */
 
-#include "stack.h"
+#include "symboleStack.h"
 #include "stdio.h"
 
 int main (int argc, char* argv[]) 
 {
-  Stack p=createSymboleStack();
+  SymboleStack p=createSymboleStack();
   int a=1, b=2, c=3;
   printf("push %d\n", a);
   pushSymboleStack(p, &a);

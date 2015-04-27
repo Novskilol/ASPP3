@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "stack.h"
+#include "symboleStack.h"
 
 struct cell;                                                    
 typedef struct cell * Cell;                                     
@@ -14,52 +14,61 @@ struct cell
 
 struct stack                                         
 {                                                         
-	Cell top;                                             
+	Cell top;    
+	int size;                                         
 };                                                        
 
 
-Stack createSymboleStack()                                      
+SymboleStack createSymboleStack()                                      
 {                                                         
-	Stack this = malloc(sizeof(*this)); 
-	this->top = NULL;                                          
+	SymboleStack this = malloc(sizeof(*this)); 
+	this->top = NULL;      
+	this->size = 0;                                    
 	return this;                                               
 }                                                         
 
-void destroySymboleStack(Stack this)                               
+void destroySymboleStack(SymboleStack this)                               
 {                                                         
-	assert(this && "invalid Stack in destroySymboleStack");            
-	assert(!this->top && "invalid Stack top in destroySymboleStack");  
+	assert(this && "invalid SymboleStack in destroySymboleStack");            
+	assert(!this->top && "invalid SymboleStack top in destroySymboleStack");  
 	free(this);                                              
 }                                                         
 
-void pushSymboleStack(Stack this, void *object)                    
+void pushSymboleStack(SymboleStack this, void *object)                    
 {        
 	Cell cell = malloc(sizeof(*cell));                    
 	cell->object = object;                                
 	cell->prev = this->top;                                 
-	this->top = cell;                                       
+	this->top = cell;          
+	++(this->size);                             
 }                                                         
 
-int stack_empty(Stack this)                                  
+int stack_empty(SymboleStack this)                                  
 {                                                         
 	assert(this);                                            
 	return !this->top;                                      
 }                                                         
 
-void * topSymboleStack(Stack this)                                 
+void * topSymboleStack(SymboleStack this)                                 
 {                                                         
-	assert(this && "invalid Stack in topSymboleStack");                
-	assert(this->top && "invalid Stack top in topSymboleStack");       
+	assert(this && "invalid SymboleStack in topSymboleStack");                
+	assert(this->top && "invalid SymboleStack top in topSymboleStack");       
 	return this->top->object;
 }
 
-void * popSymboleStack(Stack this)
+void * popSymboleStack(SymboleStack this)
 {
-	assert(this && "invalid Stack in popSymboleStack");
-	assert(this->top && "invalid Stack top in popSymboleStack");
+	assert(this && "invalid SymboleStack in popSymboleStack");
+	assert(this->top && "invalid SymboleStack top in popSymboleStack");
 	Cell prev = this->top->prev;
 	void * old_object = this->top->object;
 	free(this->top);
 	this->top = prev;
+	--(this->size);
 	return old_object;
+}
+
+int getSizeSymboleStack(SymboleStack this) 
+{
+	return this->size;
 }

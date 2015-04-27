@@ -3,17 +3,15 @@
 #include <stdbool.h>
 
 #include "symboleTable.h"
-#include "../symboleStack/symboleStack.h"
-#include "../symboleList/symboleList.h"
 
-typedef char * table_object;
 
-static int compareObject(table_object a, table_object b)
+
+static int compareObject(tableObject a, tableObject b)
 {
   return strcmp(a, b) == 0;
 }
 
-static void destroyObject(table_object this)
+static void destroyObject(tableObject this)
 {
   free(this);
 }
@@ -27,5 +25,19 @@ SymboleTable createSymboleTable()
 void destroySymboleTable(SymboleStack this)
 {
 	destroySymboleStack(this);
+}
+
+void addSymboleTable(SymboleTable this, tableObject var, int indent)
+{
+  while(getSizeSymboleStack(this) > indent)
+  {
+    SymboleList s = popSymboleStack(this);
+    destroySymboleList(s);
+  }
+  while(getSizeSymboleStack(this) < indent) {
+    pushSymboleStack(this, createSymboleList(compareObject, destroyObject));
+  }
+  SymboleList list = topSymboleStack(this);
+  addSymboleList(list, var);
 }
 

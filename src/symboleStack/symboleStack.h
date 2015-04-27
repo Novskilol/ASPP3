@@ -3,19 +3,21 @@
 
 struct stack;
                                           
-typedef struct stack * Stack;
+typedef struct stack * SymboleStack;
                                           
-Stack createSymboleStack(void);                 
+SymboleStack createSymboleStack(void);                 
                                           
-void destroySymboleStack(Stack this);           
+void destroySymboleStack(SymboleStack this);           
                                           
-void pushSymboleStack(Stack this, void *object);
+void pushSymboleStack(SymboleStack this, void *object);
                                              
-int stack_empty(Stack this);                 
+int stack_empty(SymboleStack this);                 
 
-void * topSymboleStack(Stack this);
+void * topSymboleStack(SymboleStack this);
 
 /* pop stack and return top object */
-void * popSymboleStack(Stack this);
+void * popSymboleStack(SymboleStack this);
+
+int getSizeSymboleStack(SymboleStack this);
 
 #endif
