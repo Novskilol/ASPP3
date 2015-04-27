@@ -6,14 +6,19 @@
 
 
 
-static int compareObject(tableObject a, tableObject b)
+static int compareObject(void * a, void * b)
 {
-  return strcmp(a, b) == 0;
+  TableObject to1 = (TableObject)a;
+  TableObject to2 = (TableObject)b;
+  return strcmp(to1->name, to2->name) == 0;
 }
 
-static void destroyObject(tableObject this)
+static void destroyObject(void * this)
 {
-  // free(this);
+  TableObject t=(TableObject)this;
+  free(t->name);
+  free(t->class);
+  free(t);
 }
 
 SymboleTable createSymboleTable()
@@ -32,7 +37,7 @@ void destroySymboleTable(SymboleStack this)
   destroySymboleStack(this);
 }
 
-void addSymboleTable(SymboleTable this, tableObject var, int indent)
+void addDeclarationTable(SymboleTable this, TableObject var, int indent)
 {
   while(getSizeSymboleStack(this) > indent)
   {
@@ -49,3 +54,28 @@ void addSymboleTable(SymboleTable this, tableObject var, int indent)
   addSymboleList(list, var);
 }
 
+char * searchSymboleTable(SymboleTable this, char * name, int indent)
+{
+  assert(indent >= 0);
+  SymboleTable tmp = createSymboleTable();
+  
+  while(getSizeSymboleStack(this) > indent)
+    pushSymboleStack(tmp, popSymboleStack(this));
+
+  while(getSizeSymboleStack(this) < indent)
+    return NULL;
+
+  TableObject to = (TableObject)searchSymboleList(topSymboleStack(this), name);
+  while (to == NULL && !emptySymboleStack(this)) {
+    pushSymboleStack(tmp, popSymboleStack(this));
+    to = (TableObject)searchSymboleList(topSymboleStack(this), name);
+  }
+  if (emptySymboleStack(this))
+    return NULL;
+
+  while(!emptySymboleStack(tmp))
+    pushSymboleStack(this, popSymboleStack(tmp));
+  destroySymboleTable(tmp);
+
+  return to->class;
+}

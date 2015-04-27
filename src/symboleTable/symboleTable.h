@@ -9,14 +9,19 @@
 
 typedef SymboleStack SymboleTable;
 
-typedef void * tableObject;
+typedef struct {
+	char * name;
+	char * class;
+}* TableObject;
 
 SymboleTable createSymboleTable();
 
 void destroySymboleTable(SymboleTable this);
 
-void addSymbole(void * this, int indent);
+void addDeclarationTable(SymboleTable this, TableObject var, int indent);
 
 int getIdDeclaration(void * this);
+
+char * searchSymboleTable(SymboleTable this, char * name, int indent);
 
 #endif

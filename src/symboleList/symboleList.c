@@ -35,8 +35,8 @@ void* searchSymboleList(SymboleList this, void *value)
 
   for (;curseur!=NULL && !(this->compareCellValueFunction(curseur->value,value)) ;curseur=curseur->next);
 
-  
-  assert(curseur != NULL);
+  if (curseur == NULL)
+    return NULL;    
   return curseur->value;
 
 }
