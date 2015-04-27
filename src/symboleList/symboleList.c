@@ -1,6 +1,8 @@
-#include "symboleList.h"
 #include <stdlib.h>
 #include <assert.h>
+
+#include "symboleList.h"
+
 struct cell_symbole_list{
   struct cell_symbole_list *next;
   void *value;

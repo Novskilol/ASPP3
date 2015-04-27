@@ -3,9 +3,6 @@
 
 #include "../symboleStack/symboleStack.h"
 #include "../symboleList/symboleList.h"
-// typedef void * void *;
-// typedef void (*table_del_func(void *);
-// typedef void (*table_comp_func(void *, void *);
 
 typedef SymboleStack SymboleTable;
 
@@ -26,6 +23,6 @@ void addDeclarationTable(SymboleTable this, TableObject var, int indent);
 
 int getIdDeclaration(void * this);
 
-char * searchSymboleTable(SymboleTable this, char * name, int indent);
+char * searchSymboleTable(SymboleTable this, TableObject var, int indent);
 
 #endif

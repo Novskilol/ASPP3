@@ -1,5 +1,5 @@
-CC 		= gcc -g -Wall
-LIBS 	= -lfl -ly
+CC = gcc -g -Wall
+LIBS = -lfl -ly
 
 all: ruleSymboleTable grammar.tab.c lex.yy.c commun/commun.c 
 	$(CC) grammar.tab.c lex.yy.c commun/commun.c -o doc_html $(LIBS)

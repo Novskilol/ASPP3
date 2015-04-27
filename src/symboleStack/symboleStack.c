@@ -43,7 +43,7 @@ void pushSymboleStack(SymboleStack this, void *object)
 
 int emptySymboleStack(SymboleStack this)                                  
 {                                                         
-	assert(this);                                            
+	assert(this && "invalid SymboleStack in emptySymboleStack");                                            
 	return !this->top;                                      
 }                                                         
 
