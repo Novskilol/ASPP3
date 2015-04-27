@@ -9,7 +9,8 @@
   #include <unistd.h>
   
   #include "foo.h"
-  #include "commun.h"
+  #include "commun/commun.h"
+  
 
   extern int yylex();
 
