@@ -1,45 +1,49 @@
-#include "symboleQueue.h"
-
-struct cell_symbole_queue{
-  struct cell_symbole_queue *next;
+#include "symboleList.h"
+#include <stdlib.h>
+#include <assert.h>
+struct cell_symbole_list{
+  struct cell_symbole_list *next;
   void *value;
 };
-struct symboleQueue{
-  struct cell_symbole_queue *last;
+struct symboleList{
+  struct cell_symbole_list *last;
   DestroyFunction destroyCellValueFunction;
-  
+  CompareFunction compareCellValueFunction;
 
 };
-void destroySymboleQueue(SymboleQueue this)
+void destroySymboleList(SymboleList this)
 {
   int i;
-  struct cell_symbole_queue *curseur=this->last;
+  struct cell_symbole_list *curseur;
 
-  for ( i = 0; i < value ; ++i,)
+  for (curseur=this->last ; curseur != NULL ;curseur=curseur->next)
     {
-      struct cell_symbole_queue *toBeDeleted=curseur;
+      struct cell_symbole_list *toBeDeleted=curseur;
       curseur=curseur->next;
-      this->destroyFunction(curseur->value);
+      this->destroyCellValueFunction(curseur->value);
       free(curseur);
     }
 
   
 
 }
-void* getSymboleQueue(SymboleQueue this, int value)
+void* searchSymboleList(SymboleList this, void *value)
 {
-  int i;
-  struct cell_symbole_queue *curseur=this->last;
+  struct cell_symbole_list *curseur=this->last;
 
-  for ( i = 0; i < value ; ++i,curseur=curseur->next);
 
+
+  for (;curseur!=NULL && !(this->compareCellValueFunction(curseur->value,value)) ;curseur=curseur->next);
+
+  
+  assert(curseur != NULL);
   return curseur->value;
 
 }
 
-void addSymboleQueue(SymboleQueue this,void *value)
+void addSymboleList(SymboleList this,void *value)
 {
-  struct cell_symbole_queue *newLast = malloc(sizeof(*newLast));
+  struct cell_symbole_list *newLast = malloc(sizeof(*newLast));
   newLast->value=value;
   newLast->next=this->last;
   this->last=newLast;
@@ -47,16 +51,17 @@ void addSymboleQueue(SymboleQueue this,void *value)
 
 }
 
-int emptySymboleQueue(SymboleQueue this)
+int emptySymboleList(SymboleList this)
 {
   return  this->last == NULL;
 
 }
 
-SymboleQueue createSymboleQueue(DestroyFunction f){
-  SymboleQueue s = malloc(sizeof(*s));
+SymboleList createSymboleList(CompareFunction c,DestroyFunction f){
+  SymboleList s = malloc(sizeof(*s));
   s->last = NULL;
-  s->destroyFunction = f;
+  s->destroyCellValueFunction = f;
+  s->compareCellValueFunction = c;
   return s;
 
 }

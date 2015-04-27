@@ -1,17 +1,19 @@
-#ifndef SYMBOLE_QUEUE_H
-#define SYMBOLE_QUEUE_H
+#ifndef SYMBOLE_LIST_H
+#define SYMBOLE_LIST_H
 
-typedef struct symboleQueue *SymboleQueue;
+typedef struct symboleList *SymboleList;
 typedef void (*DestroyFunction) (void *);
+typedef int (*CompareFunction) (void *,void *);
 
-SymboleQueue createSymboleQueue();
+SymboleList createSymboleList(CompareFunction c,DestroyFunction f);
 
-void destroySymboleQueue(SymboleQueue this);
+void destroySymboleList(SymboleList this);
 
-int emptySymboleQueue(SymboleQueue this);
+int emptySymboleList(SymboleList this);
 
-void addSymboleQueue(SymboleQueue this,void* value,int sizeofValue);
+void addSymboleList(SymboleList this,void* value);
 
-void* getSymboleQueue(SymboleQueue this,int value);
+void* searchSymboleList(SymboleList this,void* value);
+
 
 #endif
