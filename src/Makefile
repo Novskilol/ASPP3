@@ -17,4 +17,4 @@ ruleSymboleTable:
 	make -C symboleTable/
 
 clean:
-	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c index.html ../bin/doc_html symboleTable/testSymboleTable symboleStack/testSymboleStack symboleList/testSymboleList
+	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c index.html ../bin/doc_html symboleTable/testSymboleTable symboleStack/testSymboleStack symboleList/testSymboleList *.o 

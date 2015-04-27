@@ -37,7 +37,6 @@ int main()
 {
 	SymboleTable table = createSymboleTable();
 
-	// *WARNING* CODE DEGUEULASSE *WARNING*
 	TableObject tab [5];
 	TableObject to0 = createElement("y", "y0");
 	TableObject to1 = createElement("x", "x1");
@@ -76,7 +75,6 @@ int main()
 
 	TableObject to5 = createElement("w", "w3");
 	addDeclarationTable(table, to5, 3);
-
 
 	testSearch(table, "w", 0);
 	testSearch(table, "w", 1);

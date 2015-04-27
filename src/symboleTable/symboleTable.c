@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "symboleTable.h"
 
@@ -20,18 +21,23 @@ static char * copy(char * this)
 
 TableObject createTableObject(char * name, char * class)
 {
-  TableObject res = malloc(sizeof(*res));
-  res->name = name;
-  res->class = class;
-  return res;
+  TableObject 
+  to = malloc(sizeof(*
+    to));
+  
+  to->name = name;
+  
+  to->class = class;
+  return 
+  to;
 }
 
 void destroyTableObject(void * this)
 {
-  TableObject t=(TableObject)this;
-  free(t->name);
-  free(t->class);
-  free(t);
+  TableObject to = (TableObject)this;
+  free(to->name);
+  free(to->class);
+  free(to);
 }
 
 SymboleTable createSymboleTable()
@@ -50,7 +56,7 @@ void destroySymboleTable(SymboleStack this)
   destroySymboleStack(this);
 }
 
-void addDeclarationTable(SymboleTable this, TableObject var, int indent)
+void addDeclarationTable(SymboleTable this, TableObject to, int indent)
 {
   if (getSizeSymboleStack(this) == indent)
     pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
@@ -68,10 +74,10 @@ void addDeclarationTable(SymboleTable this, TableObject var, int indent)
   }
 
   SymboleList list = topSymboleStack(this);
-  addSymboleList(list, var);
+  addSymboleList(list, to);
 }
 
-char * searchSymboleTable(SymboleTable this, TableObject var, int indent)
+char * searchSymboleTable(SymboleTable this, TableObject to, int indent)
 {
   assert(indent >= 0 && "negative indent in searchSymboleTable");
 
@@ -84,10 +90,10 @@ char * searchSymboleTable(SymboleTable this, TableObject var, int indent)
   while (getSizeSymboleStack(this) - 1 > indent)
     pushSymboleStack(tmp, popSymboleStack(this));
 
-  TableObject to = NULL;
+  TableObject res = NULL;
 
-  while (to == NULL && !emptySymboleStack(this)) {
-    to = (TableObject)searchSymboleList(topSymboleStack(this), var);
+  while (res == NULL && !emptySymboleStack(this)) {
+    res = (TableObject)searchSymboleList(topSymboleStack(this), to);
     pushSymboleStack(tmp, popSymboleStack(this));
   }
   
@@ -95,5 +101,5 @@ char * searchSymboleTable(SymboleTable this, TableObject var, int indent)
     pushSymboleStack(this, popSymboleStack(tmp));
   destroySymboleTable(tmp);
   
-  return to == NULL ? NULL : copy(to->class);
+  return res == NULL ? NULL : copy(res->class);
 }
