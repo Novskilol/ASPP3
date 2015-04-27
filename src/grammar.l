@@ -25,7 +25,6 @@ WS  [ \t\v\n\f]
     
 #include "grammar.tab.h"
 #include "commun/commun.h"
-#include "foo.h"
 
 extern int sym_type(const char *);  /* returns type from symbol table */
 extern void yyerror(const char *);  /* prints grammar violation message */

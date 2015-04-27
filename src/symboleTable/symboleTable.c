@@ -4,13 +4,6 @@
 
 #include "symboleTable.h"
 
-static int compareObject(void * a, void * b)
-{
-  TableObject to1 = (TableObject)a;
-  TableObject to2 = (TableObject)b;
-  return strcmp(to1->name, to2->name) == 0;
-}
-
 static char * copy(char * this)
 {
   int size = strlen(this) + 1;
@@ -19,17 +12,24 @@ static char * copy(char * this)
   return res;
 }
 
+static int compareObject(void * a, void * b)
+{
+  TableObject to1 = (TableObject)a;
+  TableObject to2 = (TableObject)b;
+  return strcmp(to1->name, to2->name) == 0;
+}
+
 TableObject createTableObject(char * name, char * class)
 {
-  TableObject 
-  to = malloc(sizeof(*
-    to));
-  
-  to->name = name;
-  
-  to->class = class;
-  return 
-  to;
+  char * n = malloc(sizeof(*n) * strlen(name) + 1); 
+  strcpy(n, name);
+  char * c = malloc(sizeof(*c) * strlen(class) + 1); 
+  strcpy(c, class);
+
+  TableObject to = malloc(sizeof(*to));
+  to->name = n;  
+  to->class = c;
+  return to;
 }
 
 void destroyTableObject(void * this)
@@ -77,7 +77,7 @@ void addDeclarationTable(SymboleTable this, TableObject to, int indent)
   addSymboleList(list, to);
 }
 
-char * searchSymboleTable(SymboleTable this, TableObject to, int indent)
+char * searchSymboleTable(SymboleTable this, char * name, int indent)
 {
   assert(indent >= 0 && "negative indent in searchSymboleTable");
 
@@ -91,6 +91,7 @@ char * searchSymboleTable(SymboleTable this, TableObject to, int indent)
     pushSymboleStack(tmp, popSymboleStack(this));
 
   TableObject res = NULL;
+  TableObject to = createTableObject(name, "class");
 
   while (res == NULL && !emptySymboleStack(this)) {
     res = (TableObject)searchSymboleList(topSymboleStack(this), to);
@@ -101,5 +102,6 @@ char * searchSymboleTable(SymboleTable this, TableObject to, int indent)
     pushSymboleStack(this, popSymboleStack(tmp));
   destroySymboleTable(tmp);
   
+  destroyTableObject(to);
   return res == NULL ? NULL : copy(res->class);
 }

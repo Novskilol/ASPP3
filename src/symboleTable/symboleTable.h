@@ -19,10 +19,10 @@ SymboleTable createSymboleTable();
 
 void destroySymboleTable(SymboleTable this);
 
-void addDeclarationTable(SymboleTable this, TableObject var, int indent);
+void addDeclarationTable(SymboleTable this, TableObject to, int indent);
 
 int getIdDeclaration(void * this);
 
-char * searchSymboleTable(SymboleTable this, TableObject var, int indent);
+char * searchSymboleTable(SymboleTable this, char * name, int indent);
 
 #endif

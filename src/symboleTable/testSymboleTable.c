@@ -6,43 +6,26 @@
 
 static void testSearch(SymboleTable table, char * name, int indent)
 {
-	char * n = malloc(sizeof(*n) * strlen(name) + 1);
-	strcpy(n, name);
-	TableObject	test = createTableObject(n, NULL);
-
-	char * class = searchSymboleTable(table, test, indent);
+	char * class = searchSymboleTable(table, name, indent);
 
 	if (class != NULL) {
-		printf("var name %s got class %s with indent %d\n",
-			test->name, class, indent);	
+		printf("var name %s got class %s with indent %d\n", name, class, indent);	
 		free(class);
 	}
 	else 
-		printf("var name %s got no class with indent %d\n", 
-			test->name, indent);
-	
-	destroyTableObject(test);
+		printf("var name %s got no class with indent %d\n", name, indent);
 }
-
-TableObject createElement(char * name, char * class) {
-	char * n = malloc(sizeof(*n) * strlen(name) + 1); 
-	strcpy(n, name);
-	char * c = malloc(sizeof(*c) * strlen(class) + 1); 
-	strcpy(c, class);
-	return createTableObject(n ,c);
-}
-
 
 int main()
 {
 	SymboleTable table = createSymboleTable();
 
 	TableObject tab [5];
-	TableObject to0 = createElement("y", "y0");
-	TableObject to1 = createElement("x", "x1");
-	TableObject to2 = createElement("x", "x2");
-	TableObject to3 = createElement("y", "y3");
-	TableObject to4 = createElement("x", "x4");
+	TableObject to0 = createTableObject("y", "y0");
+	TableObject to1 = createTableObject("x", "x1");
+	TableObject to2 = createTableObject("x", "x2");
+	TableObject to3 = createTableObject("y", "y3");
+	TableObject to4 = createTableObject("x", "x4");
 
 	tab[0] = to0;
 	tab[1] = to1;
@@ -73,7 +56,7 @@ int main()
 	testSearch(table, "y", 4);
 	testSearch(table, "y", 5);
 
-	TableObject to5 = createElement("w", "w3");
+	TableObject to5 = createTableObject("w", "w3");
 	addDeclarationTable(table, to5, 3);
 
 	testSearch(table, "w", 0);

@@ -8,26 +8,24 @@
   #include <stdbool.h>
   #include <unistd.h>
   
-  #include "foo.h"
   #include "commun/commun.h"
   
-
   extern int yylex();
 
-  void addnames(char *name); // not used
+  //void addnames(char *name); 
   void yyerror(char*s);
   void open_braces();
   void close_braces();
+  void add_new_symbole(char *);
+  void search_symbole(char *);
+  //char * create_class_string(char *);
 
-
-  int currentName = 0; // not used
-  bool identifierLock = false; // not used
-  int indentToBeRemoved = 0; // not used
+  //SymboleTable symbol_table;
   int indentLocked = 0;
   int indentLvl = 0;
   int uniqueId = 0;
 
-%}
+  %}
 
   %union{
    char *s;
@@ -55,7 +53,7 @@
  %%
 
  primary_expression
- : identifier_bis
+ : identifier
  | constant
  | string
  | '(' expression ')'
@@ -69,7 +67,7 @@
  ;
 
  enumeration_constant		/* before it has been defined as such */
- : identifier_bis
+ : identifier
  ;
 
  string
@@ -96,8 +94,8 @@
  | postfix_expression '[' expression ']'
  | postfix_expression '(' ')'
  | postfix_expression '(' argument_expression_list ')'
- | postfix_expression '.' identifier_bis
- | postfix_expression PTR_OP identifier_bis
+ | postfix_expression '.' identifier
+ | postfix_expression PTR_OP identifier
  | postfix_expression INC_OP
  | postfix_expression DEC_OP
  | '(' type_name ')' maybeNewlineForward '{' initializer_list newlineBackward '}'
@@ -283,8 +281,8 @@
 
  struct_or_union_specifier
  : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
- | struct_or_union identifier_bis maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
- | struct_or_union identifier_bis
+ | struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
+ | struct_or_union identifier
  ;
 
  struct_or_union
@@ -324,9 +322,9 @@
  enum_specifier
  : ENUM maybeNewlineForward '{' enumerator_list newlineBackward '}'
  | ENUM maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
- | ENUM identifier_bis maybeNewlineForward '{' enumerator_list newlineBackward '}'
- | ENUM identifier_bis maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
- | ENUM identifier_bis
+ | ENUM identifier maybeNewlineForward '{' enumerator_list newlineBackward '}'
+ | ENUM identifier maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
+ | ENUM identifier
  ;
 
  enumerator_list
@@ -367,7 +365,7 @@
 
  //direct_declarator_aux:lockFunction direct_declarator unlockFunction;
  direct_declarator
- : IDENTIFIER { printf("<identifier id=\"%d\" class=\"declaration\">%s</identifier>", uniqueId++, $1); }
+ : IDENTIFIER { add_new_symbole($1); }
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' '*' ']'
@@ -414,8 +412,8 @@
  ;
 
  identifier_list
- : identifier_bis
- | identifier_list ',' identifier_bis
+ : identifier
+ | identifier_list ',' identifier
  ;
 
  type_name
@@ -477,7 +475,7 @@
 
  designator
  : '[' constant_expression ']'
- | '.' identifier_bis
+ | '.' identifier
  ;
 
  static_assert_declaration
@@ -494,7 +492,7 @@
  ;
 
  labeled_statement
- : identifier_bis ':' statement
+ : identifier ':' statement
  | case constant_expression ':' newlineForward statement newlineBackwardHidden
  | default ':' statement
  ;
@@ -535,7 +533,7 @@
  ;
 
  jump_statement
- : goto identifier_bis ';'
+ : goto identifier ';'
  | continue ';'
  | break ';'
  | return ';'
@@ -611,8 +609,8 @@ maybeNewlineForward
   }
 };
 
-identifier_bis
-: IDENTIFIER { printf("<identifier id=\"%d\">%s</identifier>", uniqueId++, $1); }
+identifier
+: IDENTIFIER { search_symbole($1); }
 ;
 
 string_literal
@@ -677,12 +675,42 @@ void close_braces() {
   printf("</block>\n</item>\n}</block>");
 }
 
-void addnames(char *name) { // not used
+//char * create_class_string(char * name) {
+  //int buf_size = (int)((ceil(log10(indentLvl))+1) * sizeof(char))
+  //char id_str[buf_size];
+  //sprintf(id_str, "%d", indentLvl);
+  //int class_size = strlen(name) + strlen(id_str) + 1;
+  //char * class_str = malloc(sizeof(*class_str) * size);
+  //strcpy(class_str, name);
+  //strcpy(class_str, id_str);
+  //return class_str;
+  //}
+
+  void add_new_symbole(char * name) {
+    //char * class = create_class_string(name);
+    //TableObject to = createTableObject(name, class);
+    //addDeclarationTable(symbol_table, to, indentLvl);
+
+    char * class = "";
+    printf("<identifier id=\"%d\" class=\"%s\" class=\"declaration\">%s</identifier>", 
+      uniqueId++, class, name);
+    // free(class);
+  }
+
+  void search_symbole(char * name) {
+    //char * class = searchSymboleTable(symbol_table, name, indentLvl);
+    // if (class == NULL) ...
+    char * class = "";
+    printf("<identifier id=\"%d\" class=\"%s\">%s</identifier>", 
+      uniqueId++, class, name);
+  }
+
+/*void addnames(char *name) { 
  namesdef[currentName]=name;
  currentName++;
-}
+ }*/
 
-static int printBeginFile(int output) {
+ static int printBeginFile(int output) {
   int begin = open("html/begin.html", O_RDONLY, 0444);
   char c;
   while(read(begin, &c, 1) > 0)
@@ -700,6 +728,8 @@ static int printEndFile(int output) {
 
 int main()    
 {
+  //symbol_table = createSymboleTable();
+
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
   
@@ -712,6 +742,8 @@ int main()
   close(output);
   close(begin);
   close(end);
+
+  //destroySymboleTable(symbol_table);
 
   /*int fdl = open("lexAfter.l",O_WRONLY|O_TRUNC|O_CREAT,0666);
   char *lex="%{\n#include \"foo.h\"\n%}\n%%\n";
