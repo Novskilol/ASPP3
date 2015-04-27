@@ -1,25 +1,38 @@
-#include "symboleTable.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <stdbool.h>
 
+#include "symboleTable.h"
+
+typdef list_cell_t {
+	struct list_cell_t * next;
+	char * name;
+}* list_cell;
+
+
 typedef struct SymboleList_t {
-  struct list
+ 	list_cell first;
 }* SymboleList;
 
-struct stack_cell{
-  struct stack_cell *next;
+typedef struct stack_cell_t {
+  struct stack_cell_t * next;
   SymboleList list;
+}* stack_cell;
 
+struct SymboleStack{
+  stack_cell top; 
 };
 
-struct symboleTable{
-  struct stack_cell *top;
-};
-
-SymboleTable createSymboleTable()
+SymboleStack createSymboleTable()
 {
-  SymboleTable symboleTable=malloc(sizeof(*symboleTable));
-  symboleTable->top=NULL;
+  SymboleStack symboleTable = malloc(sizeof(*symboleTable));
+  symboleTable->top = NULL;
   return symboleTable;
 }
+
+void deleteSymboleTable(SymboleStack symboleTable)
+{
+	assert(symboleTable != NULL);
+	free(symboleTable);
+}
+

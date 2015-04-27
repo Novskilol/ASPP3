@@ -13,5 +13,7 @@ lex.yy.c: commun.h
 
 commun.c: commun.h
 
+symboleTable.c: symboleTable.h
+
 clean:
 	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c index.html ../bin/doc_html

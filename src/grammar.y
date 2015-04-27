@@ -681,20 +681,20 @@ void addnames(char *name) { // not used
  currentName++;
 }
 
-static void printBeginFile(int output) {
+static int printBeginFile(int output) {
   int begin = open("html/begin.html", O_RDONLY, 0444);
   char c;
   while(read(begin, &c, 1) > 0)
   printf("%c", c);
-  close(begin);
+  return begin;
 }
 
-static void printEndFile(int output) {
+static int printEndFile(int output) {
   int end = open("html/end.html", O_RDONLY, 0444);
   char c;
   while(read(end, &c, 1) > 0)
   printf("%c", c);
-  close(end);
+  return end;
 }
 
 int main()    
@@ -702,13 +702,15 @@ int main()
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
   
-  printBeginFile(output);
+  int begin = printBeginFile(output);
 
   yyparse();
 
-  printEndFile(output);
+  int end = printEndFile(output);
 
   close(output);
+  close(begin);
+  close(end);
 
   /*int fdl = open("lexAfter.l",O_WRONLY|O_TRUNC|O_CREAT,0666);
   char *lex="%{\n#include \"foo.h\"\n%}\n%%\n";
