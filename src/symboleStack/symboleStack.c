@@ -15,7 +15,7 @@ struct cell
 struct stack                                         
 {                                                         
 	Cell top;    
-	int size;                                         
+	int size; 
 };                                                        
 
 
@@ -28,11 +28,9 @@ SymboleStack createSymboleStack()
 }                                                         
 
 void destroySymboleStack(SymboleStack this)                               
-{                                                         
-	assert(this && "invalid SymboleStack in destroySymboleStack");            
-	assert(!this->top && "invalid SymboleStack top in destroySymboleStack");  
+{                                 
 	free(this);                                              
-}                                                         
+}                                                     
 
 void pushSymboleStack(SymboleStack this, void *object)                    
 {        
@@ -43,7 +41,7 @@ void pushSymboleStack(SymboleStack this, void *object)
 	++(this->size);                             
 }                                                         
 
-int stack_empty(SymboleStack this)                                  
+int emptySymboleStack(SymboleStack this)                                  
 {                                                         
 	assert(this);                                            
 	return !this->top;                                      
@@ -61,7 +59,7 @@ void * popSymboleStack(SymboleStack this)
 	assert(this && "invalid SymboleStack in popSymboleStack");
 	assert(this->top && "invalid SymboleStack top in popSymboleStack");
 	Cell prev = this->top->prev;
-	void * old_object = this->top->object;
+	void  * old_object = this->top->object;
 	free(this->top);
 	this->top = prev;
 	--(this->size);

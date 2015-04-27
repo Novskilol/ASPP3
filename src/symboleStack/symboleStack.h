@@ -5,13 +5,13 @@ struct stack;
                                           
 typedef struct stack * SymboleStack;
                                           
-SymboleStack createSymboleStack(void);                 
+SymboleStack createSymboleStack();                 
                                           
 void destroySymboleStack(SymboleStack this);           
                                           
 void pushSymboleStack(SymboleStack this, void *object);
                                              
-int stack_empty(SymboleStack this);                 
+int emptySymboleStack(SymboleStack this);                 
 
 void * topSymboleStack(SymboleStack this);
 
