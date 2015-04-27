@@ -254,4 +254,3 @@ void begin_block_comment() {
 void end_block_comment() {
     printf("%s</div>", NEWLINE_C);
 }
-
