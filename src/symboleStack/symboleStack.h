@@ -5,17 +5,17 @@ struct stack;
                                           
 typedef struct stack * Stack;
                                           
-Stack stack_create(void);                 
+Stack createSymboleStack(void);                 
                                           
-void stack_destroy(Stack this);           
+void destroySymboleStack(Stack this);           
                                           
-void stack_push(Stack this, void *object);
+void pushSymboleStack(Stack this, void *object);
                                              
 int stack_empty(Stack this);                 
 
-void * stack_top(Stack this);
+void * topSymboleStack(Stack this);
 
 /* pop stack and return top object */
-void * stack_pop(Stack this);
+void * popSymboleStack(Stack this);
 
 #endif
