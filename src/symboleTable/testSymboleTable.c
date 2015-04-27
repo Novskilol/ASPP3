@@ -21,6 +21,7 @@ int main()
 {
 	SymboleTable table = createSymboleTable();
 
+	// *WARNING* CODE DEGUEULASSE *WARNING*
 	TableObject tab [5];
 	TableObject i0 = malloc(sizeof(*i0));
 	TableObject i1 = malloc(sizeof(*i1));
