@@ -3,36 +3,29 @@
 #include <stdbool.h>
 
 #include "symboleTable.h"
+#include "../symboleStack/symboleStack.h"
+#include "../symboleList/symboleList.h"
 
-typdef list_cell_t {
-	struct list_cell_t * next;
-	char * name;
-}* list_cell;
+typedef char * table_object;
 
-
-typedef struct symboleList_t {
- 	list_cell first;
-}* SymboleList;
-
-typedef struct stack_cell_t {
-  struct stack_cell_t * next;
-  SymboleList list;
-}* stack_cell;
-
-struct symboleStack{
-  stack_cell top; 
-};
-
-SymboleStack createSymboleTable()
+static int compareObject(table_object a, table_object b)
 {
-  SymboleStack symboleTable = malloc(sizeof(*symboleTable));
-  symboleTable->top = NULL;
-  return symboleTable;
+  return strcmp(a, b) == 0;
 }
 
-void deleteSymboleTable(SymboleStack symboleTable)
+static void destroyObject(table_object this)
 {
-	assert(symboleTable != NULL);
-	free(symboleTable);
+  free(this);
+}
+
+SymboleTable createSymboleTable()
+{
+  SymboleTable stack = createSymboleStack();
+  return stack;
+}
+
+void destroySymboleTable(SymboleStack this)
+{
+	destroySymboleStack(this);
 }
 
