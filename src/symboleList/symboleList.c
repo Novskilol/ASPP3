@@ -16,15 +16,15 @@ void destroySymboleList(SymboleList this)
   int i;
   struct cell_symbole_list *curseur;
 
-  for (curseur=this->last ; curseur != NULL ;curseur=curseur->next)
+  for (curseur=this->last ; curseur != NULL ;)
     {
       struct cell_symbole_list *toBeDeleted=curseur;
       curseur=curseur->next;
-      this->destroyCellValueFunction(curseur->value);
-      free(curseur);
+      this->destroyCellValueFunction(toBeDeleted->value);
+      free(toBeDeleted);
     }
 
-  
+  free(this);
 
 }
 void* searchSymboleList(SymboleList this, void *value)
