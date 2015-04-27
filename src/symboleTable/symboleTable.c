@@ -10,7 +10,7 @@ typdef list_cell_t {
 }* list_cell;
 
 
-typedef struct SymboleList_t {
+typedef struct symboleList_t {
  	list_cell first;
 }* SymboleList;
 
@@ -19,7 +19,7 @@ typedef struct stack_cell_t {
   SymboleList list;
 }* stack_cell;
 
-struct SymboleStack{
+struct symboleStack{
   stack_cell top; 
 };
 

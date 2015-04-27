@@ -1,7 +1,7 @@
 #ifndef SYMBOLE_TABLE_H
 #define SYMBOLE_TABLE_H
 
-typedef struct SymboleStack * SymboleStack;
+typedef struct symboleStack * SymboleStack;
 
 void addSymbole(char *symbole, int indentationLvl, int id);
 
