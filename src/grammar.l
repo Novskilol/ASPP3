@@ -38,6 +38,7 @@ void begin_block_comment();
 void end_block_comment();
 void saveStatementName(char *dest,char *src);
 char *tmpStatementName;
+//
 %}
 
 %option yylineno nounput
@@ -51,7 +52,8 @@ char *tmpStatementName;
 "/*"                        { comment(); }
 "/**"                       { BEGIN COMMENT; begin_block_comment(); }
 <COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; end_block_comment(); }
-<COMMENT>"\return"          { resetFunctionParser(functionParser);
+<COMMENT>"\return"          { 
+                             resetFunctionParser(functionParser);
                               saveStatementName(tmpStatementName,"\\return");
                               BEGIN COMMENT_ARGS; }
 
@@ -258,6 +260,6 @@ void end_block_comment() {
 }
 void saveStatementName(char *dest,char *src)
 {
-  dest=strcpy(malloc(strlen(src)+1)*sizeof(char),src);
+  dest=strcpy(malloc(strlen(src)+1*sizeof(char)),src);
 
 }

@@ -376,7 +376,7 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' parameter_type_list ')' {parseFunction(functionParser,$1);}
+ | direct_declarator '(' parameter_type_list ')' {parseFunction(functionParser,$<s>1);}
  | direct_declarator '(' ')' 
  | direct_declarator '(' identifier_list ')' 
  ;

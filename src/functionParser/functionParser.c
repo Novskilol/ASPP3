@@ -76,8 +76,12 @@ void parseFunction(FunctionParser this, char *functionName)
   int i;
   for( i = 0 ; i < this->size ; ++i)
     {
+      
       char *tmpName=this->elements[i]->name;
       char *tmpData=this->elements[i]->data;
+      fprintf(stderr,"%s",functionName);
+      fprintf(stderr,"%s",tmpName);
+      fprintf(stderr,"%s",tmpData);
       fwrite(tmpName,sizeof(char),strlen(tmpName),f);
       fwrite(tmpData,sizeof(char),strlen(tmpData),f);
     }
