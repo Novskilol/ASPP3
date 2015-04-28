@@ -5,7 +5,7 @@
 #include "../symboleTable/symboleTable.h"
 
 
-#define NEWLINE_C "\n<br>"
+#define NEWLINE_C "<br>\n"
 #define SPACE_C "&nbsp"
 #define REGULAR_INDENT 4
 

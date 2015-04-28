@@ -14,13 +14,13 @@
   
   extern int yylex();
 
-  //void addnames(char *name); 
   void yyerror(char*s);
   void open_braces();
   void close_braces();
   void add_new_symbole(char *);
   void search_symbole(char *);
-  //char * create_class_string(char *);
+  char * create_class_string(char *);
+  char * create_declaration_string(char * name);
 
   int indentLocked = 0;
   int indentLvl = 0;
@@ -262,18 +262,18 @@
  ;
 
  type_specifier
- : VOID       { printf("\n<type>\n%s\n</type>", $1); }
- | CHAR       { printf("\n<type>\n%s\n</type>", $1); }
- | SHORT      { printf("\n<type>\n%s\n</type>", $1); }
- | INT        { printf("\n<type>\n%s\n</type>", $1); }
- | LONG       { printf("\n<type>\n%s\n</type>", $1); }
- | FLOAT      { printf("\n<type>\n%s\n</type>", $1); }
- | DOUBLE     { printf("\n<type>\n%s\n</type>", $1); }
- | SIGNED     { printf("\n<type>\n%s\n</type>", $1); }
- | UNSIGNED   { printf("\n<type>\n%s\n</type>", $1); }
- | BOOL       { printf("\n<type>\n%s\n</type>", $1); }
- | COMPLEX    { printf("\n<type>\n%s\n</type>", $1); }
- | IMAGINARY  { printf("\n<type>\n%s\n</type>", $1); }
+ : VOID       { printf("<type>\n%s\n</type\n>", $1); }
+ | CHAR       { printf("<type>\n%s\n</type\n>", $1); }
+ | SHORT      { printf("<type>\n%s\n</type\n>", $1); }
+ | INT        { printf("<type>\n%s\n</type\n>", $1); }
+ | LONG       { printf("<type>\n%s\n</type\n>", $1); }
+ | FLOAT      { printf("<type>\n%s\n</type\n>", $1); }
+ | DOUBLE     { printf("<type>\n%s\n</type\n>", $1); }
+ | SIGNED     { printf("<type>\n%s\n</type\n>", $1); }
+ | UNSIGNED   { printf("<type>\n%s\n</type\n>", $1); }
+ | BOOL       { printf("<type>\n%s\n</type\n>", $1); }
+ | COMPLEX    { printf("<type>\n%s\n</type\n>", $1); }
+ | IMAGINARY  { printf("<type>\n%s\n</type\n>", $1); }
  | atomic_type_specifier    
  | struct_or_union_specifier
  | enum_specifier           
@@ -612,65 +612,65 @@ identifier
 ;
 
 string_literal
-: STRING_LITERAL { printf ("\n<string>\n%s<\n</string>", $1); }
+: STRING_LITERAL { printf ("<string>\n%s\n</string\n>", $1); }
 ;
 
 case
-: CASE { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: CASE { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 default
-: DEFAULT { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: DEFAULT { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 if
-: IF { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: IF { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 else
-: ELSE { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: ELSE { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 switch
-: SWITCH { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: SWITCH { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 while
-: WHILE { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: WHILE { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 do
-: DO { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: DO { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 for
-: FOR { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: FOR { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 goto
-: GOTO { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: GOTO { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 continue
-: CONTINUE { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: CONTINUE { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 break 
-: BREAK { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: BREAK { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 return
-: RETURN { printf("\n<keyword>\n%s\n</keyword>", $1); }
+: RETURN { printf("<keyword>\n%s\n</keyword\n>", $1); }
 ;
 
 %%
 
 void open_braces() {
-  printf("\n<block>\n<braces>\n{\n</braces>\n<item>\n<block>");
+  printf("<block>\n<braces>\n{\n</braces>\n<item>\n<block>\n");
 }
 
 void close_braces() {
-  printf("\n</block>\n</item>\n}\n</block>");
+  printf("</block>\n</item>\n}\n</block>\n");
 }
 
 char * create_class_string(char * name) 
@@ -701,7 +701,7 @@ void add_new_symbole(char * name) {
   TableObject to = createTableObject(name, class, declaration);
   addDeclarationTable(symbol_table, to, indentLvl);
 
-  printf("\n<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>", 
+  printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration\n>", 
     uniqueId++, declaration, class, name);
 
   free(class);
@@ -713,24 +713,19 @@ void search_symbole(char * name) {
   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
 
   if (to == NULL) {
-    printf("\n<identifier id=\"%d\">\n%s\n</identifier>", 
+    printf("<undefined id=\"%d\">\n%s\n</undefined\n>", 
       uniqueId++, name);
   }
 
   else {
     char * declaration = to->declaration;
     char * class = to->class;
-    printf("\n<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier>", 
+    printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier\n>", 
       uniqueId++, declaration, class, name);
   }
 }
 
-/*void addnames(char *name) { 
- namesdef[currentName]=name;
- currentName++;
- }*/
-
- static int printBeginFile(int output) {
+static int printBeginFile(int output) {
   int begin = open("html/begin.html", O_RDONLY, 0444);
   char c;
   while(read(begin, &c, 1) > 0)
@@ -764,22 +759,6 @@ int main()
   close(end);
 
   destroySymboleTable(symbol_table);
-
-  /*int fdl = open("lexAfter.l",O_WRONLY|O_TRUNC|O_CREAT,0666);
-  char *lex="%{\n#include \"foo.h\"\n%}\n%%\n";
-  write(fdl,lex,strlen(lex));
-  int j=0;
-  while(namesdef[j]!=NULL)
-  {
-   write(fdl,"\n",strlen("\n"));
-   write(fdl,"\"",strlen("\""));
-   write(fdl,namesdef[j],strlen(namesdef[j]));
-   write(fdl,"\"",strlen("\""));
-   lex=" {printf(\"<script>\");ECHO;printf(\"</script>\");}";
-   write(fdl,lex,strlen(lex));
-   j++;
-  }
-  write(fdl,"\n",strlen("\n"));*/
 
   return 0;    
 }

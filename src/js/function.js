@@ -46,6 +46,8 @@ function simpleTooltip(name){
 	});
 }
 
+
+
 // doesn't check indent lvl
 function gotoDeclaration(){
 	$(".code identifier").click(function goto() {
