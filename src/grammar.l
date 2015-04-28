@@ -36,7 +36,7 @@ static void comment(void);
 static int check_type(void);
 void begin_block_comment();
 void end_block_comment();
-void saveStatementName(char *dest,char *src);
+void saveStatementName(char **dest,char *src);
 char *tmpStatementName;
 //
 %}
@@ -50,15 +50,16 @@ char *tmpStatementName;
 %%
 
 "/*"                        { comment(); }
-"/**"                       { BEGIN COMMENT; begin_block_comment(); }
+"/**"                       {   fprintf(stderr,"OUHIH");                           resetFunctionParser(functionParser); BEGIN COMMENT; begin_block_comment(); }
 <COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; end_block_comment(); }
-<COMMENT>"\return"          { 
-                             resetFunctionParser(functionParser);
-                              saveStatementName(tmpStatementName,"\\return");
+<COMMENT>"\\return"          { 
+                                
+                              saveStatementName(&tmpStatementName,"\\return");
+                              fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
                               BEGIN COMMENT_ARGS; }
 
-<COMMENT>"\param"           { BEGIN COMMENT_ARGS; }
-<COMMENT>"\brief"           { BEGIN COMMENT_ARGS; }
+<COMMENT>"\\param"           { BEGIN COMMENT_ARGS; }
+<COMMENT>"\\brief"           { BEGIN COMMENT_ARGS; }
 <COMMENT_ARGS>.*\n          {addStatement(functionParser,tmpStatementName,yytext);free(tmpStatementName);BEGIN COMMENT; }
 <COMMENT>.|\n               ;
 
@@ -258,8 +259,8 @@ void begin_block_comment() {
 void end_block_comment() {
     printf("%s</div>", NEWLINE_C);
 }
-void saveStatementName(char *dest,char *src)
+void saveStatementName(char **dest,char *src)
 {
-  dest=strcpy(malloc(strlen(src)+1*sizeof(char)),src);
+  *dest=strcpy(malloc((strlen(src)+1)*sizeof(char)),src);
 
 }
