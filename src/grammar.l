@@ -25,7 +25,7 @@ WS  [ \t\v\n\f]
     
 #include "grammar.tab.h"
 #include "commun/commun.h"
-
+#include "functionParser.h"
 extern int sym_type(const char *);  /* returns type from symbol table */
 extern void yyerror(const char *);  /* prints grammar violation message */
 extern int yylineno;
@@ -36,7 +36,8 @@ static void comment(void);
 static int check_type(void);
 void begin_block_comment();
 void end_block_comment();
-
+void saveStatementName(char *dest,char *src);
+char *tmpStatementName;
 %}
 
 %option yylineno nounput
@@ -50,11 +51,13 @@ void end_block_comment();
 "/*"                        { comment(); }
 "/**"                       { BEGIN COMMENT; begin_block_comment(); }
 <COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; end_block_comment(); }
-<COMMENT>"\return"          { ECHO;BEGIN COMMENT_ARGS; }
+<COMMENT>"\return"          { resetFunctionParser(functionParser);
+                              saveStatementName(tmpStatementName,"\\return");
+                              BEGIN COMMENT_ARGS; }
+
 <COMMENT>"\param"           { BEGIN COMMENT_ARGS; }
 <COMMENT>"\brief"           { BEGIN COMMENT_ARGS; }
-<COMMENT_ARGS>.             { ECHO; printf(NEWLINE_C); }
-<COMMENT_ARGS>\n            { BEGIN COMMENT; }
+<COMMENT_ARGS>.*\n          {addStatement(functionParser,tmpStatementName,yytext);free(tmpStatementName);BEGIN COMMENT; }
 <COMMENT>.|\n               ;
 
 "//".*                  { /* consume //-comment */ }
@@ -186,7 +189,7 @@ void end_block_comment();
 "|"					    { ECHO; return '|'; }
 "?"					    { ECHO; return '?'; }
 [ ]+                    { ECHO;}
-{WS}				    { fprintf(stderr, "OK\n"); /* whitespace separates tokens */ }
+{WS}				    {  /* whitespace separates tokens */ }
 .					    { /* discard bad characters */ }
 
 %%
@@ -252,4 +255,9 @@ void begin_block_comment() {
 
 void end_block_comment() {
     printf("%s</div>", NEWLINE_C);
+}
+void saveStatementName(char *dest,char *src)
+{
+  dest=strcpy(malloc(strlen(src)+1)*sizeof(char),src);
+
 }

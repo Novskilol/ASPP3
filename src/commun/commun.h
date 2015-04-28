@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "../symboleTable/symboleTable.h"
-
+#include "functionParser.h"
 
 #define NEWLINE_C "<br>\n"
 #define SPACE_C "&nbsp"
@@ -17,5 +17,5 @@ void indentThat();
 
 int indent;
 SymboleTable symbol_table;
-
+FunctionParser functionParser;
 #endif

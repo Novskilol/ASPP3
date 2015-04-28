@@ -2,6 +2,8 @@
 *.o
 *.a
 bin/*
+lib/*
+include/*
 src/*.tab.c
 src/*.tab.h
 src/index.html

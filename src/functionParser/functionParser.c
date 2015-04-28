@@ -27,6 +27,38 @@ static void resize(FunctionParser this)
   this->sizeMax*=2;
   
 }
+void resetFunctionParser(FunctionParser this)
+{
+   int i;
+
+  for ( i = 0 ; i < this->size ; ++i)
+    {
+      free(this->elements[i]->name);
+      free(this->elements[i]->data);      
+    }
+
+  for ( i = 0 ; i < this->sizeMax ; ++i)
+      free(this->elements[i]);
+  
+  this->size=0;
+}
+void destroyFunctionParser(FunctionParser this)
+{
+  int i;
+
+  for ( i = 0 ; i < this->size ; ++i)
+    {
+      free(this->elements[i]->name);
+      free(this->elements[i]->data);      
+    }
+
+  for ( i = 0 ; i < this->sizeMax ; ++i)
+      free(this->elements[i]);
+
+  free(this->elements);
+  free(this);
+    
+}
 void addStatement(FunctionParser this,char *statementName,char *data)
 {
   if (isFull(this))

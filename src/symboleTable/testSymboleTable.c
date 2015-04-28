@@ -6,26 +6,27 @@
 
 static void testSearch(SymboleTable table, char * name, int indent)
 {
-	char * class = searchSymboleTable(table, name, indent);
+  /*	char * class = searchSymboleTable(table, name, indent);
 
 	if (class != NULL) {
 		printf("var name %s got class %s with indent %d\n", name, class, indent);	
 		free(class);
 	}
 	else 
-		printf("var name %s got no class with indent %d\n", name, indent);
+	printf("var name %s got no class with indent %d\n", name, indent);*/
 }
 
 int main()
 {
-	SymboleTable table = createSymboleTable();
+  /*	SymboleTable table = createSymboleTable();
 
 	TableObject tab [5];
-	TableObject to0 = createTableObject("y", "y0");
+	TableObject to0 = createTableObject("y", "y0",);
 	TableObject to1 = createTableObject("x", "x1");
 	TableObject to2 = createTableObject("x", "x2");
 	TableObject to3 = createTableObject("y", "y3");
 	TableObject to4 = createTableObject("x", "x4");
+	
 
 	tab[0] = to0;
 	tab[1] = to1;
@@ -78,5 +79,5 @@ int main()
 	testSearch(table, "y", 3);
 	testSearch(table, "y", 4);
 
-	destroySymboleTable(table);
+	destroySymboleTable(table);*/
 } 

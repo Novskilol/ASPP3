@@ -11,7 +11,7 @@
   
   #include "commun/commun.h"
   #include "symboleTable/symboleTable.h"
-  
+  #include "functionParser.h"
   extern int yylex();
 
   void yyerror(char*s);
@@ -376,7 +376,7 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' parameter_type_list ')' 
+ | direct_declarator '(' parameter_type_list ')' {parseFunction(functionParser,$1);}
  | direct_declarator '(' ')' 
  | direct_declarator '(' identifier_list ')' 
  ;
@@ -744,7 +744,7 @@ static int printEndFile(int output) {
 int main()    
 {
   symbol_table = createSymboleTable();
-
+  functionParser = createFunctionParser();
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
   
