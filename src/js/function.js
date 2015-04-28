@@ -6,34 +6,33 @@ function highlight(name){
 }
 
 function removeHighlight() {
-	$(".code identifier").each(function removeHighlight() {
+	$(".code identifier, declaration").each(function removeHighlight() {
 		$(this).css("background", "none");
 	});
 }
 
-$(function expandCollapse(){
+function expandCollapse(){
 	$('.code').find('braces').click(function toggleBlock(){
 		$(this).parent().children('item').toggle();
 	});
-});
+}
 
-// highlight identifier with the same class where the class of an identifier can be his name + an Id
-$(document).ready(function highlightIdentifiers(){
-	$("identifier").hover(
+function highlightIdentifiers(){
+	$("identifier, declaration").hover(
 		function (){
 			highlight($(this).attr('class'));
 		},
 		function (){ 
 			removeHighlight();
 		});
-});
+}
 
 // $(".declaration").each(function addIdToDeclaration(i, v) {
 // 	$(this).parent('declaration').data('identifier', $(this).text());
 // });
 
-function simple_tooltip(target_items, name){
-	$(target_items).each(function(i){
+function simpleTooltip(name){
+	$("identifier, declaration").each(function(i){
 		$("body").append("<div class='"+name+"' id='"+name+i+"'><p>"+$(this).attr('title')+"</p></div>");
 		var my_tooltip = $("#"+name+i);
 
@@ -46,6 +45,29 @@ function simple_tooltip(target_items, name){
 		});
 	});
 }
+
+// doesn't check indent lvl
+function gotoDeclaration(){
+	$(".code identifier").click(function goto() {
+		var identifier = $(this).text();
+
+		$(".code declaration").each(function search() {
+			if ($(this).text() === identifier) {
+				$('html, body').animate(
+					{scrollTop: $(this).offset().top}, 'fast');
+				return false;
+			}
+		});
+	});
+}
+
+
+
 $(document).ready(function(){
-	simple_tooltip("identifier","tooltip");
+	gotoDeclaration();
+	simpleTooltip("tooltip");
+	highlightIdentifiers();
+	expandCollapse();
 });
+
+

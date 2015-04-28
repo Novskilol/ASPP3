@@ -262,18 +262,18 @@
  ;
 
  type_specifier
- : VOID       { printf("<type>%s</type>", $1); }
- | CHAR       { printf("<type>%s</type>", $1); }
- | SHORT      { printf("<type>%s</type>", $1); }
- | INT        { printf("<type>%s</type>", $1); }
- | LONG       { printf("<type>%s</type>", $1); }
- | FLOAT      { printf("<type>%s</type>", $1); }
- | DOUBLE     { printf("<type>%s</type>", $1); }
- | SIGNED     { printf("<type>%s</type>", $1); }
- | UNSIGNED   { printf("<type>%s</type>", $1); }
- | BOOL       { printf("<type>%s</type>", $1); }
- | COMPLEX    { printf("<type>%s</type>", $1); }
- | IMAGINARY  { printf("<type>%s</type>", $1); }
+ : VOID       { printf("\n<type>\n%s\n</type>", $1); }
+ | CHAR       { printf("\n<type>\n%s\n</type>", $1); }
+ | SHORT      { printf("\n<type>\n%s\n</type>", $1); }
+ | INT        { printf("\n<type>\n%s\n</type>", $1); }
+ | LONG       { printf("\n<type>\n%s\n</type>", $1); }
+ | FLOAT      { printf("\n<type>\n%s\n</type>", $1); }
+ | DOUBLE     { printf("\n<type>\n%s\n</type>", $1); }
+ | SIGNED     { printf("\n<type>\n%s\n</type>", $1); }
+ | UNSIGNED   { printf("\n<type>\n%s\n</type>", $1); }
+ | BOOL       { printf("\n<type>\n%s\n</type>", $1); }
+ | COMPLEX    { printf("\n<type>\n%s\n</type>", $1); }
+ | IMAGINARY  { printf("\n<type>\n%s\n</type>", $1); }
  | atomic_type_specifier    
  | struct_or_union_specifier
  | enum_specifier           
@@ -364,7 +364,6 @@
  | direct_declarator
  ;
 
- //direct_declarator_aux:lockFunction direct_declarator unlockFunction;
  direct_declarator
  : IDENTIFIER { add_new_symbole($1); }
  | '(' declarator ')'
@@ -613,74 +612,78 @@ identifier
 ;
 
 string_literal
-: STRING_LITERAL { printf ("<string>%s</string>", $1); }
+: STRING_LITERAL { printf ("\n<string>\n%s<\n</string>", $1); }
 ;
 
 case
-: CASE { printf("<keyword>%s</keyword>", $1); }
+: CASE { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 default
-: DEFAULT { printf("<keyword>%s</keyword>", $1); }
+: DEFAULT { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 if
-: IF { printf("<keyword>%s</keyword>", $1); }
+: IF { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 else
-: ELSE { printf("<keyword>%s</keyword>", $1); }
+: ELSE { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 switch
-: SWITCH { printf("<keyword>%s</keyword>", $1); }
+: SWITCH { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 while
-: WHILE { printf("<keyword>%s</keyword>", $1); }
+: WHILE { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 do
-: DO { printf("<keyword>%s</keyword>", $1); }
+: DO { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 for
-: FOR { printf("<keyword>%s</keyword>", $1); }
+: FOR { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 goto
-: GOTO { printf("<keyword>%s</keyword>", $1); }
+: GOTO { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 continue
-: CONTINUE { printf("<keyword>%s</keyword>", $1); }
+: CONTINUE { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 break 
-: BREAK { printf("<keyword>%s</keyword>", $1); }
+: BREAK { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 return
-: RETURN { printf("<keyword>%s</keyword>", $1); }
+: RETURN { printf("\n<keyword>\n%s\n</keyword>", $1); }
 ;
 
 %%
 
 void open_braces() {
-  printf("<block>\n<braces>{</braces>\n<item>\n<block>\n");
+  printf("\n<block>\n<braces>\n{\n</braces>\n<item>\n<block>");
 }
 
 void close_braces() {
-  printf("</block>\n</item>\n}</block>");
+  printf("\n</block>\n</item>\n}\n</block>");
 }
 
-char * create_class_string(char * name) {
+char * create_class_string(char * name) 
+{
  int buf_size = (int)((ceil(log10(uniqueId))+1) * sizeof(char));
  char id_str[buf_size];
  sprintf(id_str, "%d", uniqueId);
+ 
  int class_size = strlen(id_str) + 1;
+ 
  char * class_str = malloc(sizeof(*class_str) * class_size);
  strcpy(class_str, id_str);
+ 
  return class_str;
 }
 
@@ -698,7 +701,7 @@ void add_new_symbole(char * name) {
   TableObject to = createTableObject(name, class, declaration);
   addDeclarationTable(symbol_table, to, indentLvl);
 
-  printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\" class=\"declaration\">%s</identifier>", 
+  printf("\n<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>", 
     uniqueId++, declaration, class, name);
 
   free(class);
@@ -710,14 +713,14 @@ void search_symbole(char * name) {
   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
 
   if (to == NULL) {
-    printf("<identifier id=\"%d\">%s</identifier>", 
+    printf("\n<identifier id=\"%d\">\n%s\n</identifier>", 
       uniqueId++, name);
   }
 
   else {
     char * declaration = to->declaration;
     char * class = to->class;
-    printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">%s</identifier>", 
+    printf("\n<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier>", 
       uniqueId++, declaration, class, name);
   }
 }
