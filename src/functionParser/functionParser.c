@@ -72,6 +72,7 @@ void addStatement(FunctionParser this,char *statementName,char *data)
 }
 void parseFunction(FunctionParser this, char *functionName)
 {
+  if (this->size != 0){
   FILE *f=fopen(functionName,"w");
   int i;
   for( i = 0 ; i < this->size ; ++i)
@@ -86,6 +87,7 @@ void parseFunction(FunctionParser this, char *functionName)
       fwrite(tmpData,sizeof(char),strlen(tmpData),f);
     }
   fclose(f);
+  }
   
 }
 FunctionParser createFunctionParser()
