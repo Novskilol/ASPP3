@@ -58,7 +58,7 @@ void end_block_comment();
 <COMMENT>.|\n               ;
 
 "//".*                  { /* consume //-comment */ }
-".#*"                   { /* consume directive */ }
+"#".*                   { /* consume directive */ }
 
 "auto"					{ ECHO; return(AUTO); }
 "break"					{ yylval.s = yytext; return(BREAK); }
