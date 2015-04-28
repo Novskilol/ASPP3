@@ -101,5 +101,5 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
   destroySymboleTable(tmp);
   
   destroyTableObject(to);
-  return res == NULL ? NULL : res;
+  return res;
 }

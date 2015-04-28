@@ -1,3 +1,4 @@
+/* change background color of elements with class name 'name' */
 function highlight(name){
 	var list = document.getElementsByClassName(name);
 	for (var i = 0; i < list.length; i++) {
@@ -5,18 +6,14 @@ function highlight(name){
 	}
 }
 
+/* remove background from all elements */
 function removeHighlight() {
 	$(".code identifier, declaration").each(function removeHighlight() {
 		$(this).css("background", "none");
 	});
 }
 
-function expandCollapse(){
-	$('.code').find('braces').click(function toggleBlock(){
-		$(this).parent().children('item').toggle();
-	});
-}
-
+/* highlight elements with the same class */
 function highlightIdentifiers(){
 	$("identifier, declaration").hover(
 		function (){
@@ -27,10 +24,15 @@ function highlightIdentifiers(){
 		});
 }
 
-// $(".declaration").each(function addIdToDeclaration(i, v) {
-// 	$(this).parent('declaration').data('identifier', $(this).text());
-// });
+/* collapse or expand code on clic (on curly braces) */
+function expandCollapse(){
+	$('.code').find('braces').click(function toggleBlock(){
+		$(this).parent().children('item').toggle();
+	});
+}
 
+/* show tooltip on hover containing prototype or doxygen documentation */
+/* work for identifiers and declarations */
 function simpleTooltip(name){
 	$("identifier, declaration").each(function(i){
 		$("body").append("<div class='"+name+"' id='"+name+i+"'><p>"+$(this).attr('title')+"</p></div>");
@@ -46,8 +48,7 @@ function simpleTooltip(name){
 	});
 }
 
-// doesn't check indent lvl
-
+/* scroll screen to the declaration of an identifier  */
 function gotoDeclaration(){
     $(".code identifier").click(function goto() {
         var list = $('declaration.'+$(this).attr('class'));
