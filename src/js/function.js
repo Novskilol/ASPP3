@@ -46,24 +46,16 @@ function simpleTooltip(name){
 	});
 }
 
-
-
 // doesn't check indent lvl
+
 function gotoDeclaration(){
-	$(".code identifier").click(function goto() {
-		var identifier = $(this).text();
-
-		$(".code declaration").each(function search() {
-			if ($(this).text() === identifier) {
-				$('html, body').animate(
-					{scrollTop: $(this).offset().top}, 'fast');
-				return false;
-			}
-		});
-	});
+    $(".code identifier").click(function goto() {
+        var list = $('declaration.'+$(this).attr('class'));
+        $('html, body').animate(
+             {scrollTop: list.offset().top}, 
+             'fast');
+    });
 }
-
-
 
 $(document).ready(function(){
 	gotoDeclaration();
@@ -71,5 +63,3 @@ $(document).ready(function(){
 	highlightIdentifiers();
 	expandCollapse();
 });
-
-

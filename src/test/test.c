@@ -1,8 +1,8 @@
 /**
  * \brief une description
- * \return le résultat
+ * \return le resultat
  * \param i un parametre
- * \param j un 2ème parametre
+ * \param j un 2eme parametre
  */ 
  
  int ** substituer_variable(
@@ -10,4 +10,7 @@
  	int numero_variable, 
  	int **valeur_variable, 
  	int n
- 	);
+			    )
+ {
+   return 0;
+ }

@@ -262,18 +262,18 @@
  ;
 
  type_specifier
- : VOID       { printf("<type>\n%s\n</type\n>", $1); }
- | CHAR       { printf("<type>\n%s\n</type\n>", $1); }
- | SHORT      { printf("<type>\n%s\n</type\n>", $1); }
- | INT        { printf("<type>\n%s\n</type\n>", $1); }
- | LONG       { printf("<type>\n%s\n</type\n>", $1); }
- | FLOAT      { printf("<type>\n%s\n</type\n>", $1); }
- | DOUBLE     { printf("<type>\n%s\n</type\n>", $1); }
- | SIGNED     { printf("<type>\n%s\n</type\n>", $1); }
- | UNSIGNED   { printf("<type>\n%s\n</type\n>", $1); }
- | BOOL       { printf("<type>\n%s\n</type\n>", $1); }
- | COMPLEX    { printf("<type>\n%s\n</type\n>", $1); }
- | IMAGINARY  { printf("<type>\n%s\n</type\n>", $1); }
+ : VOID       { printf("<type>\n%s\n</type>\n", $1); }
+ | CHAR       { printf("<type>\n%s\n</type>\n", $1); }
+ | SHORT      { printf("<type>\n%s\n</type>\n", $1); }
+ | INT        { printf("<type>\n%s\n</type>\n", $1); }
+ | LONG       { printf("<type>\n%s\n</type>\n", $1); }
+ | FLOAT      { printf("<type>\n%s\n</type>\n", $1); }
+ | DOUBLE     { printf("<type>\n%s\n</type>\n", $1); }
+ | SIGNED     { printf("<type>\n%s\n</type>\n", $1); }
+ | UNSIGNED   { printf("<type>\n%s\n</type>\n", $1); }
+ | BOOL       { printf("<type>\n%s\n</type>\n", $1); }
+ | COMPLEX    { printf("<type>\n%s\n</type>\n", $1); }
+ | IMAGINARY  { printf("<type>\n%s\n</type>\n", $1); }
  | atomic_type_specifier    
  | struct_or_union_specifier
  | enum_specifier           
@@ -612,55 +612,55 @@ identifier
 ;
 
 string_literal
-: STRING_LITERAL { printf ("<string>\n%s\n</string\n>", $1); }
+: STRING_LITERAL { printf ("<string>\n%s\n</string>\n", $1); }
 ;
 
 case
-: CASE { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: CASE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 default
-: DEFAULT { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: DEFAULT { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 if
-: IF { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: IF { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 else
-: ELSE { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: ELSE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 switch
-: SWITCH { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: SWITCH { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 while
-: WHILE { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: WHILE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 do
-: DO { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: DO { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 for
-: FOR { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: FOR { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 goto
-: GOTO { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: GOTO { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 continue
-: CONTINUE { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: CONTINUE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 break 
-: BREAK { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: BREAK { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 return
-: RETURN { printf("<keyword>\n%s\n</keyword\n>", $1); }
+: RETURN { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 %%
@@ -701,7 +701,7 @@ void add_new_symbole(char * name) {
   TableObject to = createTableObject(name, class, declaration);
   addDeclarationTable(symbol_table, to, indentLvl);
 
-  printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration\n>", 
+  printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
     uniqueId++, declaration, class, name);
 
   free(class);
@@ -713,14 +713,14 @@ void search_symbole(char * name) {
   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
 
   if (to == NULL) {
-    printf("<undefined id=\"%d\">\n%s\n</undefined\n>", 
+    printf("<undefined id=\"%d\">\n%s\n</undefined>\n", 
       uniqueId++, name);
   }
 
   else {
     char * declaration = to->declaration;
     char * class = to->class;
-    printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier\n>", 
+    printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier>\n", 
       uniqueId++, declaration, class, name);
   }
 }

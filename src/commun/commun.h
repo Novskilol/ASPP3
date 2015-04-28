@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "../symboleTable/symboleTable.h"
-#include "functionParser.h"
+#include "../functionParser/functionParser.h"
 
 #define NEWLINE_C "<br>\n"
 #define SPACE_C "&nbsp"

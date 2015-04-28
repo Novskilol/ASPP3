@@ -22,6 +22,7 @@ body {
 
 .code identifier{
 	color : #BA8BAF;
+	cursor: pointer;
 }
 
 .code declaration{

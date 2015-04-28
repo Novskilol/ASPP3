@@ -1,2 +1,5 @@
-int main (void) { { int a = 28; int b = 32;} { int c = 0;  } }
-
+int main() { 
+	int toto = 42;
+	toto = 2;
+	toto = 3;
+}
