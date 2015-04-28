@@ -2,6 +2,8 @@
 #define COMMUN_H
 
 #include <stdio.h>
+#include "../symboleTable/symboleTable.h"
+
 
 #define NEWLINE_C "\n<br>"
 #define SPACE_C "&nbsp"
@@ -14,5 +16,6 @@ extern void beginLine();
 void indentThat();
 
 int indent;
+SymboleTable symbol_table;
 
 #endif

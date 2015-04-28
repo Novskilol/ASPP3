@@ -7,8 +7,10 @@
   #include <stdio.h>
   #include <stdbool.h>
   #include <unistd.h>
+  #include <math.h>
   
   #include "commun/commun.h"
+  #include "symboleTable/symboleTable.h"
   
   extern int yylex();
 
@@ -20,10 +22,9 @@
   void search_symbole(char *);
   //char * create_class_string(char *);
 
-  //SymboleTable symbol_table;
   int indentLocked = 0;
   int indentLvl = 0;
-  int uniqueId = 0;
+  int uniqueId = 1;
 
   %}
 
@@ -564,10 +565,9 @@
  : {
    addIndent();
    printf(NEWLINE_C);
-   indentLocked+=1;
-   indentLvl+=1;
- }
- ;
+   indentLocked += 1;
+   indentLvl += 1;
+ };
 
  newlineBackwardHidden
  : {
@@ -576,8 +576,7 @@
    indentLocked -= 1;
    indentLvl -= 1;
  }
-}
-;
+};
 
 newlineBackward
 :
@@ -675,35 +674,39 @@ void close_braces() {
   printf("</block>\n</item>\n}</block>");
 }
 
-//char * create_class_string(char * name) {
-  //int buf_size = (int)((ceil(log10(indentLvl))+1) * sizeof(char))
-  //char id_str[buf_size];
-  //sprintf(id_str, "%d", indentLvl);
-  //int class_size = strlen(name) + strlen(id_str) + 1;
-  //char * class_str = malloc(sizeof(*class_str) * size);
-  //strcpy(class_str, name);
-  //strcpy(class_str, id_str);
-  //return class_str;
-  //}
+char * create_class_string(char * name) {
+ int buf_size = (int)((ceil(log10(uniqueId))+1) * sizeof(char));
+ char id_str[buf_size];
+ sprintf(id_str, "%d", uniqueId);
+ int class_size = strlen(id_str) + 1;
+ char * class_str = malloc(sizeof(*class_str) * class_size);
+ strcpy(class_str, id_str);
+ return class_str;
+}
 
-  void add_new_symbole(char * name) {
-    //char * class = create_class_string(name);
-    //TableObject to = createTableObject(name, class);
-    //addDeclarationTable(symbol_table, to, indentLvl);
+void add_new_symbole(char * name) {
+  char * class = create_class_string(name);
 
-    char * class = "";
-    printf("<identifier id=\"%d\" class=\"%s\" class=\"declaration\">%s</identifier>", 
-      uniqueId++, class, name);
-    // free(class);
+  TableObject to = createTableObject(name, class);
+  addDeclarationTable(symbol_table, to, indentLvl);
+
+  printf("<identifier id=\"%d\" class=\"%s\" class=\"declaration\">%s</identifier>", 
+    uniqueId++, class, name);
+  free(class);
+}
+
+void search_symbole(char * name) {
+  char * class = searchSymboleTable(symbol_table, name, indentLvl);
+  if (class == NULL) {
+    printf("<identifier id=\"%d\">%s</identifier>", 
+      uniqueId++, name);
   }
-
-  void search_symbole(char * name) {
-    //char * class = searchSymboleTable(symbol_table, name, indentLvl);
-    // if (class == NULL) ...
-    char * class = "";
+  else {
     printf("<identifier id=\"%d\" class=\"%s\">%s</identifier>", 
       uniqueId++, class, name);
   }
+  free(class);
+}
 
 /*void addnames(char *name) { 
  namesdef[currentName]=name;
@@ -728,7 +731,7 @@ static int printEndFile(int output) {
 
 int main()    
 {
-  //symbol_table = createSymboleTable();
+  symbol_table = createSymboleTable();
 
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
@@ -743,7 +746,7 @@ int main()
   close(begin);
   close(end);
 
-  //destroySymboleTable(symbol_table);
+  destroySymboleTable(symbol_table);
 
   /*int fdl = open("lexAfter.l",O_WRONLY|O_TRUNC|O_CREAT,0666);
   char *lex="%{\n#include \"foo.h\"\n%}\n%%\n";

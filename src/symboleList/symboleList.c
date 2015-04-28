@@ -15,16 +15,15 @@ struct symboleList{
 };
 void destroySymboleList(SymboleList this)
 {
-  int i;
   struct cell_symbole_list *curseur;
 
   for (curseur=this->last ; curseur != NULL ;)
-    {
-      struct cell_symbole_list *toBeDeleted=curseur;
-      curseur=curseur->next;
-      this->destroyCellValueFunction(toBeDeleted->value);
-      free(toBeDeleted);
-    }
+  {
+    struct cell_symbole_list *toBeDeleted=curseur;
+    curseur=curseur->next;
+    this->destroyCellValueFunction(toBeDeleted->value);
+    free(toBeDeleted);
+  }
 
   free(this);
 
@@ -37,33 +36,33 @@ void* searchSymboleList(SymboleList this, void *value)
 
   for (;curseur!=NULL && !(this->compareCellValueFunction(curseur->value,value)) ;curseur=curseur->next);
 
-  if (curseur == NULL)
-    return NULL;    
-  return curseur->value;
+    if (curseur == NULL)
+      return NULL;    
+    return curseur->value;
 
-}
+  }
 
-void addSymboleList(SymboleList this,void *value)
-{
-  struct cell_symbole_list *newLast = malloc(sizeof(*newLast));
-  newLast->value=value;
-  newLast->next=this->last;
-  this->last=newLast;
-  
+  void addSymboleList(SymboleList this,void *value)
+  {
+    struct cell_symbole_list *newLast = malloc(sizeof(*newLast));
+    newLast->value=value;
+    newLast->next=this->last;
+    this->last=newLast;
+    
 
-}
+  }
 
-int emptySymboleList(SymboleList this)
-{
-  return  this->last == NULL;
+  int emptySymboleList(SymboleList this)
+  {
+    return  this->last == NULL;
 
-}
+  }
 
-SymboleList createSymboleList(CompareFunction c,DestroyFunction f){
-  SymboleList s = malloc(sizeof(*s));
-  s->last = NULL;
-  s->destroyCellValueFunction = f;
-  s->compareCellValueFunction = c;
-  return s;
+  SymboleList createSymboleList(CompareFunction c,DestroyFunction f){
+    SymboleList s = malloc(sizeof(*s));
+    s->last = NULL;
+    s->destroyCellValueFunction = f;
+    s->compareCellValueFunction = c;
+    return s;
 
-}
+  }
