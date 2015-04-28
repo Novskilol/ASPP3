@@ -29,7 +29,7 @@ void destroySymboleList(SymboleList this)
   free(this);
 
 }
-void* searchSymboleList(SymboleList this, const void *value)
+void* searchSymboleList(SymboleList this, void *value)
 {
   struct cell_symbole_list *curseur=this->last;
 

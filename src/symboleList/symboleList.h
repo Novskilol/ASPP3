@@ -13,7 +13,7 @@ int emptySymboleList(SymboleList this);
 
 void addSymboleList(SymboleList this,void* value);
 
-void* searchSymboleList(SymboleList this,const void* value);
+void* searchSymboleList(SymboleList this, void* value);
 
 
 #endif
