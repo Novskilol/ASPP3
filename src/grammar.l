@@ -58,8 +58,14 @@ char *tmpStatementName;
                               fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
                               BEGIN COMMENT_ARGS; }
 
-<COMMENT>"\\param"           { BEGIN COMMENT_ARGS; }
-<COMMENT>"\\brief"           { BEGIN COMMENT_ARGS; }
+<COMMENT>"\\param"           { 
+ saveStatementName(&tmpStatementName,"\\param");
+                              fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
+BEGIN COMMENT_ARGS; }
+<COMMENT>"\\brief"           { 
+ saveStatementName(&tmpStatementName,"\\brief");
+                              fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
+BEGIN COMMENT_ARGS; }
 <COMMENT_ARGS>.*\n          {addStatement(functionParser,tmpStatementName,yytext);free(tmpStatementName);BEGIN COMMENT; }
 <COMMENT>.|\n               ;
 
