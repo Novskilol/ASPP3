@@ -9,9 +9,10 @@ typedef SymboleStack SymboleTable;
 typedef struct {
 	char * name;
 	char * class;
+	char * declaration;
 }* TableObject;
 
-TableObject createTableObject(char * name, char * class); // a enlever du .h
+TableObject createTableObject(char * name, char * class, char * declaration); // a enlever du .h
 
 void destroyTableObject(void * this); // idem
 
@@ -23,6 +24,6 @@ void addDeclarationTable(SymboleTable this, TableObject to, int indent);
 
 int getIdDeclaration(void * this);
 
-char * searchSymboleTable(SymboleTable this, char * name, int indent);
+TableObject searchSymboleTable(SymboleTable this, char * name, int indent);
 
 #endif

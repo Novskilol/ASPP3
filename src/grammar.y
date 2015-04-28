@@ -684,28 +684,42 @@ char * create_class_string(char * name) {
  return class_str;
 }
 
+char * create_declaration_string(char * name)
+{
+  char * declaration = name;
+
+  return declaration;  
+}
+
 void add_new_symbole(char * name) {
+  char * declaration = create_declaration_string(name);
   char * class = create_class_string(name);
 
-  TableObject to = createTableObject(name, class);
+  TableObject to = createTableObject(name, class, declaration);
   addDeclarationTable(symbol_table, to, indentLvl);
 
-  printf("<identifier id=\"%d\" class=\"%s\" class=\"declaration\">%s</identifier>", 
-    uniqueId++, class, name);
+  printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\" class=\"declaration\">%s</identifier>", 
+    uniqueId++, declaration, class, name);
+
   free(class);
+  //free(declaration);
 }
 
 void search_symbole(char * name) {
-  char * class = searchSymboleTable(symbol_table, name, indentLvl);
-  if (class == NULL) {
+
+  TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
+
+  if (to == NULL) {
     printf("<identifier id=\"%d\">%s</identifier>", 
       uniqueId++, name);
   }
+
   else {
-    printf("<identifier id=\"%d\" class=\"%s\">%s</identifier>", 
-      uniqueId++, class, name);
+    char * declaration = to->declaration;
+    char * class = to->class;
+    printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">%s</identifier>", 
+      uniqueId++, declaration, class, name);
   }
-  free(class);
 }
 
 /*void addnames(char *name) { 
