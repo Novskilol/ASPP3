@@ -10,6 +10,7 @@ int main(int argc,char **argv)
   FunctionParser fp=createFunctionParser();
   addStatement(fp,name,data);
   parseFunction(fp,functionName);
+  resetFunctionParser(fp);
   return EXIT_SUCCESS;
 
 }
