@@ -126,7 +126,7 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   
 
 }
-void parseFunction(FunctionParser this, char *functionName)
+void parseFunction(FunctionParser this, char *functionName,char *returntype)
 {
   if (this->sizeElements == 0 || this->sizeRules == 0 )
     return;
@@ -139,7 +139,7 @@ void parseFunction(FunctionParser this, char *functionName)
   fprintf(f,"<body>");
   fprintf(f,"<div class=\"doc\">");
 
-  fprintf(f,"<titre><h2>%s</h2></titre>",functionName);
+  fprintf(f,"<titre><h2>%s%s</h2></titre>",returntype,functionName);
   for( i = 0 ; i < this->sizeElements ; ++i)
     {
       

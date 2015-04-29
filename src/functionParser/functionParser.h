@@ -5,7 +5,7 @@ typedef struct functionParser * FunctionParser;
 typedef void (*FunParserRule) (FILE *,char *);
 FunctionParser createFunctionParser();
 void addStatement(FunctionParser this,char *statementName,char *data);
-void parseFunction(FunctionParser this,char *functionName);
+void parseFunction(FunctionParser this,char *functionName,char *returntype);
 void resetFunctionParser(FunctionParser this);
 void destroyFunctionParser(FunctionParser this);
 void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule rule);
