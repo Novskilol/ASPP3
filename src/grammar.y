@@ -761,7 +761,7 @@ bool searchSymbole(char * name) {
 }
 
 static int printBeginFile(int output) {
-  int begin = open("html/begin.html", O_RDONLY, 0444);
+  int begin = open("assets/html/begin.html", O_RDONLY, 0444);
   char c;
   while(read(begin, &c, 1) > 0)
     printf("%c", c);
@@ -769,7 +769,7 @@ static int printBeginFile(int output) {
 }
 
 static int printEndFile(int output) {
-  int end = open("html/end.html", O_RDONLY, 0444);
+  int end = open("assets/html/end.html", O_RDONLY, 0444);
   char c;
   while(read(end, &c, 1) > 0)
     printf("%c", c);

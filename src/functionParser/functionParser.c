@@ -134,7 +134,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returntype)
   FILE *f=fopen(functionName,"w");
   int i;
   fprintf(f,"<head>");
-  fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\"/>");
+  fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"assets/css/style.css\"/>");
   fprintf(f,"</head>");
   fprintf(f,"<body>");
   fprintf(f,"<div class=\"doc\">");
