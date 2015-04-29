@@ -6,9 +6,9 @@
  */ 
  
  int ** substituer_variable(
- 	int **ligne, 
+ 	int ** ligne, 
  	int numero_variable, 
- 	int **valeur_variable, 
+ 	int ** valeur_variable, 
  	int n
 			    )
  {
