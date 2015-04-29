@@ -278,10 +278,10 @@
  | BOOL       { printType($1); }
  | COMPLEX    { printType($1); }
  | IMAGINARY  { printType($1); }
- | atomic_type_specifier       { printType($<s>1); }
- | struct_or_union_specifier   { printType($<s>1); }
- | enum_specifier              { printType($<s>1); }
- | TYPEDEF_NAME	               { printType($1); }
+ | atomic_type_specifier
+ | struct_or_union_specifier
+ | enum_specifier
+ | TYPEDEF_NAME	 { printType($1); }
  ;
 
  struct_or_union_specifier
@@ -490,7 +490,7 @@
  ;
 
  static_assert_declaration
- : STATIC_ASSERT '(' constant_expression ',' STRING_LITERAL ')' ';' { printf("%s\n", $1); }
+ : STATIC_ASSERT '(' constant_expression ',' string_literal ')' ';' { printf("%s\n", $1); }
  ;
 
  statement
