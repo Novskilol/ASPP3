@@ -39,7 +39,7 @@ WS  [ \t\v\n\f]
     static void end_block_comment();
     void saveStatementName(char **dest,char *src);
     char *tmpStatementName;
-//
+
 %}
 
 %option yylineno nounput

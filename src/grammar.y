@@ -8,7 +8,7 @@
   #include <stdbool.h>
   #include <unistd.h>
   #include <math.h>
-  
+
   #include "commun/commun.h"
   #include "symboleTable/symboleTable.h"
   #include "functionParser.h"
@@ -18,10 +18,13 @@
   void open_braces();
   void close_braces();
   void add_new_symbole(char *);
-  bool search_symbole(char *);
+  // void add_declaration_function(char *);
+  bool search_symbole(char *);  
+  // bool search_declaration(char *);
   char * create_class_string(char *);
-  char * create_declaration_string(char * name);
+  char * create_declaration_string(char *);
 
+  char * identifier_name;
   int indentLocked = 0;
   int indentLvl = 0;
   int uniqueId = 1;
@@ -299,7 +302,7 @@
  struct_declaration
  : specifier_qualifier_list ';'	/* for anonymous struct/union */
  | specifier_qualifier_list struct_declarator_list ';'
- | static_assert_declaration { printf("static"); }
+ | static_assert_declaration
  ;
 
  specifier_qualifier_list
@@ -366,19 +369,19 @@
 
  direct_declarator
  : IDENTIFIER { add_new_symbole($1); }
- | '(' declarator ')'
- | direct_declarator '[' ']'
- | direct_declarator '[' '*' ']'
- | direct_declarator '[' STATIC type_qualifier_list assignment_expression ']'
- | direct_declarator '[' STATIC assignment_expression ']'
- | direct_declarator '[' type_qualifier_list '*' ']'
- | direct_declarator '[' type_qualifier_list STATIC assignment_expression ']'
- | direct_declarator '[' type_qualifier_list assignment_expression ']'
- | direct_declarator '[' type_qualifier_list ']'
- | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' parameter_type_list ')' { parseFunction(functionParser,$<s>1);}
- | direct_declarator '(' ')' 
- | direct_declarator '(' identifier_list ')' 
+ | '(' declarator ')' 
+ | direct_declarator '[' ']' 
+ | direct_declarator '[' '*' ']' 
+ | direct_declarator '[' STATIC type_qualifier_list assignment_expression ']' 
+ | direct_declarator '[' STATIC assignment_expression ']' 
+ | direct_declarator '[' type_qualifier_list '*' ']' 
+ | direct_declarator '[' type_qualifier_list STATIC assignment_expression ']' 
+ | direct_declarator '[' type_qualifier_list assignment_expression ']' 
+ | direct_declarator '[' type_qualifier_list ']' 
+ | direct_declarator '[' assignment_expression ']' 
+ | direct_declarator '(' parameter_type_list ')' { parseFunction(functionParser,$<s>1); }
+ | direct_declarator '(' ')' { parseFunction(functionParser,$<s>1); }
+ | direct_declarator '(' identifier_list ')' { parseFunction(functionParser,$<s>1); }
  ;
 
 
@@ -547,7 +550,7 @@
 
  external_declaration
  : function_definition
- | declaration { printf("yala");}
+ | declaration 
  ;
 
  function_definition
@@ -624,11 +627,11 @@ default
 ;
 
 if
-: IF { printf("<keyword>\n%s\n</keyword>\n", $1); }
+  : IF { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 else
-: ELSE { printf("<keyword>\n%s\n</keyword>\n", $1); }
+  : ELSE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 switch
@@ -636,7 +639,7 @@ switch
 ;
 
 while
-: WHILE { printf("<keyword>\n%s\n</keyword>\n", $1); }
+  : WHILE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 do
@@ -644,7 +647,7 @@ do
 ;
 
 for
-: FOR { printf("<keyword>\n%s\n</keyword>\n", $1); }
+  : FOR { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
 goto
@@ -694,9 +697,32 @@ char * create_declaration_string(char * name)
   return declaration;  
 }
 
-void add_new_symbole(char * name) {
-  if (searchDeclarationFunction(name) == false) {
+// void add_declaration_function(char * name) {
+//   if (search_declaration(name) == true)
+//     ;
 
+// }
+
+// bool search_declaration(char * name) {
+//   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
+
+//   if (to == NULL)
+//     return false;
+// }
+
+void add_new_symbole(char * name) {
+
+  TableObject to1;
+  if (false && (to1 = searchSymboleTable(symbol_table, name, indentLvl)) != NULL) {
+
+    char * declaration = to1->declaration;
+    char * class = to1->class;
+    printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
+      uniqueId++, declaration, class, name);
+
+  }
+
+  else {
     char * declaration = create_declaration_string(name);
     char * class = create_class_string(name);
 
@@ -734,7 +760,7 @@ static int printBeginFile(int output) {
   int begin = open("html/begin.html", O_RDONLY, 0444);
   char c;
   while(read(begin, &c, 1) > 0)
-  printf("%c", c);
+    printf("%c", c);
   return begin;
 }
 
@@ -742,7 +768,7 @@ static int printEndFile(int output) {
   int end = open("html/end.html", O_RDONLY, 0444);
   char c;
   while(read(end, &c, 1) > 0)
-  printf("%c", c);
+    printf("%c", c);
   return end;
 }
 
