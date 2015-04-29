@@ -1,13 +1,38 @@
-\documentclass[a4paper,11pt]{article}
-\usepackage[T1]{fontenc}
-\usepackage[english,francais]{babel}
-\author{K\’evin JASON}
-\title{Un Exemple}
-\begin{document}
-\maketitle
-\tableofcontents
-\section{D\’ebut}
-\‘A \’ecrire\dots
-\section{Suite et fin}
-On verra plus tard.Ceci est un test que nous faisons. lol.
-\end{document}
+% Tout ce qui est compris entre le caractère % et une fin de ligne est un
+% commentaire ignoré par LaTeX
+
+% Un fichier LaTeX commence par une commande \documentclass qui déclare le type
+% de document
+
+\documentclass{article}
+
+% Ici, et jusqu'au \begin{document} ci-dessous, c'est le préambule : on y met
+% les déclarations de style, les définitions de macros, etc.
+
+%%%% Personnalisation du style défaut
+
+% Fichiers de style utilisés ; les déclarations se font au moyen de la commande
+% \usepackage
+
+\usepackage{fullpage} % Agrandit les dimensions du texte (hauteur, largeur,
+                      % etc.) par rapport à celles par défaut. Attention
+                      % ce package ne se trouve pas dans toutes les
+                      % distributions LaTeX
+
+\usepackage[french]{babel} % Pour adopter les règles de typographie française
+
+\usepackage[utf8]{inputenc} % Prévenir LaTeX de l'encodage
+
+\usepackage{amsmath} % Les bibliothèques LaTeX de l'American
+                     % Mathematical Society sont pleines de macros
+                     % intéressantes (voire indispensables).
+
+%%%% Déclaration d'environnements
+
+% Les définitions, théorèmes et autres lemmes, corollaires, propositions,
+% exemples, se déclarent au moyen de \newtheorem
+
+\newtheorem{de}{Définition}[subsection] % les définitions et les théorèmes sont
+\newtheorem{theo}{Théorème}[section]    % numérotés par section
+\newtheorem{prop}[theo]{Proposition}    % Les propositions ont le même compteur
+                                        % que les théorèmes
