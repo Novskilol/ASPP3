@@ -103,3 +103,7 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
   destroyTableObject(to);
   return res;
 }
+
+searchDeclarationFunction(char * name) {
+  
+}

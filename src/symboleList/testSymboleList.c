@@ -24,4 +24,5 @@ int main(int argc,char **argv)
   printf("VALUE %d\n",*(int *)searchSymboleList(l,&b));
   destroySymboleList(l);
 
+  return 0;
 }

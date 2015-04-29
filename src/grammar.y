@@ -18,7 +18,7 @@
   void open_braces();
   void close_braces();
   void add_new_symbole(char *);
-  void search_symbole(char *);
+  bool search_symbole(char *);
   char * create_class_string(char *);
   char * create_declaration_string(char * name);
 
@@ -249,7 +249,7 @@
 
  init_declarator
  : declarator '=' initializer
- | declarator
+ | declarator 
  ;
 
  storage_class_specifier
@@ -299,7 +299,7 @@
  struct_declaration
  : specifier_qualifier_list ';'	/* for anonymous struct/union */
  | specifier_qualifier_list struct_declarator_list ';'
- | static_assert_declaration
+ | static_assert_declaration { printf("static"); }
  ;
 
  specifier_qualifier_list
@@ -376,7 +376,7 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' parameter_type_list ')' {parseFunction(functionParser,$<s>1);}
+ | direct_declarator '(' parameter_type_list ')' { parseFunction(functionParser,$<s>1);}
  | direct_declarator '(' ')' 
  | direct_declarator '(' identifier_list ')' 
  ;
@@ -547,7 +547,7 @@
 
  external_declaration
  : function_definition
- | declaration
+ | declaration { printf("yala");}
  ;
 
  function_definition
@@ -695,26 +695,30 @@ char * create_declaration_string(char * name)
 }
 
 void add_new_symbole(char * name) {
-  char * declaration = create_declaration_string(name);
-  char * class = create_class_string(name);
+  if (searchDeclarationFunction(name) == false) {
 
-  TableObject to = createTableObject(name, class, declaration);
-  addDeclarationTable(symbol_table, to, indentLvl);
+    char * declaration = create_declaration_string(name);
+    char * class = create_class_string(name);
 
-  printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
-    uniqueId++, declaration, class, name);
+    TableObject to = createTableObject(name, class, declaration);
+    addDeclarationTable(symbol_table, to, indentLvl);
 
-  free(class);
-  //free(declaration);
+    printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
+      uniqueId++, declaration, class, name);
+
+    free(class);
+    //free(declaration);
+  }
 }
 
-void search_symbole(char * name) {
+bool search_symbole(char * name) {
 
   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
 
   if (to == NULL) {
     printf("<undefined id=\"%d\">\n%s\n</undefined>\n", 
       uniqueId++, name);
+    return false;
   }
 
   else {
@@ -723,6 +727,7 @@ void search_symbole(char * name) {
     printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier>\n", 
       uniqueId++, declaration, class, name);
   }
+  return true;
 }
 
 static int printBeginFile(int output) {
