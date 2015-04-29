@@ -3,7 +3,7 @@
 
 void indentThat() {
     int i=0;
-    for(; i < indent_spacing; i++) {
+    for(; i < indentSpacing; i++) {
         printf(SPACE_C);
     }
 }

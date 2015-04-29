@@ -676,12 +676,12 @@ return
 
 void openBraces() {
   printf("<block>\n<braces>\n{\n</braces>\n<item>\n<block>\n");
-  pushSymboleTable(symbol_table);
+  pushSymboleTable(symbolTable);
 }
 
 void closeBraces() {
   printf("</block>\n</item>\n}\n</block>\n");
-  popSymboleTable(symbol_table);
+  popSymboleTable(symbolTable);
 }
 
 void printType (char * type) 
@@ -718,7 +718,7 @@ void addNewSymbole(char * name) {
 
   TableObject to1;
   /* Check if a fonction is already declared when we encounter its definition */
-  if ((to1 = searchDeclarationFunctionSymboleTable(symbol_table, name, indentLvl)) != NULL) {
+  if ((to1 = searchDeclarationFunctionSymboleTable(symbolTable, name, indentLvl)) != NULL) {
 
     char * declaration = to1->declaration;
     char * class = to1->class;
@@ -731,7 +731,7 @@ void addNewSymbole(char * name) {
     char * class = createClassString(name);
 
     TableObject to = createTableObject(name, class, declaration);
-    addDeclarationTable(symbol_table, to, indentLvl);
+    addDeclarationTable(symbolTable, to, indentLvl);
 
     printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
       uniqueId++, declaration, class, name);
@@ -743,7 +743,7 @@ void addNewSymbole(char * name) {
 
 bool searchSymbole(char * name) {
 
-  TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
+  TableObject to = searchSymboleTable(symbolTable, name, indentLvl);
 
   if (to == NULL) {
     printf("<undefined id=\"%d\">\n%s\n</undefined>\n", 
@@ -778,7 +778,7 @@ static int printEndFile(int output) {
 
 int main()    
 {
-  symbol_table = createSymboleTable();
+  symbolTable = createSymboleTable();
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
@@ -795,7 +795,7 @@ int main()
   close(end);
 
   free(typeName);
-  destroySymboleTable(symbol_table);
+  destroySymboleTable(symbolTable);
   destroyFunctionParser(functionParser);
 
   return 0;    
