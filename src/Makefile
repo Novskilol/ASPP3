@@ -47,4 +47,4 @@ symbolTable/symbolTable.o: symbolTable/symbolTable.h symbolStack/symbolStack.h s
 	make -C symbolTable
 
 clean:
-	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c index.html ../bin/doc_html ../bin/rapport_html symbolTable/testSymbolTable symbolStack/testSymbolStack symbolList/testSymbolList functionParser/testFunctionParser */*.o *.o
+	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c index.html ../bin/* ../lib/* symbolTable/testSymbolTable symbolStack/testSymbolStack symbolList/testSymbolList functionParser/testFunctionParser */*.o *.o
