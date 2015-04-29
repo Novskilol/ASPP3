@@ -520,8 +520,9 @@
  | expression ';'
  ;
 
+  
  selection_statement
- : if '(' expression ')' newlineForward statement newlineBackward else  newlineForward statement newlineBackwardHidden
+ : if '(' expression ')' newlineForward statement newlineBackwardHidden else  newlineForward statement newlineBackwardHidden
  | if '(' expression ')' newlineForward statement newlineBackwardHidden
  | switch '(' expression ')' newlineForward statement newlineBackwardHidden
  ;
@@ -777,6 +778,7 @@ int main()
 {
   symbol_table = createSymboleTable();
   functionParser = createFunctionParser();
+  setDefaultRules(functionParser);
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
   

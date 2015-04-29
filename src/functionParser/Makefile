@@ -5,3 +5,4 @@ all:testFunctionParser
 	cp functionParser.o ../../lib
 	cp testFunctionParser ../../bin
 testFunctionParser:testFunctionParser.o functionParser.o
+
