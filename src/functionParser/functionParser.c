@@ -55,17 +55,9 @@ void resetFunctionParser(FunctionParser this)
     {
       free(this->elements[i]->name);
       free(this->elements[i]->data);      
+      free(this->elements[i]);
     }
-
-  for ( i = 0 ; i < this->sizeMaxElements ; ++i)
-    free(this->elements[i]);
-
-  for ( i = 0 ; i < this->sizeRules ; ++i)
-    free(this->rules[i]->trigger);
-
-  for ( i = 0 ; i < this->sizeMaxRules ; ++i)
-    free(this->rules[i]);
-  
+    
   
   this->sizeElements=0;
 }
@@ -77,17 +69,14 @@ void destroyFunctionParser(FunctionParser this)
     {
       free(this->elements[i]->name);
       free(this->elements[i]->data);    
+      free(this->elements[i]);
     }
 
-  for ( i = 0 ; i < this->sizeRules ; ++i)
+  for ( i = 0 ; i < this->sizeRules ; ++i){
     free(this->rules[i]->trigger);
-
-  for ( i = 0 ; i < this->sizeMaxElements ; ++i)
-    free(this->elements[i]);
-  
-  for ( i = 0 ; i < this->sizeMaxRules ; ++i)
     free(this->rules[i]);
 
+  }
   free(this->elements);
   free(this->rules);
   free(this);
@@ -99,8 +88,8 @@ void addStatement(FunctionParser this,char *statementName,char *data)
     resizeElements(this);
   
   ParserElement toBeAdded = malloc(sizeof(*toBeAdded));
-  toBeAdded->name = strcpy(malloc(sizeof(strlen(statementName)+1)),statementName);
-  toBeAdded->data = strcpy(malloc(sizeof(strlen(data)+1)),data);
+  toBeAdded->name = strcpy(malloc((strlen(statementName)+1)*sizeof(char)),statementName);
+toBeAdded->data = strcpy(malloc(sizeof(char)*(strlen(data)+1)),data);
   this->elements[this->sizeElements++] = toBeAdded;
 
 }
@@ -111,14 +100,14 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   
   ParserRule toBeAdded = malloc(sizeof(*toBeAdded));
   toBeAdded->rule = rule;
-  toBeAdded->trigger = strcpy(malloc(sizeof(strlen(statementName)+1)),statementName);
+  toBeAdded->trigger = strcpy(malloc(sizeof(char)*(strlen(statementName)+1)),statementName);
   this->rules[this->sizeRules++] = toBeAdded;
   
 
 }
 void parseFunction(FunctionParser this, char *functionName)
 {
-  if (this->sizeElements == 0)
+  if (this->sizeElements == 0 || this->sizeRules == 0 )
     return;
 
   FILE *f=fopen(functionName,"w");
@@ -129,9 +118,9 @@ void parseFunction(FunctionParser this, char *functionName)
       char *tmpName=this->elements[i]->name;
       char *tmpData=this->elements[i]->data;
       int y;
-      for( y = 0 ; y < this->sizeRules ; ++y);
-	//if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
-	//this->rules[y]->rule(f,tmpData);
+      for( y = 0 ; y < this->sizeRules ; ++y)
+	if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
+	  this->rules[y]->rule(f,tmpData);
 
     }
   fclose(f);

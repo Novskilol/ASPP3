@@ -11,6 +11,7 @@ int main(int argc,char **argv)
   addStatement(fp,name,data);
   parseFunction(fp,functionName);
   resetFunctionParser(fp);
+  destroyFunctionParser(fp);
   return EXIT_SUCCESS;
 
 }
