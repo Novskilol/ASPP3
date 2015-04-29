@@ -1,38 +1,32 @@
-% Tout ce qui est compris entre le caractère % et une fin de ligne est un
-% commentaire ignoré par LaTeX
-
-% Un fichier LaTeX commence par une commande \documentclass qui déclare le type
-% de document
+% this is a comment please ignore Kappa Kappa
 
 \documentclass{article}
+\usepackage{graphicx}
 
-% Ici, et jusqu'au \begin{document} ci-dessous, c'est le préambule : on y met
-% les déclarations de style, les définitions de macros, etc.
+\begin{document}
 
-%%%% Personnalisation du style défaut
+\title{Introduction to \LaTeX{}}
+\author{Author's Name}
 
-% Fichiers de style utilisés ; les déclarations se font au moyen de la commande
-% \usepackage
+\maketitle
 
-\usepackage{fullpage} % Agrandit les dimensions du texte (hauteur, largeur,
-                      % etc.) par rapport à celles par défaut. Attention
-                      % ce package ne se trouve pas dans toutes les
-                      % distributions LaTeX
+\begin{abstract}
+The abstract text goes here.
+\end{abstract}
 
-\usepackage[french]{babel} % Pour adopter les règles de typographie française
+\section{Introduction}
+Here is the \\
+            text of your introduction.
 
-\usepackage[utf8]{inputenc} % Prévenir LaTeX de l'encodage
+\begin{equation}
+    \label{simple_equation}
+    \alpha = \sqrt{ \beta }
+\end{equation}
 
-\usepackage{amsmath} % Les bibliothèques LaTeX de l'American
-                     % Mathematical Society sont pleines de macros
-                     % intéressantes (voire indispensables).
+\subsection{Subsection Heading Here}
+Write your subsection text here.
 
-%%%% Déclaration d'environnements
+\section{Conclusion}
+Write your conclusion here.
 
-% Les définitions, théorèmes et autres lemmes, corollaires, propositions,
-% exemples, se déclarent au moyen de \newtheorem
-
-\newtheorem{de}{Définition}[subsection] % les définitions et les théorèmes sont
-\newtheorem{theo}{Théorème}[section]    % numérotés par section
-\newtheorem{prop}[theo]{Proposition}    % Les propositions ont le même compteur
-                                        % que les théorèmes
+\end{document}
