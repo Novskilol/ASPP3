@@ -7,5 +7,13 @@ FunctionParser createFunctionParser();
 void addStatement(FunctionParser this,char *statementName,char *data);
 void parseFunction(FunctionParser this,char *functionName);
 void resetFunctionParser(FunctionParser this);
+void destroyFunctionParser(FunctionParser this);
 void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule rule);
+
+/*
+  Default rules functions
+ */
+void defaultReturnRule(FILE*,char*);
+void defaultBriefRule(FILE*,char *);
+void defaultParamRule(FILE*,char *);
 #endif

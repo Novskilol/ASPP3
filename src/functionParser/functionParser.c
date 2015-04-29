@@ -47,6 +47,27 @@ static void resizeElements(FunctionParser this)
   this->sizeMaxElements *= 2;
   
 }
+void defaultReturnRule(FILE * f,char *data)
+{
+  char *begin="<return> Return : ";
+  char *end ="</return>";
+  fprintf(f,"%s %s %s",begin,data,end);
+  
+
+}
+void defaultParamRule(FILE *f,char *data)
+{
+  char *begin="<param> Param :";
+  char *end ="</param>";
+  fprintf(f,"%s %s %s",begin,data,end);
+
+}
+void defaultBriefRule(FILE *f,char *data)
+{
+  char *begin="<brief> Brief : ";
+  char *end ="</brief>";
+  fprintf(f,"%s %s %s",begin,data,end);
+}
 void resetFunctionParser(FunctionParser this)
 {
    int i;
