@@ -13,9 +13,9 @@ typedef struct {
 	char * declaration;
 }* TableObject;
 
-TableObject createTableObject(char * name, int class, char * declaration); // a enlever du .h
+TableObject createTableObject(char * name, int class, char * declaration); 
 
-void destroyTableObject(void * this); // idem
+void destroyTableObject(void * this); 
 
 SymbolTable createSymbolTable();
 

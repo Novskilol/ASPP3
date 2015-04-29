@@ -1,32 +1,38 @@
-
-/* test_stack.c */
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "symbolStack.h"
-#include "stdio.h"
+
+static void testPush(SymbolStack stack, int obj)
+{
+  int * o = malloc(sizeof(*o));
+  *o = obj;
+  printf("push %d\n", *o);
+  pushSymbolStack(stack, o);
+}
+
+static void testPop(SymbolStack stack)
+{
+  int * top = topSymbolStack(stack);
+  printf("top = %d\n", *top);
+  free(top);
+  popSymbolStack(stack);
+}
 
 int main (int argc, char* argv[]) 
 {
-  SymbolStack p=createSymbolStack();
+  SymbolStack s=createSymbolStack();
   int a=1, b=2, c=3;
-  printf("push %d\n", a);
-  pushSymbolStack(p, &a);
-  printf("push %d\n", b);
-  pushSymbolStack(p, &b);
-  printf("push %d\n", c);
-  pushSymbolStack(p, &c);
 
-  void * top = topSymbolStack(p);
-  printf("top = %d\n", *((int*)top));
-  popSymbolStack(p);
-  printf("pop\n");
-    popSymbolStack(p);
-  printf("pop\n");
+  testPush(s, a);
+  testPush(s, b);
+  testPush(s, c);
+
+  testPop(s);
+  testPop(s);
+  testPop(s);
   
-  top = topSymbolStack(p);
-  printf("top = %d\n", *((int*)top));
-  popSymbolStack(p);
-  printf("pop\n");
-  destroySymbolStack(p);
+  destroySymbolStack(s);
 
   return 0;  
 }

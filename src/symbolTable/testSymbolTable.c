@@ -37,7 +37,6 @@ int main()
 	TableObject to3 = createTableObject("y", id++, NULL);
 	TableObject to4 = createTableObject("x", id++, NULL);
 	
-
 	tab[0] = to0;
 	tab[1] = to1;
 	tab[2] = to2;
