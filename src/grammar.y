@@ -670,10 +670,12 @@ return
 
 void open_braces() {
   printf("<block>\n<braces>\n{\n</braces>\n<item>\n<block>\n");
+  pushSymboleTable(symbol_table);
 }
 
 void close_braces() {
   printf("</block>\n</item>\n}\n</block>\n");
+  popSymboleTable(symbol_table);
 }
 
 char * create_class_string(char * name) 
@@ -713,13 +715,12 @@ char * create_declaration_string(char * name)
 void add_new_symbole(char * name) {
 
   TableObject to1;
-  if (false && (to1 = searchSymboleTable(symbol_table, name, indentLvl)) != NULL) {
+  if ((to1 = searchDeclarationFunctionSymboleTable(symbol_table, name, indentLvl)) != NULL) {
 
     char * declaration = to1->declaration;
     char * class = to1->class;
     printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
-      uniqueId++, declaration, class, name);
-
+      uniqueId, declaration, class, name);
   }
 
   else {
@@ -790,6 +791,7 @@ int main()
   close(end);
 
   destroySymboleTable(symbol_table);
+  destroyFunctionParser(functionParser);
 
   return 0;    
 }

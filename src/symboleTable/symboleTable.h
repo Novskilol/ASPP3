@@ -26,4 +26,6 @@ int getIdDeclaration(void * this);
 
 TableObject searchSymboleTable(SymboleTable this, char * name, int indent);
 
+TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name, int indent);
+
 #endif
