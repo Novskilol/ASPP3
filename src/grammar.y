@@ -37,22 +37,21 @@
    char *s;
  }
 
+ %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
+ %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
+ %token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
+ %token XOR_ASSIGN OR_ASSIGN
+ %token ELLIPSIS
+ 
  %token <s> IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
- %token	PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
- %token	AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
- %token	SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
- %token	XOR_ASSIGN OR_ASSIGN
  %token	<s> TYPEDEF_NAME ENUMERATION_CONSTANT
-
- %token	TYPEDEF EXTERN STATIC AUTO REGISTER INLINE
- %token	CONST RESTRICT VOLATILE
+ %token	<s> TYPEDEF EXTERN STATIC AUTO REGISTER INLINE
+ %token	<s> CONST RESTRICT VOLATILE
  %token	<s> BOOL CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE VOID
  %token	<s> COMPLEX IMAGINARY 
- %token	STRUCT UNION ENUM ELLIPSIS
-
+ %token	<s> STRUCT UNION ENUM 
  %token	<s> CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
-
- %token	ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
+ %token	<s> ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
 
  %start translation_unit
 
@@ -67,9 +66,9 @@
  ;
 
  constant
- : I_CONSTANT		/* includes character_constant */
- | F_CONSTANT
- | ENUMERATION_CONSTANT	/* after it has been defined as such */
+ : I_CONSTANT	            { printf("%s\n", $1); }	/* includes character_constant */
+ | F_CONSTANT             { printf("%s\n", $1); }
+ | ENUMERATION_CONSTANT	  { printf("%s\n", $1); }  /* after it has been defined as such */
  ;
 
  enumeration_constant		/* before it has been defined as such */
@@ -78,11 +77,11 @@
 
  string
  : string_literal
- | FUNC_NAME
+ | FUNC_NAME { printf("%s\n", $1); }
  ;
 
  generic_selection
- : GENERIC '(' assignment_expression ',' generic_assoc_list ')'
+ : GENERIC '(' assignment_expression ',' generic_assoc_list ')' { printf("%s\n", $1); }
  ;
 
  generic_assoc_list
@@ -118,9 +117,9 @@
  | INC_OP unary_expression
  | DEC_OP unary_expression
  | unary_operator cast_expression
- | SIZEOF unary_expression
- | SIZEOF '(' type_name ')'
- | ALIGNOF '(' type_name ')'
+ | sizeof unary_expression 
+ | sizeof '(' type_name ')' 
+ | ALIGNOF '(' type_name ')' { printf("%s\n", $1); }
  ;
 
  unary_operator
@@ -258,12 +257,12 @@
  ;
 
  storage_class_specifier
- : TYPEDEF	/* identifiers must be flagged as TYPEDEF_NAME */
- | EXTERN
- | STATIC
- | THREAD_LOCAL
- | AUTO
- | REGISTER
+ : TYPEDEF	      { printf("%s\n", $1); } /* identifiers must be flagged as TYPEDEF_NAME */
+ | EXTERN         { printf("%s\n", $1); }
+ | static
+ | THREAD_LOCAL   { printf("%s\n", $1); }
+ | AUTO           { printf("%s\n", $1); }
+ | REGISTER       { printf("%s\n", $1); }
  ;
 
  type_specifier
@@ -292,8 +291,8 @@
  ;
 
  struct_or_union
- : STRUCT
- | UNION
+ : STRUCT   { printf("%s\n", $1); }
+ | UNION    { printf("%s\n", $1); }
  ;
 
  struct_declaration_list
@@ -326,11 +325,15 @@
  ;
 
  enum_specifier
- : ENUM maybeNewlineForward '{' enumerator_list newlineBackward '}'
- | ENUM maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
- | ENUM identifier maybeNewlineForward '{' enumerator_list newlineBackward '}'
- | ENUM identifier maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
- | ENUM identifier
+ : enum maybeNewlineForward '{' enumerator_list newlineBackward '}'
+ | enum maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
+ | enum identifier maybeNewlineForward '{' enumerator_list newlineBackward '}'
+ | enum identifier maybeNewlineForward '{' enumerator_list ',' newlineBackward '}'
+ | enum identifier
+ ;
+
+ enum
+ : ENUM { printf("%s\n", $1); }
  ;
 
  enumerator_list
@@ -344,24 +347,24 @@
  ;
 
  atomic_type_specifier
- : ATOMIC '(' type_name ')'
+ : ATOMIC '(' type_name ')' { printf("%s\n", $1); }
  ;
 
  type_qualifier
- : CONST
- | RESTRICT
- | VOLATILE
- | ATOMIC
+ : CONST      { printf("%s", $1); }
+ | RESTRICT   { printf("%s", $1); }
+ | VOLATILE   { printf("%s", $1); }
+ | ATOMIC     { printf("%s", $1); }
  ;
 
  function_specifier
- : INLINE
- | NORETURN
+ : INLINE     { printf("%s\n", $1); }
+ | NORETURN   { printf("%s\n", $1); }
  ;
 
  alignment_specifier
- : ALIGNAS '(' type_name ')'
- | ALIGNAS '(' constant_expression ')'
+ : alignas '(' type_name ')'
+ | alignas '(' constant_expression ')'
  ;
 
  declarator
@@ -374,10 +377,10 @@
  | '(' declarator ')' 
  | direct_declarator '[' ']' 
  | direct_declarator '[' '*' ']' 
- | direct_declarator '[' STATIC type_qualifier_list assignment_expression ']' 
- | direct_declarator '[' STATIC assignment_expression ']' 
+ | direct_declarator '[' static type_qualifier_list assignment_expression ']' 
+ | direct_declarator '[' static assignment_expression ']' 
  | direct_declarator '[' type_qualifier_list '*' ']' 
- | direct_declarator '[' type_qualifier_list STATIC assignment_expression ']' 
+ | direct_declarator '[' type_qualifier_list static assignment_expression ']' 
  | direct_declarator '[' type_qualifier_list assignment_expression ']' 
  | direct_declarator '[' type_qualifier_list ']' 
  | direct_declarator '[' assignment_expression ']' 
@@ -439,18 +442,18 @@
  : '(' abstract_declarator ')'
  | '[' ']'
  | '[' '*' ']'
- | '[' STATIC type_qualifier_list assignment_expression ']'
- | '[' STATIC assignment_expression ']'
- | '[' type_qualifier_list STATIC assignment_expression ']'
+ | '[' static type_qualifier_list assignment_expression ']'
+ | '[' static assignment_expression ']'
+ | '[' type_qualifier_list static assignment_expression ']'
  | '[' type_qualifier_list assignment_expression ']'
  | '[' type_qualifier_list ']'
  | '[' assignment_expression ']'
  | direct_abstract_declarator '[' ']'
  | direct_abstract_declarator '[' '*' ']'
- | direct_abstract_declarator '[' STATIC type_qualifier_list assignment_expression ']'
- | direct_abstract_declarator '[' STATIC assignment_expression ']'
+ | direct_abstract_declarator '[' static type_qualifier_list assignment_expression ']'
+ | direct_abstract_declarator '[' static assignment_expression ']'
  | direct_abstract_declarator '[' type_qualifier_list assignment_expression ']'
- | direct_abstract_declarator '[' type_qualifier_list STATIC assignment_expression ']'
+ | direct_abstract_declarator '[' type_qualifier_list static assignment_expression ']'
  | direct_abstract_declarator '[' type_qualifier_list ']'
  | direct_abstract_declarator '[' assignment_expression ']'
  | '(' ')'
@@ -487,7 +490,7 @@
  ;
 
  static_assert_declaration
- : STATIC_ASSERT '(' constant_expression ',' STRING_LITERAL ')' ';'
+ : STATIC_ASSERT '(' constant_expression ',' STRING_LITERAL ')' ';' { printf("%s\n", $1); }
  ;
 
  statement
@@ -622,6 +625,18 @@ identifier
 
 string_literal
 : STRING_LITERAL { printf ("<string>\n%s\n</string>\n", $1); }
+;
+
+sizeof
+: SIZEOF { printf("%s\n", $1); }
+;
+
+alignas
+: ALIGNAS { printf("%s\n", $1); }
+;
+
+static
+: STATIC { printf("%s\n", $1); }
 ;
 
 case

@@ -4,12 +4,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "../symbolTable/symbolTable.h"
 #include "../functionParser/functionParser.h"
 
 #define NEWLINE_C "<br>\n"
 #define SPACE_C "&nbsp"
+#define LESS_T_C "&lt"
+#define GREATER_T_C "&gt"
 #define REGULAR_INDENT 4
 
 extern void addIndent();

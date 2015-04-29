@@ -26,6 +26,7 @@ WS  [ \t\v\n\f]
     #include "grammar.tab.h"
     #include "commun/commun.h"
     #include "functionParser.h"
+
     extern int sym_type(const char *);  /* returns type from symbol table */
     extern void yyerror(const char *);  /* prints grammar violation message */
     extern int yylineno;
@@ -34,9 +35,9 @@ WS  [ \t\v\n\f]
 
     static void comment(void);
     static void directive(void);
-    static int check_type(void);
-    static void begin_block_comment();
-    static void end_block_comment();
+    static int checkType(void);
+    static void beginBlockComment();
+    static void endBlockComment();
     void saveStatementName(char **dest,char *src);
     char *tmpStatementName;
 
@@ -44,9 +45,9 @@ WS  [ \t\v\n\f]
 
 %option yylineno nounput
 
-%x NEWLINE
 %s FOR_S
-%x COMMENT COMMENT_ARGS
+%x NEWLINE COMMENT COMMENT_ARGS COMMENT_DOUBLE_SLASH
+
 
 %%
 
@@ -55,11 +56,11 @@ WS  [ \t\v\n\f]
     fprintf(stderr,"OUHIH");                           
     resetFunctionParser(functionParser); 
     BEGIN COMMENT; 
-    begin_block_comment(); 
+    beginBlockComment(); 
 }
 <COMMENT,COMMENT_ARGS>"*/"  { 
     BEGIN INITIAL; 
-    end_block_comment(); 
+    endBlockComment(); 
 }
 <COMMENT>"\\return"         { 
     saveStatementName(&tmpStatementName,"\\return");
@@ -83,21 +84,26 @@ WS  [ \t\v\n\f]
 }
 <COMMENT>.|\n               ;
 
-"//".*                  { printf("<comment>%s</comment>%s", yytext, NEWLINE_C); }
-"#"                     { directive(); }
+"//"                         { printf("<comment>//"); BEGIN COMMENT_DOUBLE_SLASH; }
+<COMMENT_DOUBLE_SLASH>"<"    { printf(LESS_T_C); }
+<COMMENT_DOUBLE_SLASH>">"    { printf(GREATER_T_C); }
+<COMMENT_DOUBLE_SLASH>"\n"   { printf("</comment>%s", NEWLINE_C); BEGIN INITIAL; }
+<COMMENT_DOUBLE_SLASH>.      { ECHO; }
 
-"auto"					{ ECHO; return(AUTO); }
+"#".*                   { /* discard directives */ }
+
+"auto"					{ yylval.s = yytext; return(AUTO); }
 "break"					{ yylval.s = yytext; return(BREAK); }
 "case"					{ yylval.s = yytext; return(CASE); }
 "char"					{ yylval.s = yytext; return(CHAR); }
-"const"					{ ECHO; return(CONST); }
+"const"					{ yylval.s = yytext; return(CONST); }
 "continue"				{ yylval.s = yytext; return(CONTINUE); }
 "default"				{ yylval.s = yytext; return(DEFAULT); }
 "do"					{ yylval.s = yytext; return(DO); }
 "double"				{ yylval.s = yytext; return(DOUBLE); }
 "else"					{ yylval.s = yytext; return(ELSE); }
-"enum"					{ ECHO; return(ENUM); }
-"extern"				{ ECHO; return(EXTERN); }
+"enum"					{ yylval.s = yytext; return(ENUM); }
+"extern"				{ yylval.s = yytext; return(EXTERN); }
 "float"					{ yylval.s = yytext; return(FLOAT); }
 "for"					{ 
     yylval.s = yytext;
@@ -106,49 +112,48 @@ WS  [ \t\v\n\f]
 }
 "goto"					{ yylval.s = yytext; return(GOTO); }
 "if"					{ yylval.s = yytext; return(IF); }
-"inline"				{ ECHO; return(INLINE); }
+"inline"				{ yylval.s = yytext; return(INLINE); }
 "int"					{ yylval.s = yytext; return(INT); }
 "long"					{ yylval.s = yytext; return(LONG); }
-"register"				{ ECHO; return(REGISTER); }
-"restrict"				{ ECHO; return(RESTRICT); }
+"register"				{ yylval.s = yytext; return(REGISTER); }
+"restrict"				{ yylval.s = yytext; return(RESTRICT); }
 "return"				{ yylval.s = yytext; return(RETURN); }
 "short"					{ yylval.s = yytext; return(SHORT); }
 "signed"				{ yylval.s = yytext; return(SIGNED); }
-"sizeof"				{ ECHO; return(SIZEOF); }
+"sizeof"				{ yylval.s = yytext; return(SIZEOF); }
 "static"				{ yylval.s = yytext; return(STATIC); }
-"struct"				{ ECHO; return(STRUCT); }
+"struct"				{ yylval.s = yytext; return(STRUCT); }
 "switch"				{ yylval.s = yytext; return(SWITCH); }
-"typedef"				{ ECHO; return(TYPEDEF); }
-"union"					{ ECHO; return(UNION); }
+"typedef"				{ yylval.s = yytext; return(TYPEDEF); }
+"union"					{ yylval.s = yytext; return(UNION); }
 "unsigned"				{ yylval.s = yytext; return(UNSIGNED); }
 "void"					{ yylval.s = yytext; return(VOID); }
-"volatile"				{ ECHO; return(VOLATILE); }
+"volatile"				{ yylval.s = yytext; return(VOLATILE); }
 "while"					{ yylval.s = yytext; return(WHILE); }
-"_Alignas"              { ECHO; return ALIGNAS; }
-"_Alignof"              { ECHO; return ALIGNOF; }
-"_Atomic"               { ECHO; return ATOMIC; }
-"_Bool"                 { ECHO; return BOOL; }
+"_Alignas"              { yylval.s = yytext; return ALIGNAS; }
+"_Alignof"              { yylval.s = yytext; return ALIGNOF; }
+"_Atomic"               { yylval.s = yytext; return ATOMIC; }
+"_Bool"                 { yylval.s = yytext; return BOOL; }
 "_Complex"              { yylval.s = yytext; return COMPLEX; }
-"_Generic"              { ECHO; return GENERIC; }
+"_Generic"              { yylval.s = yytext; return GENERIC; }
 "_Imaginary"            { yylval.s = yytext; return IMAGINARY; }
-"_Noreturn"             { ECHO; return NORETURN; }
-"_Static_assert"        { ECHO; return STATIC_ASSERT; }
-"_Thread_local"         { ECHO; return THREAD_LOCAL; }
-"__func__"              { ECHO; return FUNC_NAME; }
+"_Noreturn"             { yylval.s = yytext; return NORETURN; }
+"_Static_assert"        { yylval.s = yytext; return STATIC_ASSERT; }
+"_Thread_local"         { yylval.s = yytext; return THREAD_LOCAL; }
+"__func__"              { yylval.s = yytext; return FUNC_NAME; }
 
-{L}{A}*					            { return check_type(); }
-{HP}{H}+{IS}?				        { ECHO; return I_CONSTANT; }
-{NZ}{D}*{IS}?				        { ECHO; return I_CONSTANT; }
-"0"{O}*{IS}?				        { ECHO; return I_CONSTANT; }
-{CP}?"'"([^'\\\n]|{ES})+"'"		    { return I_CONSTANT; }
-{D}+{E}{FS}?				        { ECHO; return F_CONSTANT; }
-{D}*"."{D}+{E}?{FS}?			    { ECHO; return F_CONSTANT; }
-{D}+"."{E}?{FS}?		            { ECHO; return F_CONSTANT; }
-{HP}{H}+{P}{FS}?		            { ECHO; return F_CONSTANT; }
-{HP}{H}*"."{H}+{P}{FS}?			    { ECHO; return F_CONSTANT; }
-{HP}{H}+"."{P}{FS}?			        { ECHO; return F_CONSTANT; }
+{L}{A}*					            { return checkType(); }
+{HP}{H}+{IS}?				        { yylval.s = yytext; return I_CONSTANT; }
+{NZ}{D}*{IS}?				        { yylval.s = yytext; return I_CONSTANT; }
+"0"{O}*{IS}?				        { yylval.s = yytext; return I_CONSTANT; }
+{CP}?"'"([^'\\\n]|{ES})+"'"		    { yylval.s = yytext; return I_CONSTANT; }
+{D}+{E}{FS}?				        { yylval.s = yytext; return F_CONSTANT; }
+{D}*"."{D}+{E}?{FS}?			    { yylval.s = yytext; return F_CONSTANT; }
+{D}+"."{E}?{FS}?		            { yylval.s = yytext; return F_CONSTANT; }
+{HP}{H}+{P}{FS}?		            { yylval.s = yytext; return F_CONSTANT; }
+{HP}{H}*"."{H}+{P}{FS}?			    { yylval.s = yytext; return F_CONSTANT; }
+{HP}{H}+"."{P}{FS}?			        { yylval.s = yytext; return F_CONSTANT; }
 ({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ yylval.s = yytext; return STRING_LITERAL; }
-
 
 <NEWLINE>{WS}*("}"|"{") {
     BEGIN INITIAL;
@@ -159,6 +164,7 @@ WS  [ \t\v\n\f]
     BEGIN INITIAL;
     yyless(yyleng-1);
 }
+
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -194,7 +200,7 @@ WS  [ \t\v\n\f]
 ":"					    { ECHO; return ':'; }
 "="					    { ECHO; return '='; }
 "("					    { ECHO; return '('; }
-    ")"					    { ECHO; return ')'; }
+")"					    { ECHO; return ')'; }
 ("["|"<:")			    { ECHO; return '['; }
 ("]"|":>")			    { ECHO; return ']'; }
 "."					    { ECHO; return '.'; }
@@ -206,13 +212,13 @@ WS  [ \t\v\n\f]
 "*"					    { ECHO; return '*'; }
 "/"					    { ECHO; return '/'; }
 "%"					    { ECHO; return '%'; }
-"<"					    { ECHO; return '<'; }
-">"					    { ECHO; return '>'; }
+"<"					    { printf(LESS_T_C); return '<'; }
+">"					    { printf(GREATER_T_C); return '>'; }
 "^"					    { ECHO; return '^'; }
 "|"					    { ECHO; return '|'; }
 "?"					    { ECHO; return '?'; }
 [ ]+                    { ECHO;}
-{WS}				    {  /* whitespace separates tokens */ }
+{WS}				    { /* whitespace separates tokens */ }
 .					    { /* discard bad characters */ }
 
 %%
@@ -221,8 +227,8 @@ int yywrap(void) { return 1; }
 static void comment(void)
 {
     int c;
-    printf("<comment>/*");
 
+    printf("%s<comment>/*", NEWLINE_C);
     while ((c = input()) != 0) {
         if (c == '*') {
             while ((c = input()) == '*') 
@@ -235,43 +241,48 @@ static void comment(void)
             if (c == 0)
             break;
         }
-        else if (c == '<') {
-            printf("&lt");
-        }
-        else if (c == '>') {
-            printf("&gt");
-        }
-        else {
-            printf("%c", c);
-        }
-    }
-    yyerror("unterminated comment");
-}
-
-static void directive(void)
-{
-    int c;
-    printf("<directive>#");
-
-    while ((c = input()) != 0) {
-        if (c == '\n') {
-            printf("</directive>%s%s", NEWLINE_C, NEWLINE_C);
-            return;
-        }
-        else if (c == '<') {
-            printf("&lt");
-        }
-        else if (c == '>') {
-            printf("&gt");
-        }
-        else {
-            printf("%c", c);
+        else { 
+            if (c == '<') {
+                printf(LESS_T_C);
+            }
+            else if (c == '>') {
+                printf(GREATER_T_C);
+            }
+            else if (c == '\n') {
+                printf(NEWLINE_C);
+            }
+            else {
+                printf("%c", c);
+            }
         }
     }
     yyerror("unterminated comment");
 }
 
-static int check_type(void)
+//static void directive(void)
+//{
+//    int c;
+//    printf("<directive>#");
+//
+//    while ((c = input()) != 0) {
+//        if (c == '\n') {
+//            printf("</directive>%s", NEWLINE_C);
+//            return;
+//        }
+//        else if (c == '<') {
+//            printf(LESS_T_C);
+//        }
+//        else if (c == '>') {
+//            printf(GREATER_T_C);
+//        }
+//        else {
+//            printf("%c", c);
+//        }
+//    }
+//    yyerror("unterminated directive");
+//}
+
+static int checkType(void)
 {
     switch (sym_type(yytext))
     {
@@ -279,10 +290,10 @@ static int check_type(void)
         yylval.s = yytext;
         return TYPEDEF_NAME;
         case ENUMERATION_CONSTANT:        /* previously defined */
-        ECHO;
+        yylval.s = yytext;
         return ENUMERATION_CONSTANT;
         default:                          /* includes undefined */
-        yylval.s = yytext; //strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
+        yylval.s = yytext;
         return IDENTIFIER;
     }
 }
@@ -306,11 +317,11 @@ void beginLine()
     BEGIN NEWLINE;
 }
 
-static void begin_block_comment() {
+static void beginBlockComment() {
     printf("<div class=\"doc\">%s", NEWLINE_C);
 }
 
-static void end_block_comment() {
+static void endBlockComment() {
     printf("%s</div>", NEWLINE_C);
 }
 void saveStatementName(char **dest,char *src)

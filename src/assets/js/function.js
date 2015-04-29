@@ -2,7 +2,7 @@
 function highlight(name){
 	var list = document.getElementsByClassName(name);
 	for (var i = 0; i < list.length; i++) {
-		list[i].style.background = "#fff";
+		list[i].style.background = "#282828";
 	}
 }
 
