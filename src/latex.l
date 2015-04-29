@@ -3,38 +3,70 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "symboleStack.h"
 int numParenthesis;
-char *mode[100];
-int currentMode;
-enum States{BEGINS,TITLES};
+enum States{BEGINS,TITLES,NONE};
 typedef enum States States;
 States state;
-void addToModes(char *yyt);
+SymboleStack stouck;
 %}
 
 A   [a-zA-Z_0-9]
 
 %x ACCOL
+%x ACCOLEFF
 
 %%
-"\documentclass{article}"
+"\\documentclass{article}"
 
-"\usepackage{graphicx}"
+"\\textbf"\{    {
+                 ++numParenthesis;
+                 printf("<b>");
+		 char *st=strdup("</b>");
+		 pushSymboleStack(stouck,st);
+                 BEGIN ACCOL;		 
+	        }
+
+"\\backslash"   {
+                 printf("\\");
+                }
+
+
+"\\usepackage{graphicx}"
 
 "\\begin"\{    {
-                printf("<div align=\"left\">");
+                printf("<h3>");
 		++numParenthesis;
 		state=BEGINS;
                 BEGIN ACCOL;
                }
+  
+"\\end"\{      {
+                ++numParenthesis;
+                BEGIN ACCOLEFF;
+               }
 
 "\\title"\{    {
-                printf("<center>");
+                printf("<center><font size=\"10\">");
 		++numParenthesis;
 		state=TITLES;
                 BEGIN ACCOL;
+               }
+<ACCOLEFF>[^[\{|\}]]*
+  
+<ACCOLEFF>\{   {
+                ++numParenthesis;
+               }
+
+<ACCOLEFF>\}   {
+                --numParenthesis;
+		if (numParenthesis==0)
+		  {
+		    BEGIN INITIAL;
+		  }
                }
  
 <ACCOL>\{      {
@@ -43,28 +75,58 @@ A   [a-zA-Z_0-9]
                }
 <ACCOL>\}      {
                 --numParenthesis;
+		if(state==NONE) 
+		  {
+		    char *jamb=topSymboleStack(stouck);
+		    printf("%s",jamb);
+		    popSymboleStack(stouck);
+		    free(jamb);
+		    if(emptySymboleStack(stouck))
+		      BEGIN INITIAL;
+		    break;
+		  }
                 if (numParenthesis==0)
 		  {
 		    switch(state)
 		      {
-		      case(BEGINS) :
-			printf("</div>");
-			break;
 		      case(TITLES) :
-			printf("</center>");
+			printf("</center></font>");
+			state=NONE;
+			BEGIN INITIAL;
+			break;
+		      case(BEGINS) :			
+			printf("</h3>");
+			state=NONE;
+			BEGIN INITIAL;
 			break;
 		      default:
 			break;
 		      }
-		    BEGIN INITIAL;
 		  }
 		else
 		  ECHO;
                }
+
+<ACCOL>"\\textbf"\{   {
+                        ++numParenthesis;
+		        printf("<b>");
+			char *st=strdup("</b>");
+			pushSymboleStack(stouck,st);		 
+		      }
+
+<ACCOL>"\\textit"\{   {
+                        ++numParenthesis;
+		        printf("<i>");
+			char *st=strdup("</i>");
+			pushSymboleStack(stouck,st);		 
+		      }
+
 <ACCOL>.       {ECHO;}
 \%[^\n]*
 
-"\n\n" {printf("\n");}
+\\\\ {printf("\n");}
+
+"\n\n" {printf("<br>");}
 
 "\n" 
 
@@ -73,15 +135,6 @@ A   [a-zA-Z_0-9]
 
 %%
 
-
-
-void addToModes(char *yyt){
-  mode[currentMode]=yyt;
-  //  \\\\ {printf("\n");}
-
-  //\\ {printf(" ");}
-  ++currentMode;
-}
 static int printBeginFile(int output) {
   int begin = open("html/begintex.html", O_RDONLY, 0444);
   char c;
@@ -100,7 +153,9 @@ static int printEndFile(int output) {
 
 int main()    
 {
-  currentMode=0;
+  state=NONE;
+  stouck=createSymboleStack();
+  
   numParenthesis=0;
   int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
