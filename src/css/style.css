@@ -61,3 +61,39 @@ body {
 	font-family: DroidSansMono;
 	background-color: #282828;
 }
+.doc return
+{
+   
+    margin: 40px;
+    font-family: DroidSansMono;
+    background-color: #282828;
+    font-size: 0.7 em;
+
+}
+.doc brief
+{
+   
+    margin: 40px;
+    font-family: DroidSansMono;
+    background-color: #282828;
+    font-size: 0.7 em;
+
+}
+.doc param
+{
+   
+    margin: 40px;
+    font-family: DroidSansMono;
+    background-color: #282828;
+    font-size: 0.7 em;
+
+}
+.doc titre
+{
+    margin: 40px;
+    font-family: DroidSansMono;
+    background-color: #282828;
+    font-size: 1 em;
+
+
+}

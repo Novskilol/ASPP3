@@ -9,6 +9,7 @@ void parseFunction(FunctionParser this,char *functionName);
 void resetFunctionParser(FunctionParser this);
 void destroyFunctionParser(FunctionParser this);
 void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule rule);
+void setDefaultRules(FunctionParser this);
 
 /*
   Default rules functions
