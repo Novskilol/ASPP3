@@ -1,7 +1,12 @@
 CC = gcc -g -Wall
 LIBS = -lfl -ly -lm
 INCDIR=../include
-all: testDir compilation
+all: testDir compilation 
+
+latex:
+	flex latex.l
+	$(CC) lex.yy.c -lfl -lm -o lat_exe
+
 compilation: commun/commun.o symboleTable/symboleTable.o symboleStack/symboleStack.o symboleList/symboleList.o functionParser/functionParser.o grammar.tab.o lex.yy.o 
 	$(CC) $^ $(LIBS) -o doc_html 
 	mv doc_html ../bin
