@@ -49,7 +49,7 @@ static void resizeElements(FunctionParser this)
 }
 void defaultReturnRule(FILE * f,char *data)
 {
-  char *begin="<return> Return : ";
+  char *begin="<return> <h1>Return </h1>";
   char *end ="</return>";
   fprintf(f,"%s %s %s",begin,data,end);
   
@@ -57,14 +57,14 @@ void defaultReturnRule(FILE * f,char *data)
 }
 void defaultParamRule(FILE *f,char *data)
 {
-  char *begin="<param> Param :";
+  char *begin="<param> <h1> Param </h1>";
   char *end ="</param>";
   fprintf(f,"%s %s %s",begin,data,end);
 
 }
 void defaultBriefRule(FILE *f,char *data)
 {
-  char *begin="<brief> Brief : ";
+  char *begin="<brief> <h1> Brief </h1>";
   char *end ="</brief>";
   fprintf(f,"%s %s %s",begin,data,end);
 }
@@ -126,13 +126,20 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   
 
 }
-void parseFunction(FunctionParser this, char *functionName)
+void parseFunction(FunctionParser this, char *functionName,char *returntype)
 {
   if (this->sizeElements == 0 || this->sizeRules == 0 )
     return;
 
   FILE *f=fopen(functionName,"w");
   int i;
+  fprintf(f,"<head>");
+  fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\"/>");
+  fprintf(f,"</head>");
+  fprintf(f,"<body>");
+  fprintf(f,"<div class=\"doc\">");
+
+  fprintf(f,"<titre><h2>%s%s</h2></titre>",returntype,functionName);
   for( i = 0 ; i < this->sizeElements ; ++i)
     {
       
@@ -144,9 +151,17 @@ void parseFunction(FunctionParser this, char *functionName)
 	  this->rules[y]->rule(f,tmpData);
 
     }
+  fprintf(f,"</div>");
+  fprintf(f,"</body>");
   fclose(f);
 
   
+}
+void setDefaultRules(FunctionParser this)
+{
+  setRuleForStatement(this,"\\return",defaultReturnRule);
+  setRuleForStatement(this,"\\brief",defaultBriefRule);
+  setRuleForStatement(this,"\\param",defaultParamRule);
 }
 FunctionParser createFunctionParser()
 {

@@ -8,6 +8,10 @@ int f() {
 
 int main() {
 	f();
+
+if (true) return;
+else return;
+
 	{ 
 		int constante = 16;
 	}

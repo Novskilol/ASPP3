@@ -90,7 +90,7 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
     pushSymboleStack(tmp, popSymboleStack(this));
 
   TableObject res = NULL;
-  TableObject to = createTableObject(name, "class", "declaration");
+  TableObject to = createTableObject(name, NULL, NULL);
 
   while (res == NULL && !emptySymboleStack(this)) {
     res = (TableObject)searchSymboleList(topSymboleStack(this), to);
@@ -103,4 +103,34 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
   
   destroyTableObject(to);
   return res;
+}
+
+TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name, int indent) 
+{
+  assert(indent >= 0 && "negative indent in searchDeclarationSymboleTable");
+
+  if (emptySymboleStack(this))
+    return NULL;
+
+  if (getSizeSymboleStack(this) - 1 != indent)
+    return NULL;
+
+  TableObject res = NULL;
+  TableObject to = createTableObject(name, NULL, NULL);
+
+  res = (TableObject)searchSymboleList(topSymboleStack(this), to);
+
+  destroyTableObject(to);
+  return res;
+}
+
+/* Add empty List at stack top */
+void pushSymboleTable(SymboleTable this) {
+  pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
+}
+
+/* Remove list from stack top */
+void popSymboleTable(SymboleTable this) {
+  SymboleList s = popSymboleStack(this);
+  destroySymboleList(s);
 }
