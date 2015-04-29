@@ -22,22 +22,23 @@ ES  (\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
 WS  [ \t\v\n\f]
 
 %{
-    
-#include "grammar.tab.h"
-#include "commun/commun.h"
-#include "functionParser.h"
-extern int sym_type(const char *);  /* returns type from symbol table */
-extern void yyerror(const char *);  /* prints grammar violation message */
-extern int yylineno;
 
-#define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
+    #include "grammar.tab.h"
+    #include "commun/commun.h"
+    #include "functionParser.h"
+    extern int sym_type(const char *);  /* returns type from symbol table */
+    extern void yyerror(const char *);  /* prints grammar violation message */
+    extern int yylineno;
 
-static void comment(void);
-static int check_type(void);
-void begin_block_comment();
-void end_block_comment();
-void saveStatementName(char **dest,char *src);
-char *tmpStatementName;
+    #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
+
+    static void comment(void);
+    static void directive(void);
+    static int check_type(void);
+    static void begin_block_comment();
+    static void end_block_comment();
+    void saveStatementName(char **dest,char *src);
+    char *tmpStatementName;
 //
 %}
 
@@ -50,27 +51,40 @@ char *tmpStatementName;
 %%
 
 "/*"                        { comment(); }
-"/**"                       {   fprintf(stderr,"OUHIH");                           resetFunctionParser(functionParser); BEGIN COMMENT; begin_block_comment(); }
-<COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; end_block_comment(); }
-<COMMENT>"\\return"          { 
-                                
-                              saveStatementName(&tmpStatementName,"\\return");
-                              fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
-                              BEGIN COMMENT_ARGS; }
-
-<COMMENT>"\\param"           { 
- saveStatementName(&tmpStatementName,"\\param");
-                              fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
-BEGIN COMMENT_ARGS; }
-<COMMENT>"\\brief"           { 
- saveStatementName(&tmpStatementName,"\\brief");
-                              fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
-BEGIN COMMENT_ARGS; }
-<COMMENT_ARGS>.*\n          {addStatement(functionParser,tmpStatementName,yytext);free(tmpStatementName);BEGIN COMMENT; }
+"/**"                       {   
+    fprintf(stderr,"OUHIH");                           
+    resetFunctionParser(functionParser); 
+    BEGIN COMMENT; 
+    begin_block_comment(); 
+}
+<COMMENT,COMMENT_ARGS>"*/"  { 
+    BEGIN INITIAL; 
+    end_block_comment(); 
+}
+<COMMENT>"\\return"         { 
+    saveStatementName(&tmpStatementName,"\\return");
+    fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
+    BEGIN COMMENT_ARGS; 
+}
+<COMMENT>"\\param"          { 
+    saveStatementName(&tmpStatementName,"\\param");
+    fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
+    BEGIN COMMENT_ARGS; 
+}
+<COMMENT>"\\brief"          { 
+    saveStatementName(&tmpStatementName,"\\brief");
+    fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
+    BEGIN COMMENT_ARGS; 
+}
+<COMMENT_ARGS>.*\n          {
+    addStatement(functionParser,tmpStatementName,yytext);
+    free(tmpStatementName);
+    BEGIN COMMENT; 
+}
 <COMMENT>.|\n               ;
 
-"//".*                  { /* consume //-comment */ }
-"#".*                   { /* consume directive */ }
+"//".*                  { printf("<comment>%s</comment>", yytext); }
+"#"                     { directive(); }
 
 "auto"					{ ECHO; return(AUTO); }
 "break"					{ yylval.s = yytext; return(BREAK); }
@@ -86,10 +100,10 @@ BEGIN COMMENT_ARGS; }
 "extern"				{ ECHO; return(EXTERN); }
 "float"					{ yylval.s = yytext; return(FLOAT); }
 "for"					{ 
-                            yylval.s = yytext;
-                            BEGIN FOR_S;
-                            return(FOR); 
-                        }
+    yylval.s = yytext;
+    BEGIN FOR_S;
+    return(FOR); 
+}
 "goto"					{ yylval.s = yytext; return(GOTO); }
 "if"					{ yylval.s = yytext; return(IF); }
 "inline"				{ ECHO; return(INLINE); }
@@ -137,14 +151,14 @@ BEGIN COMMENT_ARGS; }
 
 
 <NEWLINE>{WS}*("}"|"{") {
-                            BEGIN INITIAL;
-                            yyless(yyleng-1);
-                        }
+    BEGIN INITIAL;
+    yyless(yyleng-1);
+}
 <NEWLINE>{WS}*.		    {
-					       indentThat();
-					       BEGIN INITIAL;
-					       yyless(yyleng-1);
-					    }
+    indentThat();
+    BEGIN INITIAL;
+    yyless(yyleng-1);
+}
 "..."					{ ECHO; return ELLIPSIS; }
 ">>="					{ ECHO; return RIGHT_ASSIGN; }
 "<<="					{ ECHO; return LEFT_ASSIGN; }
@@ -169,18 +183,18 @@ BEGIN COMMENT_ARGS; }
 "!="					{ ECHO; return NE_OP; }
 <FOR_S>";"              { ECHO; return ';'; }
 ";"					    { 
-                            ECHO; 
-                            printf(NEWLINE_C);
-                            BEGIN NEWLINE;
-                            return ';';
-                        }
+    ECHO; 
+    printf(NEWLINE_C);
+    BEGIN NEWLINE;
+    return ';';
+}
 ("{"|"<%")			    { return '{'; }
 ("}"|"%>")			    { return '}'; }
 ","					    { ECHO; return ','; }
 ":"					    { ECHO; return ':'; }
 "="					    { ECHO; return '='; }
 "("					    { ECHO; return '('; }
-")"					    { ECHO; return ')'; }
+    ")"					    { ECHO; return ')'; }
 ("["|"<:")			    { ECHO; return '['; }
 ("]"|":>")			    { ECHO; return ']'; }
 "."					    { ECHO; return '.'; }
@@ -207,19 +221,53 @@ int yywrap(void) { return 1; }
 static void comment(void)
 {
     int c;
+    printf("<comment>/*");
 
-    while ((c = input()) != 0)
-        if (c == '*')
-        {
-            while ((c = input()) == '*')
-                ;
+    while ((c = input()) != 0) {
+        if (c == '*') {
+            while ((c = input()) == '*') 
+            printf("%c", c);
 
             if (c == '/')
-                return;
+            printf("*/</comment>%s%s", NEWLINE_C, NEWLINE_C);
+            return;
 
             if (c == 0)
-                break;
+            break;
         }
+        else if (c == '<') {
+            printf("&lt");
+        }
+        else if (c == '>') {
+            printf("&gt");
+        }
+        else {
+            printf("%c", c);
+        }
+    }
+    yyerror("unterminated comment");
+}
+
+static void directive(void)
+{
+    int c;
+    printf("<directive>#");
+
+    while ((c = input()) != 0) {
+        if (c == '\n') {
+            printf("</directive>%s%s", NEWLINE_C, NEWLINE_C);
+            return;
+        }
+        else if (c == '<') {
+            printf("&lt");
+        }
+        else if (c == '>') {
+            printf("&gt");
+        }
+        else {
+            printf("%c", c);
+        }
+    }
     yyerror("unterminated comment");
 }
 
@@ -227,13 +275,13 @@ static int check_type(void)
 {
     switch (sym_type(yytext))
     {
-    case TYPEDEF_NAME:                /* previously defined */
+        case TYPEDEF_NAME:                /* previously defined */
         yylval.s = yytext;
         return TYPEDEF_NAME;
-    case ENUMERATION_CONSTANT:        /* previously defined */
+        case ENUMERATION_CONSTANT:        /* previously defined */
         ECHO;
         return ENUMERATION_CONSTANT;
-    default:                          /* includes undefined */
+        default:                          /* includes undefined */
         yylval.s = yytext; //strcpy(malloc(sizeof(char)*strlen(yytext+1)),yytext);
         return IDENTIFIER;
     }
@@ -258,11 +306,11 @@ void beginLine()
     BEGIN NEWLINE;
 }
 
-void begin_block_comment() {
+static void begin_block_comment() {
     printf("<div class=\"doc\">%s", NEWLINE_C);
 }
 
-void end_block_comment() {
+static void end_block_comment() {
     printf("%s</div>", NEWLINE_C);
 }
 void saveStatementName(char **dest,char *src)

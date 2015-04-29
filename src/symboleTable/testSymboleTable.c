@@ -81,4 +81,6 @@ int main()
 	testSearch(table, "y", 4);
 
 	destroySymboleTable(table);
+
+	return 0;
 } 
