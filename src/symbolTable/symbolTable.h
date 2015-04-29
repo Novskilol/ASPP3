@@ -5,11 +5,11 @@
 #include "../symbolList/symbolList.h"
 #include "../util/util.h"
 
-typedef SymboleStack SymboleTable;
+typedef SymbolStack SymbolTable;
 
 typedef struct {
 	char * name;
-	char * class;
+	int class;
 	char * declaration;
 }* TableObject;
 
@@ -17,20 +17,20 @@ TableObject createTableObject(char * name, int class, char * declaration); // a 
 
 void destroyTableObject(void * this); // idem
 
-SymboleTable createSymboleTable();
+SymbolTable createSymbolTable();
 
-void destroySymboleTable(SymboleTable this);
+void destroySymbolTable(SymbolTable this);
 
-void addDeclarationTable(SymboleTable this, TableObject to, int indent);
+void addDeclarationTable(SymbolTable this, TableObject to, int indent);
 
 int getIdDeclaration(void * this);
 
-TableObject searchSymboleTable(SymboleTable this, char * name, int indent);
+TableObject searchSymbolTable(SymbolTable this, char * name, int indent);
 
-TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name, int indent);
+TableObject searchDeclarationFunctionSymbolTable(SymbolTable this, char * name, int indent);
 
-void pushSymboleTable(SymboleTable this);
+void pushSymbolTable(SymbolTable this);
 
-void popSymboleTable(SymboleTable this);
+void popSymbolTable(SymbolTable this);
 
 #endif

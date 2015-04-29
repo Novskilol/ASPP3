@@ -6,9 +6,9 @@
 
 static int id = 1;
 
-static void testSearch(SymboleTable table, char * name, int indent)
+static void testSearch(SymbolTable table, char * name, int indent)
 {
-	TableObject to = searchSymboleTable(table, name, indent);
+	TableObject to = searchSymbolTable(table, name, indent);
 
 	if (to != NULL) {
 		printf("\tvar name %s got class %d with indent %d\n", 
@@ -19,7 +19,7 @@ static void testSearch(SymboleTable table, char * name, int indent)
 			name, indent);
 }
 
-static void testAddDeclaration(SymboleTable table, TableObject to, int indent)
+static void testAddDeclaration(SymbolTable table, TableObject to, int indent)
 {
 	addDeclarationTable(table, to, indent);
 	printf("added var name %s with class %d declared in indent %d\n", 
@@ -28,7 +28,7 @@ static void testAddDeclaration(SymboleTable table, TableObject to, int indent)
 
 int main()
 {
-	SymboleTable table = createSymboleTable();
+	SymbolTable table = createSymbolTable();
 
 	TableObject tab [5];
 	TableObject to0 = createTableObject("y", id++, NULL);
@@ -89,7 +89,7 @@ int main()
 	testSearch(table, "y", 3);
 	testSearch(table, "y", 4);
 
-	destroySymboleTable(table);
+	destroySymbolTable(table);
 
 	return 0;
 } 

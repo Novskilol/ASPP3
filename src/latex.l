@@ -11,7 +11,7 @@ int numParenthesis;
 enum States{BEGINS,TITLES,NONE};
 typedef enum States States;
 States state;
-SymboleStack stouck;
+SymbolStack stouck;
 %}
 
 %option nounput noinput
@@ -28,7 +28,7 @@ A   [a-zA-Z_0-9]
                  ++numParenthesis;
                  printf("<b>");
 		 char *st=strdup("</b>");
-		 pushSymboleStack(stouck,st);
+		 pushSymbolStack(stouck,st);
                  BEGIN ACCOL;		 
 	        }
 
@@ -79,11 +79,11 @@ A   [a-zA-Z_0-9]
                 --numParenthesis;
 		if(state==NONE) 
 		  {
-		    char *jamb=topSymboleStack(stouck);
+		    char *jamb=topSymbolStack(stouck);
 		    printf("%s",jamb);
-		    popSymboleStack(stouck);
+		    popSymbolStack(stouck);
 		    free(jamb);
-		    if(emptySymboleStack(stouck))
+		    if(emptySymbolStack(stouck))
 		      BEGIN INITIAL;
 		    break;
 		  }
@@ -113,14 +113,14 @@ A   [a-zA-Z_0-9]
                         ++numParenthesis;
 		        printf("<b>");
 			char *st=strdup("</b>");
-			pushSymboleStack(stouck,st);		 
+			pushSymbolStack(stouck,st);		 
 		      }
 
 <ACCOL>"\\textit"\{   {
                         ++numParenthesis;
 		        printf("<i>");
 			char *st=strdup("</i>");
-			pushSymboleStack(stouck,st);		 
+			pushSymbolStack(stouck,st);		 
 		      }
 
 <ACCOL>.       {ECHO;}
@@ -156,7 +156,7 @@ static int printEndFile(int output) {
 int main()    
 {
   state=NONE;
-  stouck=createSymboleStack();
+  stouck=createSymbolStack();
   
   numParenthesis=0;
   int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    

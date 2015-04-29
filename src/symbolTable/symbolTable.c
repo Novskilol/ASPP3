@@ -28,98 +28,98 @@ void destroyTableObject(void * this)
   free(to);
 }
 
-SymboleTable createSymboleTable()
+SymbolTable createSymbolTable()
 {
-  SymboleTable stack = createSymboleStack();
+  SymbolTable stack = createSymbolStack();
   return stack;
 }
 
-void destroySymboleTable(SymboleStack this)
+void destroySymbolTable(SymbolStack this)
 {
-  while(!emptySymboleStack(this))
+  while(!emptySymbolStack(this))
   {
-    SymboleList s = popSymboleStack(this);
-    destroySymboleList(s);
+    SymbolList s = popSymbolStack(this);
+    destroySymbolList(s);
   }
-  destroySymboleStack(this);
+  destroySymbolStack(this);
 }
 
-void addDeclarationTable(SymboleTable this, TableObject to, int indent)
+void addDeclarationTable(SymbolTable this, TableObject to, int indent)
 {
-  if (getSizeSymboleStack(this) == indent)
-    pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
+  if (getSizeSymbolStack(this) == indent)
+    pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
 
-  else if (getSizeSymboleStack(this) - 1 > indent) {
-    while (getSizeSymboleStack(this) - 1 > indent) {
-      SymboleList s = popSymboleStack(this);
-      destroySymboleList(s);
+  else if (getSizeSymbolStack(this) - 1 > indent) {
+    while (getSizeSymbolStack(this) - 1 > indent) {
+      SymbolList s = popSymbolStack(this);
+      destroySymbolList(s);
     }
   }
   else {
-    while (getSizeSymboleStack(this) - 1 < indent) {
-      pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
+    while (getSizeSymbolStack(this) - 1 < indent) {
+      pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
     }
   }
 
-  SymboleList list = topSymboleStack(this);
-  addSymboleList(list, to);
+  SymbolList list = topSymbolStack(this);
+  addSymbolList(list, to);
 }
 
-TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
+TableObject searchSymbolTable(SymbolTable this, char * name, int indent)
 {
-  assert(indent >= 0 && "negative indent in searchSymboleTable");
+  assert(indent >= 0 && "negative indent in searchSymbolTable");
 
-  if (emptySymboleStack(this))
+  if (emptySymbolStack(this))
     return NULL;
 
-  SymboleTable tmp = createSymboleTable();
+  SymbolTable tmp = createSymbolTable();
 
   // if size == 1 and indent == 0 search in top list
-  while (getSizeSymboleStack(this) - 1 > indent)
-    pushSymboleStack(tmp, popSymboleStack(this));
+  while (getSizeSymbolStack(this) - 1 > indent)
+    pushSymbolStack(tmp, popSymbolStack(this));
 
   TableObject res = NULL;
   TableObject to = createTableObject(name, 0, NULL);
 
-  while (res == NULL && !emptySymboleStack(this)) {
-    res = (TableObject)searchSymboleList(topSymboleStack(this), to);
-    pushSymboleStack(tmp, popSymboleStack(this));
+  while (res == NULL && !emptySymbolStack(this)) {
+    res = (TableObject)searchSymbolList(topSymbolStack(this), to);
+    pushSymbolStack(tmp, popSymbolStack(this));
   }
   
-  while (!emptySymboleStack(tmp))
-    pushSymboleStack(this, popSymboleStack(tmp));
-  destroySymboleTable(tmp);
+  while (!emptySymbolStack(tmp))
+    pushSymbolStack(this, popSymbolStack(tmp));
+  destroySymbolTable(tmp);
   
   destroyTableObject(to);
   return res;
 }
 
-TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name, int indent) 
+TableObject searchDeclarationFunctionSymbolTable(SymbolTable this, char * name, int indent) 
 {
-  assert(indent >= 0 && "negative indent in searchDeclarationSymboleTable");
+  assert(indent >= 0 && "negative indent in searchDeclarationSymbolTable");
 
-  if (emptySymboleStack(this))
+  if (emptySymbolStack(this))
     return NULL;
 
-  if (getSizeSymboleStack(this) - 1 != indent)
+  if (getSizeSymbolStack(this) - 1 != indent)
     return NULL;
 
   TableObject res = NULL;
   TableObject to = createTableObject(name, 0, NULL);
 
-  res = (TableObject)searchSymboleList(topSymboleStack(this), to);
+  res = (TableObject)searchSymbolList(topSymbolStack(this), to);
 
   destroyTableObject(to);
   return res;
 }
 
 /* Add empty List at stack top */
-void pushSymboleTable(SymboleTable this) {
-  pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
+void pushSymbolTable(SymbolTable this) {
+  pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
 }
 
 /* Remove list from stack top */
-void popSymboleTable(SymboleTable this) {
-  SymboleList s = popSymboleStack(this);
-  destroySymboleList(s);
+void popSymbolTable(SymbolTable this) {
+  SymbolList s = popSymbolStack(this);
+  destroySymbolList(s);
 }

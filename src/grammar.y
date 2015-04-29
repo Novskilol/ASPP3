@@ -20,8 +20,8 @@
   void openBraces();
   void closeBraces();
   void printType(char *);
-  void addNewSymbole(char *);
-  bool searchSymbole(char *);  
+  void addNewSymbol(char *);
+  bool searchSymbol(char *);  
   char * createClassString(char *);
   char * createDeclarationString(char *);
 
@@ -370,7 +370,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { typeLock = true; addNewSymbole($1); }
+ : IDENTIFIER { typeLock = true; addNewSymbol($1); }
  | '(' declarator ')' 
  | direct_declarator '[' ']' 
  | direct_declarator '[' '*' ']' 
@@ -617,7 +617,7 @@ maybeNewlineForward
 };
 
 identifier
-: IDENTIFIER { searchSymbole($1); }
+: IDENTIFIER { searchSymbol($1); }
 ;
 
 string_literal
@@ -676,12 +676,12 @@ return
 
 void openBraces() {
   printf("<block>\n<braces>\n{\n</braces>\n<item>\n<block>\n");
-  pushSymboleTable(symbolTable);
+  pushSymbolTable(symbolTable);
 }
 
 void closeBraces() {
   printf("</block>\n</item>\n}\n</block>\n");
-  popSymboleTable(symbolTable);
+  popSymbolTable(symbolTable);
 }
 
 void printType (char * type) 
@@ -700,12 +700,11 @@ char * createDeclarationString(char * name)
   return declaration;  
 }
 
-void addNewSymbole(char * name) {
+void addNewSymbol(char * name) {
 
   TableObject to1;
-  /* Check if a fonction is already declared when we encounter its definition */
-  if ((to1 = searchDeclarationFunctionSymboleTable(symbolTable, name, indentLvl)) != NULL) {
-
+  /* Check if a fonction has already been declared when we encounter its definition */
+  if ((to1 = searchDeclarationFunctionSymbolTable(symbolTable, name, indentLvl)) != NULL) {
     char * declaration = to1->declaration;
     int  class = to1->class;
     printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
@@ -726,9 +725,9 @@ void addNewSymbole(char * name) {
   }
 }
 
-bool searchSymbole(char * name) {
+bool searchSymbol(char * name) {
 
-  TableObject to = searchSymboleTable(symbolTable, name, indentLvl);
+  TableObject to = searchSymbolTable(symbolTable, name, indentLvl);
 
   if (to == NULL) {
     printf("<undefined id=\"%d\">\n%s\n</undefined>\n", 
@@ -763,16 +762,14 @@ static int printEndFile(int output) {
 
 int main()    
 {
-  symbolTable = createSymboleTable();
+  symbolTable = createSymbolTable();
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
+
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
-  dup2(output, 1);
-  
+  dup2(output, 1);  
   int begin = printBeginFile(output);
-
   yyparse();
-
   int end = printEndFile(output);
 
   close(output);
@@ -780,7 +777,7 @@ int main()
   close(end);
 
   free(typeName);
-  destroySymboleTable(symbolTable);
+  destroySymbolTable(symbolTable);
   destroyFunctionParser(functionParser);
 
   return 0;    

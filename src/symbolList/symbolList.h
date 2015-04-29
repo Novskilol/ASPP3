@@ -1,19 +1,19 @@
 #ifndef SYMBOLE_LIST_H
 #define SYMBOLE_LIST_H
 
-typedef struct symbolList *SymboleList;
+typedef struct symbolList *SymbolList;
 typedef void (*DestroyFunction) (void *);
 typedef int (*CompareFunction) (void *,void *);
 
-SymboleList createSymboleList(CompareFunction c,DestroyFunction f);
+SymbolList createSymbolList(CompareFunction c,DestroyFunction f);
 
-void destroySymboleList(SymboleList this);
+void destroySymbolList(SymbolList this);
 
-int emptySymboleList(SymboleList this);
+int emptySymbolList(SymbolList this);
 
-void addSymboleList(SymboleList this,void* value);
+void addSymbolList(SymbolList this,void* value);
 
-void* searchSymboleList(SymboleList this, void* value);
+void* searchSymbolList(SymbolList this, void* value);
 
 
 #endif

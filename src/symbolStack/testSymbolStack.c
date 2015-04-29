@@ -6,27 +6,27 @@
 
 int main (int argc, char* argv[]) 
 {
-  SymboleStack p=createSymboleStack();
+  SymbolStack p=createSymbolStack();
   int a=1, b=2, c=3;
   printf("push %d\n", a);
-  pushSymboleStack(p, &a);
+  pushSymbolStack(p, &a);
   printf("push %d\n", b);
-  pushSymboleStack(p, &b);
+  pushSymbolStack(p, &b);
   printf("push %d\n", c);
-  pushSymboleStack(p, &c);
+  pushSymbolStack(p, &c);
 
-  void * top = topSymboleStack(p);
+  void * top = topSymbolStack(p);
   printf("top = %d\n", *((int*)top));
-  popSymboleStack(p);
+  popSymbolStack(p);
   printf("pop\n");
-    popSymboleStack(p);
+    popSymbolStack(p);
   printf("pop\n");
   
-  top = topSymboleStack(p);
+  top = topSymbolStack(p);
   printf("top = %d\n", *((int*)top));
-  popSymboleStack(p);
+  popSymbolStack(p);
   printf("pop\n");
-  destroySymboleStack(p);
+  destroySymbolStack(p);
 
   return 0;  
 }

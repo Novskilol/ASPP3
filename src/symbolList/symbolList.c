@@ -3,23 +3,23 @@
 
 #include "symbolList.h"
 
-struct cell_symbole_list{
-  struct cell_symbole_list *next;
+struct cell_symbol_list{
+  struct cell_symbol_list *next;
   void *value;
 };
 struct symbolList{
-  struct cell_symbole_list *last;
+  struct cell_symbol_list *last;
   DestroyFunction destroyCellValueFunction;
   CompareFunction compareCellValueFunction;
 
 };
-void destroySymboleList(SymboleList this)
+void destroySymbolList(SymbolList this)
 {
-  struct cell_symbole_list *curseur;
+  struct cell_symbol_list *curseur;
 
   for (curseur=this->last ; curseur != NULL ;)
   {
-    struct cell_symbole_list *toBeDeleted=curseur;
+    struct cell_symbol_list *toBeDeleted=curseur;
     curseur=curseur->next;
     this->destroyCellValueFunction(toBeDeleted->value);
     free(toBeDeleted);
@@ -28,9 +28,9 @@ void destroySymboleList(SymboleList this)
   free(this);
 
 }
-void* searchSymboleList(SymboleList this, void *value)
+void* searchSymbolList(SymbolList this, void *value)
 {
-  struct cell_symbole_list *curseur=this->last;
+  struct cell_symbol_list *curseur=this->last;
 
 
 
@@ -42,9 +42,9 @@ void* searchSymboleList(SymboleList this, void *value)
 
   }
 
-  void addSymboleList(SymboleList this,void *value)
+  void addSymbolList(SymbolList this,void *value)
   {
-    struct cell_symbole_list *newLast = malloc(sizeof(*newLast));
+    struct cell_symbol_list *newLast = malloc(sizeof(*newLast));
     newLast->value=value;
     newLast->next=this->last;
     this->last=newLast;
@@ -52,14 +52,14 @@ void* searchSymboleList(SymboleList this, void *value)
 
   }
 
-  int emptySymboleList(SymboleList this)
+  int emptySymbolList(SymbolList this)
   {
     return  this->last == NULL;
 
   }
 
-  SymboleList createSymboleList(CompareFunction c,DestroyFunction f){
-    SymboleList s = malloc(sizeof(*s));
+  SymbolList createSymbolList(CompareFunction c,DestroyFunction f){
+    SymbolList s = malloc(sizeof(*s));
     s->last = NULL;
     s->destroyCellValueFunction = f;
     s->compareCellValueFunction = c;

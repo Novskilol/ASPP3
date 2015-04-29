@@ -18,7 +18,7 @@ extern void beginLine();
 
 void indentThat();
 
-SymboleTable symbolTable;
+SymbolTable symbolTable;
 FunctionParser functionParser;
 int indentSpacing;
 
