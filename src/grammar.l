@@ -83,7 +83,7 @@ WS  [ \t\v\n\f]
 }
 <COMMENT>.|\n               ;
 
-"//".*                  { printf("<comment>%s</comment>", yytext); }
+"//".*                  { printf("<comment>%s</comment>%s", yytext, NEWLINE_C); }
 "#"                     { directive(); }
 
 "auto"					{ ECHO; return(AUTO); }

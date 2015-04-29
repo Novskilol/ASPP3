@@ -28,4 +28,8 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent);
 
 TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name, int indent);
 
+void pushSymboleTable(SymboleTable this);
+
+void popSymboleTable(SymboleTable this);
+
 #endif

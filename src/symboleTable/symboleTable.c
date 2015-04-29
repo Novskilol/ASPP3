@@ -124,10 +124,12 @@ TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name
   return res;
 }
 
+/* Add empty List at stack top */
 void pushSymboleTable(SymboleTable this) {
   pushSymboleStack(this, createSymboleList(compareObject, destroyTableObject));
 }
 
+/* Remove list from stack top */
 void popSymboleTable(SymboleTable this) {
   SymboleList s = popSymboleStack(this);
   destroySymboleList(s);
