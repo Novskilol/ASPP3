@@ -1,13 +1,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "symboleList.h"
+#include "symbolList.h"
 
 struct cell_symbole_list{
   struct cell_symbole_list *next;
   void *value;
 };
-struct symboleList{
+struct symbolList{
   struct cell_symbole_list *last;
   DestroyFunction destroyCellValueFunction;
   CompareFunction compareCellValueFunction;

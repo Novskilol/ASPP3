@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "symboleTable.h"
+#include "symbolTable.h"
 
 static void testSearch(SymboleTable table, char * name, int indent)
 {

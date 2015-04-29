@@ -2,17 +2,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "symboleTable.h"
-
-static char * copy(char * this)
-{
-  if (this == NULL) 
-    return NULL;
-  int size = strlen(this) + 1;
-  char * res = malloc(sizeof(*res) * size);
-  strcpy(res, this);
-  return res;
-}
+#include "symbolTable.h"
 
 static int compareObject(void * a, void * b)
 {

@@ -10,23 +10,24 @@
   #include <math.h>
 
   #include "commun/commun.h"
-  #include "symboleTable/symboleTable.h"
+  #include "symbolTable/symbolTable.h"
   #include "functionParser.h"
+  #include "util/util.h"
+
   extern int yylex();
 
-  void yyerror(char*s);
-  void open_braces();
-  void close_braces();
-  void add_new_symbole(char *);
-  // void add_declaration_function(char *);
-  bool search_symbole(char *);  
-  // bool search_declaration(char *);
-  char * create_class_string(char *);
-  char * create_declaration_string(char *);
+  void yyerror(char *);
+  void openBraces();
+  void closeBraces();
+  void printType(char *);
+  void addNewSymbole(char *);
+  bool searchSymbole(char *);  
+  char * createClassString(char *);
+  char * createDeclarationString(char *);
 
   char * typeName = NULL;
   bool typeLock = false;
-  int indentLocked = 0;
+  int indentLock = 0;
   int indentLvl = 0;
   int uniqueId = 1;
 
@@ -266,22 +267,22 @@
  ;
 
  type_specifier
- : VOID       { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | CHAR       { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | SHORT      { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | INT        { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | LONG       { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | FLOAT      { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | DOUBLE     { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | SIGNED     { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | UNSIGNED   { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | BOOL       { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | COMPLEX    { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | IMAGINARY  { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
- | atomic_type_specifier      { if (typeLock == false) { free(typeName); typeName = copy($<s>1); } printf("<type>\n%s\n</type>\n", $<s>1); }
- | struct_or_union_specifier  { if (typeLock == false) { free(typeName); typeName = copy($<s>1); } printf("<type>\n%s\n</type>\n", $<s>1); }
- | enum_specifier             { if (typeLock == false) { free(typeName); typeName = copy($<s>1); } printf("<type>\n%s\n</type>\n", $<s>1); }
- | TYPEDEF_NAME		            { if (typeLock == false) { free(typeName); typeName = copy($1); } printf("<type>\n%s\n</type>\n", $1); }
+ : VOID       { printType($1); }
+ | CHAR       { printType($1); }
+ | SHORT      { printType($1); }
+ | INT        { printType($1); }
+ | LONG       { printType($1); }
+ | FLOAT      { printType($1); }
+ | DOUBLE     { printType($1); }
+ | SIGNED     { printType($1); }
+ | UNSIGNED   { printType($1); }
+ | BOOL       { printType($1); }
+ | COMPLEX    { printType($1); }
+ | IMAGINARY  { printType($1); }
+ | atomic_type_specifier       { printType($<s>1); }
+ | struct_or_union_specifier   { printType($<s>1); }
+ | enum_specifier              { printType($<s>1); }
+ | TYPEDEF_NAME	               { printType($1); }
  ;
 
  struct_or_union_specifier
@@ -369,7 +370,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { typeLock = true; add_new_symbole($1); }
+ : IDENTIFIER { typeLock = true; addNewSymbole($1); }
  | '(' declarator ')' 
  | direct_declarator '[' ']' 
  | direct_declarator '[' '*' ']' 
@@ -380,9 +381,12 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']' 
  | direct_declarator '[' type_qualifier_list ']' 
  | direct_declarator '[' assignment_expression ']' 
- | direct_declarator '(' parameter_type_list ')' { typeLock = false; printf("%s", typeName); parseFunction(functionParser,$<s>1, typeName); }
- | direct_declarator '(' ')' { typeLock = false; printf("%s", typeName); parseFunction(functionParser,$<s>1, typeName); }
- | direct_declarator '(' identifier_list ')' { typeLock = false; printf("%s", typeName); parseFunction(functionParser,$<s>1, typeName); }
+ | direct_declarator '(' parameter_type_list ')' 
+ { typeLock = false; parseFunction(functionParser,$<s>1, typeName); }
+ | direct_declarator '(' ')' 
+ { typeLock = false; parseFunction(functionParser,$<s>1, typeName); }
+ | direct_declarator '(' identifier_list ')' 
+ { typeLock = false; parseFunction(functionParser,$<s>1, typeName); }
  ;
 
 
@@ -569,15 +573,15 @@
  : {
    addIndent();
    printf(NEWLINE_C);
-   indentLocked += 1;
+   indentLock += 1;
    indentLvl += 1;
  };
 
  newlineBackwardHidden
  : {
-  if (indentLocked > 0){
+  if (indentLock > 0){
    deleteIndent();
-   indentLocked -= 1;
+   indentLock -= 1;
    indentLvl -= 1;
  }
 };
@@ -587,33 +591,33 @@ newlineBackward
 {
   deleteIndent();
   indentThat();
-  close_braces();
+  closeBraces();
   indentLvl -= 1;
   printf(NEWLINE_C);
 };
 
 maybeNewlineForward
 : {
-  if (indentLocked == 0) {
+  if (indentLock == 0) {
     indentThat();
     addIndent();
-    open_braces();
+    openBraces();
     printf(NEWLINE_C);    
     indentLvl += 1;
   }
   else {
-    indentLocked -= 1;
+    indentLock -= 1;
     deleteIndent();
     indentThat();
     addIndent();
-    open_braces();
+    openBraces();
     printf(NEWLINE_C);
     beginLine();
   }
 };
 
 identifier
-: IDENTIFIER { search_symbole($1); }
+: IDENTIFIER { searchSymbole($1); }
 ;
 
 string_literal
@@ -670,17 +674,26 @@ return
 
 %%
 
-void open_braces() {
+void openBraces() {
   printf("<block>\n<braces>\n{\n</braces>\n<item>\n<block>\n");
   pushSymboleTable(symbol_table);
 }
 
-void close_braces() {
+void closeBraces() {
   printf("</block>\n</item>\n}\n</block>\n");
   popSymboleTable(symbol_table);
 }
 
-char * create_class_string(char * name) 
+void printType (char * type) 
+{ 
+  if (typeLock == false) { 
+    free(typeName); 
+    typeName = copy(type); 
+  } 
+  printf("<type>\n%s\n</type>\n", type); 
+}
+
+char * createClassString(char * name) 
 {
  int buf_size = (int)((ceil(log10(uniqueId))+1) * sizeof(char));
  char id_str[buf_size];
@@ -694,27 +707,14 @@ char * create_class_string(char * name)
  return class_str;
 }
 
-char * create_declaration_string(char * name)
+char * createDeclarationString(char * name)
 {
   char * declaration = name;
 
   return declaration;  
 }
 
-// void add_declaration_function(char * name) {
-//   if (search_declaration(name) == true)
-//     ;
-
-// }
-
-// bool search_declaration(char * name) {
-//   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
-
-//   if (to == NULL)
-//     return false;
-// }
-
-void add_new_symbole(char * name) {
+void addNewSymbole(char * name) {
 
   TableObject to1;
   /* Check if a fonction is already declared when we encounter its definition */
@@ -727,8 +727,8 @@ void add_new_symbole(char * name) {
   }
 
   else {
-    char * declaration = create_declaration_string(name);
-    char * class = create_class_string(name);
+    char * declaration = createDeclarationString(name);
+    char * class = createClassString(name);
 
     TableObject to = createTableObject(name, class, declaration);
     addDeclarationTable(symbol_table, to, indentLvl);
@@ -741,7 +741,7 @@ void add_new_symbole(char * name) {
   }
 }
 
-bool search_symbole(char * name) {
+bool searchSymbole(char * name) {
 
   TableObject to = searchSymboleTable(symbol_table, name, indentLvl);
 

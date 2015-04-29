@@ -294,11 +294,11 @@ void yyerror(const char *s)
 }
 
 void deleteIndent(){
-    indent -= REGULAR_INDENT;
+    indent_spacing -= REGULAR_INDENT;
     BEGIN NEWLINE;
 }
 void addIndent(){
-    indent += REGULAR_INDENT;
+    indent_spacing += REGULAR_INDENT;
     BEGIN NEWLINE;
 }
 void beginLine()

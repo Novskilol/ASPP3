@@ -1,7 +1,7 @@
 
 /* test_stack.c */
 
-#include "symboleStack.h"
+#include "symbolStack.h"
 #include "stdio.h"
 
 int main (int argc, char* argv[]) 

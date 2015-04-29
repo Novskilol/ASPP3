@@ -1,7 +1,7 @@
 #ifndef SYMBOLE_LIST_H
 #define SYMBOLE_LIST_H
 
-typedef struct symboleList *SymboleList;
+typedef struct symbolList *SymboleList;
 typedef void (*DestroyFunction) (void *);
 typedef int (*CompareFunction) (void *,void *);
 

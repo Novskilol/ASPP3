@@ -6,13 +6,15 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "symboleStack.h"
+#include "symbolStack.h"
 int numParenthesis;
 enum States{BEGINS,TITLES,NONE};
 typedef enum States States;
 States state;
 SymboleStack stouck;
 %}
+
+%option nounput noinput
 
 A   [a-zA-Z_0-9]
 

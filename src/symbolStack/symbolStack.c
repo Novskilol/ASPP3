@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "symboleStack.h"
+#include "symbolStack.h"
 
 struct cell;                                                    
 typedef struct cell * Cell;                                     

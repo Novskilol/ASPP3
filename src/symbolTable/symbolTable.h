@@ -1,8 +1,9 @@
 #ifndef SYMBOLE_TABLE_H
 #define SYMBOLE_TABLE_H
 
-#include "../symboleStack/symboleStack.h"
-#include "../symboleList/symboleList.h"
+#include "../symbolStack/symbolStack.h"
+#include "../symbolList/symbolList.h"
+#include "../util/util.h"
 
 typedef SymboleStack SymboleTable;
 

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../symboleTable/symboleTable.h"
+#include "../symbolTable/symbolTable.h"
 #include "../functionParser/functionParser.h"
 
 #define NEWLINE_C "<br>\n"
@@ -18,10 +18,8 @@ extern void beginLine();
 
 void indentThat();
 
-int indent;
 SymboleTable symbol_table;
 FunctionParser functionParser;
-
-char * copy(char *);
+int indent_spacing;
 
 #endif

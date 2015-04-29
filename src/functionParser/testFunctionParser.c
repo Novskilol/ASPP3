@@ -9,7 +9,7 @@ int main(int argc,char **argv)
   char *functionName="piPlz";
   FunctionParser fp=createFunctionParser();
   addStatement(fp,name,data);
-  parseFunction(fp,functionName);
+  parseFunction(fp,functionName,"type");
   resetFunctionParser(fp);
   destroyFunctionParser(fp);
   return EXIT_SUCCESS;

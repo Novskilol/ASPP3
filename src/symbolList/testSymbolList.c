@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "symboleList.h"
+#include "symbolList.h"
 
 void destroyFunction(void *a)
 {
