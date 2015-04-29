@@ -11,11 +11,11 @@ static int compareObject(void * a, void * b)
   return strcmp(to1->name, to2->name) == 0;
 }
 
-TableObject createTableObject(char * name, char * class, char * declaration)
+TableObject createTableObject(char * name, int class, char * declaration)
 {
   TableObject to = malloc(sizeof(*to));
   to->name = copy(name);  
-  to->class = copy(class);
+  to->class = class;
   to->declaration = copy(declaration);
   return to;
 }
@@ -24,7 +24,6 @@ void destroyTableObject(void * this)
 {
   TableObject to = (TableObject)this;
   free(to->name);
-  free(to->class);
   free(to->declaration);
   free(to);
 }
@@ -80,7 +79,7 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
     pushSymboleStack(tmp, popSymboleStack(this));
 
   TableObject res = NULL;
-  TableObject to = createTableObject(name, NULL, NULL);
+  TableObject to = createTableObject(name, 0, NULL);
 
   while (res == NULL && !emptySymboleStack(this)) {
     res = (TableObject)searchSymboleList(topSymboleStack(this), to);
@@ -106,7 +105,7 @@ TableObject searchDeclarationFunctionSymboleTable(SymboleTable this, char * name
     return NULL;
 
   TableObject res = NULL;
-  TableObject to = createTableObject(name, NULL, NULL);
+  TableObject to = createTableObject(name, 0, NULL);
 
   res = (TableObject)searchSymboleList(topSymboleStack(this), to);
 

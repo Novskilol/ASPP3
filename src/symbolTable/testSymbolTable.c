@@ -4,17 +4,26 @@
 
 #include "symbolTable.h"
 
+static int id = 1;
+
 static void testSearch(SymboleTable table, char * name, int indent)
 {
 	TableObject to = searchSymboleTable(table, name, indent);
 
 	if (to != NULL) {
-		printf("var name %s got class %s with indent %d\n", 
+		printf("\tvar name %s got class %d with indent %d\n", 
 			name, to->class, indent);	
 	}
 	else 
-		printf("var name %s got no class with indent %d\n", 
+		printf("\tvar name %s got no class with indent %d\n", 
 			name, indent);
+}
+
+static void testAddDeclaration(SymboleTable table, TableObject to, int indent)
+{
+	addDeclarationTable(table, to, indent);
+	printf("added var name %s with class %d declared in indent %d\n", 
+		to->name, to->class, indent);
 }
 
 int main()
@@ -22,11 +31,11 @@ int main()
 	SymboleTable table = createSymboleTable();
 
 	TableObject tab [5];
-	TableObject to0 = createTableObject("y", "0", NULL);
-	TableObject to1 = createTableObject("x", "1", NULL);
-	TableObject to2 = createTableObject("x", "2", NULL);
-	TableObject to3 = createTableObject("y", "3", NULL);
-	TableObject to4 = createTableObject("x", "4", NULL);
+	TableObject to0 = createTableObject("y", id++, NULL);
+	TableObject to1 = createTableObject("x", id++, NULL);
+	TableObject to2 = createTableObject("x", id++, NULL);
+	TableObject to3 = createTableObject("y", id++, NULL);
+	TableObject to4 = createTableObject("x", id++, NULL);
 	
 
 	tab[0] = to0;
@@ -39,7 +48,7 @@ int main()
 
 	int i;
 	for(i = 0; i < 5; i++) {
-		addDeclarationTable(table, tab[i], i);
+		testAddDeclaration(table, tab[i], i);
 	}
 
 	testSearch(table, "w", 0);
@@ -58,8 +67,8 @@ int main()
 	testSearch(table, "y", 4);
 	testSearch(table, "y", 5);
 
-	TableObject to5 = createTableObject("w", "w3", NULL);
-	addDeclarationTable(table, to5, 3);
+	TableObject to5 = createTableObject("w", id++, NULL);
+	testAddDeclaration(table, to5, 3);
 
 	testSearch(table, "w", 0);
 	testSearch(table, "w", 1);

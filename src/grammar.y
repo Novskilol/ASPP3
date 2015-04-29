@@ -693,20 +693,6 @@ void printType (char * type)
   printf("<type>\n%s\n</type>\n", type); 
 }
 
-char * createClassString(char * name) 
-{
- int buf_size = (int)((ceil(log10(uniqueId))+1) * sizeof(char));
- char id_str[buf_size];
- sprintf(id_str, "%d", uniqueId);
- 
- int class_size = strlen(id_str) + 1;
- 
- char * class_str = malloc(sizeof(*class_str) * class_size);
- strcpy(class_str, id_str);
- 
- return class_str;
-}
-
 char * createDeclarationString(char * name)
 {
   char * declaration = name;
@@ -722,18 +708,18 @@ void addNewSymbole(char * name) {
 
     char * declaration = to1->declaration;
     char * class = to1->class;
-    printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
+    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
       uniqueId, declaration, class, name);
   }
 
   else {
     char * declaration = createDeclarationString(name);
-    char * class = createClassString(name);
+    char * class = uniqueId;
 
     TableObject to = createTableObject(name, class, declaration);
     addDeclarationTable(symbolTable, to, indentLvl);
 
-    printf("<declaration id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</declaration>\n", 
+    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
       uniqueId++, declaration, class, name);
 
     free(class);
@@ -754,7 +740,7 @@ bool searchSymbole(char * name) {
   else {
     char * declaration = to->declaration;
     char * class = to->class;
-    printf("<identifier id=\"%d\" title=\"%s\" class=\"%s\">\n%s\n</identifier>\n", 
+    printf("<identifier id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</identifier>\n", 
       uniqueId++, declaration, class, name);
   }
   return true;

@@ -13,7 +13,7 @@ typedef struct {
 	char * declaration;
 }* TableObject;
 
-TableObject createTableObject(char * name, char * class, char * declaration); // a enlever du .h
+TableObject createTableObject(char * name, int class, char * declaration); // a enlever du .h
 
 void destroyTableObject(void * this); // idem
 
