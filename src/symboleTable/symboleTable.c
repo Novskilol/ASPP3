@@ -75,6 +75,7 @@ void addDeclarationTable(SymboleTable this, TableObject to, int indent)
   SymboleList list = topSymboleStack(this);
   addSymboleList(list, to);
 }
+
 TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
 {
   assert(indent >= 0 && "negative indent in searchSymboleTable");
@@ -102,8 +103,4 @@ TableObject searchSymboleTable(SymboleTable this, char * name, int indent)
   
   destroyTableObject(to);
   return res;
-}
-
-searchDeclarationFunction(char * name) {
-  
 }

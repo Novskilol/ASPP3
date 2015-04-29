@@ -2,6 +2,9 @@
 #define COMMUN_H
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "../symboleTable/symboleTable.h"
 #include "../functionParser/functionParser.h"
 
@@ -18,4 +21,7 @@ void indentThat();
 int indent;
 SymboleTable symbol_table;
 FunctionParser functionParser;
+
+char * copy(char *);
+
 #endif
