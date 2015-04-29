@@ -707,14 +707,14 @@ void addNewSymbole(char * name) {
   if ((to1 = searchDeclarationFunctionSymboleTable(symbolTable, name, indentLvl)) != NULL) {
 
     char * declaration = to1->declaration;
-    char * class = to1->class;
+    int  class = to1->class;
     printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
       uniqueId, declaration, class, name);
   }
 
   else {
     char * declaration = createDeclarationString(name);
-    char * class = uniqueId;
+    int class = uniqueId;
 
     TableObject to = createTableObject(name, class, declaration);
     addDeclarationTable(symbolTable, to, indentLvl);
@@ -722,7 +722,6 @@ void addNewSymbole(char * name) {
     printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
       uniqueId++, declaration, class, name);
 
-    free(class);
     //free(declaration);
   }
 }
@@ -739,7 +738,7 @@ bool searchSymbole(char * name) {
 
   else {
     char * declaration = to->declaration;
-    char * class = to->class;
+    int class = to->class;
     printf("<identifier id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</identifier>\n", 
       uniqueId++, declaration, class, name);
   }
