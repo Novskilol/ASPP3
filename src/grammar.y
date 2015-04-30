@@ -15,13 +15,13 @@
   #include "util/util.h"
 
   extern int yylex();
-  extern yy_delete_buffer(yy_current_buffer);
-
+  extern int yylex_destroy();
 
   void yyerror(char *);
   void openBraces();
   void closeBraces();
   void atExitDeclaration(char *);
+  void atExitDefinition();
   void printType(char *);
   void addNewSymbol(char *);
   bool searchSymbol(char *);  
@@ -231,8 +231,8 @@
  ;
 
  declaration
- : declaration_specifiers ';'
- | declaration_specifiers init_declarator_list ';'
+ : declaration_specifiers semi_colon
+ | declaration_specifiers init_declarator_list semi_colon
  | static_assert_declaration
  ;
 
@@ -304,8 +304,8 @@
  ;
 
  struct_declaration
- : specifier_qualifier_list ';'	/* for anonymous struct/union */
- | specifier_qualifier_list struct_declarator_list ';'
+ : specifier_qualifier_list semi_colon	/* for anonymous struct/union */
+ | specifier_qualifier_list struct_declarator_list semi_colon
  | static_assert_declaration
  ;
 
@@ -489,7 +489,7 @@
  ;
 
  static_assert_declaration
- : STATIC_ASSERT '(' constant_expression ',' string_literal ')' ';' { printf("%s\n", $1); }
+ : STATIC_ASSERT '(' constant_expression ',' string_literal ')' semi_colon { printf("%s\n", $1); }
  ;
 
  statement
@@ -523,8 +523,8 @@
  ;
 
  expression_statement
- : ';'
- | expression ';'
+ : semi_colon
+ | expression semi_colon
  ;
 
 
@@ -536,7 +536,7 @@
 
  iteration_statement
  : while '(' expression ')' newlineForward statement newlineBackwardHidden
- | do newlineForward statement while '(' expression ')' ';'
+ | do newlineForward statement while '(' expression ')' semi_colon
  | for '(' expression_statement expression_statement ')' newlineForward statement newlineBackwardHidden
  | for '(' expression_statement expression_statement expression ')' newlineForward statement newlineBackwardHidden
  | for '(' declaration expression_statement ')' newlineForward statement newlineBackwardHidden
@@ -544,11 +544,11 @@
  ;
 
  jump_statement
- : goto identifier ';'
- | continue ';'
- | break ';'
- | return ';'
- | return expression ';'
+ : goto identifier semi_colon
+ | continue semi_colon
+ | break semi_colon
+ | return semi_colon
+ | return expression semi_colon
  ;
 
  translation_unit
@@ -557,7 +557,7 @@
  ;
 
  external_declaration
- : function_definition { popSymbolTable(symbolTable); }
+ : function_definition { atExitDefinition(); }
  | declaration 
  ;
 
@@ -617,6 +617,10 @@ maybeNewlineForward
     beginLine();
   }
 };
+
+semi_colon
+: ';' { if(typeLock == false) printf(NEWLINE_C); }
+;
 
 identifier
 : IDENTIFIER { searchSymbol($1); }
@@ -702,7 +706,14 @@ void closeBraces() {
 
 void atExitDeclaration (char * type) { 
   typeLock = false; 
-  parseFunction(functionParser, type, typeName); 
+  parseFunction(functionParser, type, typeName);
+  //printf(NEWLINE_C);
+}
+
+void atExitDefinition() 
+{
+  popSymbolTable(symbolTable); 
+  printf(NEWLINE_C);
 }
 
 void printType (char * type) 
@@ -800,7 +811,7 @@ int main()
   free(typeName);
   destroySymbolTable(symbolTable);
   destroyFunctionParser(functionParser);
-  
+
   yylex_destroy();
 
   return 0;    

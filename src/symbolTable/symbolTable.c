@@ -4,8 +4,12 @@
 
 #include "symbolTable.h"
 
-static int compareObject(void * a, void * b)
-{
+/**
+ * @brief Given to createSymbolList to compare elements
+ * @return true if a and b have the same name
+*/
+ static int compareObject(void * a, void * b)
+ {
   TableObject to1 = (TableObject)a;
   TableObject to2 = (TableObject)b;
   return strcmp(to1->name, to2->name) == 0;
@@ -85,11 +89,11 @@ TableObject searchSymbolTable(SymbolTable this, char * name, int indent)
     res = (TableObject)searchSymbolList(topSymbolStack(this), to);
     pushSymbolStack(tmp, popSymbolStack(this));
   }
-  
+
   while (!emptySymbolStack(tmp))
     pushSymbolStack(this, popSymbolStack(tmp));
   destroySymbolTable(tmp);
-  
+
   destroyTableObject(to);
   return res;
 }
