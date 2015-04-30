@@ -784,7 +784,7 @@ int main()
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
-  int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
+  int output = open("output/index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);  
   appendFile("assets/html/begin.html");
   appendBeginDoc();
