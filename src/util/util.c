@@ -21,7 +21,7 @@ char * copy(const char * s)
 allocate memory, replace every occurences of 'bad' by 'replace'
 and return the new allocated string  
 */
-char *replace(const char * s, char bad, const char * replace) {
+char * replace(const char * s, char bad, const char * replace) {
 	int count = 0;
 	const char *tmp;
 
@@ -43,4 +43,12 @@ char *replace(const char * s, char bad, const char * replace) {
 	}
 	*ptr = 0;
 	return res;
+}
+
+void appendFile(char * src) {
+	int fd = open(src, O_RDONLY, 0444);
+	char c;
+	while(read(fd, &c, 1) > 0)
+		printf("%c", c);
+	close(fd);
 }

@@ -55,7 +55,6 @@ WS  [ \t\v\n\f]
 "/*"                        { comment(); }
 "/**"                       {   
     fprintf(stderr,"OUHIH");                           
-    resetFunctionParser(functionParser); 
     BEGIN COMMENT; 
     beginBlockComment(); 
 }
@@ -85,10 +84,16 @@ WS  [ \t\v\n\f]
 }
 <COMMENT>.|\n               ;
 
-"//"                         { printf("<comment>//"); BEGIN COMMENT_DOUBLE_SLASH; }
+"//"                         { 
+    printf("<comment>//"); 
+    BEGIN COMMENT_DOUBLE_SLASH; 
+}
 <COMMENT_DOUBLE_SLASH>"<"    { printf(LESS_T_C); }
 <COMMENT_DOUBLE_SLASH>">"    { printf(GREATER_T_C); }
-<COMMENT_DOUBLE_SLASH>"\n"   { printf("</comment>%s", NEWLINE_C); BEGIN INITIAL; }
+<COMMENT_DOUBLE_SLASH>"\n"   { 
+    printf("</comment>%s", NEWLINE_C); 
+    BEGIN NEWLINE; 
+}
 <COMMENT_DOUBLE_SLASH>.      { ECHO; }
 
 "#".*                   { /* discard directives */ }
@@ -237,6 +242,7 @@ static void comment(void)
 
             if (c == '/')
             printf("*/</comment>%s%s", NEWLINE_C, NEWLINE_C);
+            BEGIN NEWLINE;
             return;
 
             if (c == 0)
@@ -251,6 +257,7 @@ static void comment(void)
             }
             else if (c == '\n') {
                 printf(NEWLINE_C);
+                BEGIN NEWLINE;
             }
             else {
                 printf("%c", c);

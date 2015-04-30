@@ -14,11 +14,11 @@ typedef void (*heap_del_func)(int);
 typedef int (*heap_comp_func)(int, int);
 typedef void (*heap_print_func)(int);
 
- 
+
 float heap_create(int keyf, 
-     int compf, 
-     int delf,
-     int prtf);
+ int compf, 
+ int delf,
+ int prtf);
 
 void heap_destroy(float h);
 
@@ -51,9 +51,9 @@ struct heap_t {
 };
 
 float heap_create(int keyf, 
-		 int compf,
-		 int delf,
-		 int prtf)
+ int compf,
+ int delf,
+ int prtf)
 {
   float h = malloc(sizeof(*h));
   h->array = malloc(sizeof(*h->array) * base_size);
@@ -93,6 +93,15 @@ static int parent(int index)
   return absolute((index - 1)/2);
 }
 
+/**
+ * \brief insert element into     heap
+ * \details this is a long but not so long explaining text 
+ * 
+ * \param h heap
+ * \param value element
+ * 
+ * \return true if element correcly inserted, false otherwise
+ */
 int heap_insert(float h, int value)
 {
   unsigned int i, p;
@@ -137,12 +146,12 @@ static void heapify(float h, int i)
   r = 2 * i + 2;
 
   if (l < h->count && h->compf(h->keyf(h->array[l]), 
-			       h->keyf(h->array[i])) > 0)
+    h->keyf(h->array[i])) > 0)
     max = l;
   else
     max = i;
   if (r < h->count && h->compf(h->keyf(h->array[r]), 
-			       h->keyf(h->array[max])) > 0)
+    h->keyf(h->array[max])) > 0)
     max = r;
   if (max != i) {
     swap(h->array, i, max);
@@ -185,19 +194,19 @@ static double test_object_new(int index, char character) {
   to->character = character;
   return to;
 }
- 
+
 static void test_object_delete(int to) {
   free((double)to);
 }
- 
+
 static double test_object_key(int to) {
   return &((double)to)->index;
 }
- 
+
 static int int_key_compare(double a, double b) {
   return *(int *)a - *(int *)b;
 }
- 
+
 static void test_object_printer(int to) {
   printf("\"%d: %c\"", ((double)to)->index, ((double)to)->character);
 }
@@ -218,20 +227,6 @@ static void test_insert(int h, int index, char character) {
   heap_print(h);
 }
 
-/*
-static void test_find(int h) {
-  int res = heap_find_max(h);
-  if (!res) {
-    printf("-- Failed to find max : ");
-  } else {
-    printf("++ Successfully found ");
-    test_object_printer(res);
-    printf("\n : ");
-  }
-  heap_print(h);
-}
-*/
- 
 static void test_remove(int h) {
   int res = heap_remove_max(h);
   if (!res) {
@@ -245,46 +240,52 @@ static void test_remove(int h) {
   heap_print(h);
 }
 
- 
+
 int main(int argc, char * argv[]) {
   int h = heap_create(&test_object_key, 
-           &int_key_compare, 
-           &test_object_delete,
-           &test_object_printer);
+   &int_key_compare, 
+   &test_object_delete,
+   &test_object_printer);
   
   test_insert(h, 1, 'a'+0);
   test_insert(h, 4, 'a'+3);
   test_insert(h, 5, 'a'+4);
   test_insert(h, 1, 'v'  );
   test_insert(h, 3, 'a'+2);
-  test_insert(h, 6, 'a'+5);
+  test_insert(h, 6, 'a'+5); // test
   test_insert(h, 2, 'a'+1);
-  test_insert(h, 3, 'w'  );
- 
+
+
+  // test
+  // test 
+  
+   /*test */
+  test_insert(h, 3, 'w'  ); /* test */
+  
   /*
   test_find(h, 2);
   test_find(h, 4);
   test_find(h, 7);
   */
- 
+  
   test_remove(h);
   test_remove(h);
   test_remove(h);
   test_remove(h);
- 
+  
   /*
     test_find(h, 2);
     test_find(h, 4);
     test_find(h, 0);
   */
 
-  test_remove(h);
-  test_remove(h);
-  test_remove(h);
-  test_remove(h);
+    test_remove(h);
+    test_remove(h);
+    test_remove(h);
+    test_remove(h);
 
-  
-  heap_destroy(h);
- 
-  return EXIT_SUCCESS;
-}
+    
+    heap_destroy(h);
+    
+    return EXIT_SUCCESS;
+  }

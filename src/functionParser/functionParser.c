@@ -126,20 +126,38 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   
 
 }
+
+
+void appendBeginDoc() {
+  FILE *f=fopen("output/doc.html","w");
+
+  fprintf(f,"<!DOCTYPE html><head><html>");
+  fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"../assets/css/style.css\"/>");
+  fprintf(f,"</head><body>");
+  fclose(f);
+}
+
+void appendEndDoc() {
+    FILE *f=fopen("output/doc.html","a");
+
+  fprintf(f,"</body></html>");
+  fclose(f);
+
+}
+
+
+
 void parseFunction(FunctionParser this, char *functionName,char *returntype)
 {
-  if (this->sizeElements == 0 || this->sizeRules == 0 )
+  if (this->sizeElements == 0)
     return;
 
-  FILE *f=fopen(functionName,"w");
+  FILE *f=fopen("output/doc.html","a");
   int i;
-  fprintf(f,"<head>");
-  fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"assets/css/style.css\"/>");
-  fprintf(f,"</head>");
-  fprintf(f,"<body>");
+  
   fprintf(f,"<div class=\"doc\">");
 
-  fprintf(f,"<titre><h2>%s%s</h2></titre>",returntype,functionName);
+  fprintf(f,"<titre><h2>%s %s</h2></titre>",returntype,functionName);
   for( i = 0 ; i < this->sizeElements ; ++i)
     {
       
@@ -152,10 +170,8 @@ void parseFunction(FunctionParser this, char *functionName,char *returntype)
 
     }
   fprintf(f,"</div>");
-  fprintf(f,"</body>");
-  fclose(f);
-
   
+  fclose(f);
 }
 void setDefaultRules(FunctionParser this)
 {

@@ -1,13 +1,14 @@
 %{		
 
-  #include <sys/types.h>		
-  #include <sys/stat.h>
   #include <string.h>
-  #include <fcntl.h>		
   #include <stdio.h>
   #include <stdbool.h>
-  #include <unistd.h>
   #include <math.h>
+  #include <sys/types.h>
+  #include <sys/stat.h>
+  #include <fcntl.h>
+  #include <unistd.h>
+
 
   #include "commun/commun.h"
   #include "symbolTable/symbolTable.h"
@@ -614,12 +615,12 @@ maybeNewlineForward
     addIndent();
     openBraces();
     printf(NEWLINE_C);
-    beginLine();
+    beginLine(); // lex function
   }
 };
 
 semi_colon
-: ';' { if(typeLock == false) printf(NEWLINE_C); }
+: ';' { if (indentLvl == 0) printf(NEWLINE_C); }
 ;
 
 identifier
@@ -707,6 +708,9 @@ void closeBraces() {
 void atExitDeclaration (char * type) { 
   typeLock = false; 
   parseFunction(functionParser, type, typeName);
+  
+  //printf("<declaration title=\"%s\">yoloswag</declaration>", typeName);
+  resetFunctionParser(functionParser);
   //printf(NEWLINE_C);
 }
 
@@ -728,7 +732,6 @@ void printType (char * type)
 char * createDeclarationString(char * name)
 {
   char * declaration = name;
-
   return declaration;  
 }
 
@@ -766,7 +769,6 @@ bool searchSymbol(char * name) {
       uniqueId++, name);
     return false;
   }
-
   else {
     char * declaration = to->declaration;
     int class = to->class;
@@ -774,22 +776,6 @@ bool searchSymbol(char * name) {
       uniqueId++, declaration, class, name);
   }
   return true;
-}
-
-static int printBeginFile(int output) {
-  int begin = open("assets/html/begin.html", O_RDONLY, 0444);
-  char c;
-  while(read(begin, &c, 1) > 0)
-    printf("%c", c);
-  return begin;
-}
-
-static int printEndFile(int output) {
-  int end = open("assets/html/end.html", O_RDONLY, 0444);
-  char c;
-  while(read(end, &c, 1) > 0)
-    printf("%c", c);
-  return end;
 }
 
 int main()    
@@ -800,14 +786,15 @@ int main()
 
   int output = open("index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);  
-  int begin = printBeginFile(output);
+  appendFile("assets/html/begin.html");
+  appendBeginDoc();
   yyparse();
-  int end = printEndFile(output);
+  printf("\na\n");
+  appendEndDoc();
+  appendFile("assets/html/end.html");
 
   close(output);
-  close(begin);
-  close(end);
-
+  
   free(typeName);
   destroySymbolTable(symbolTable);
   destroyFunctionParser(functionParser);
