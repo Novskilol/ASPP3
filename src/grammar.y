@@ -19,6 +19,7 @@
   void yyerror(char *);
   void openBraces();
   void closeBraces();
+  void atExitDeclaration(char *);
   void printType(char *);
   void addNewSymbol(char *);
   bool searchSymbol(char *);  
@@ -384,14 +385,10 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']' 
  | direct_declarator '[' type_qualifier_list ']' 
  | direct_declarator '[' assignment_expression ']' 
- | direct_declarator '(' parameter_type_list ')' 
- { typeLock = false; parseFunction(functionParser,$<s>1, typeName); }
- | direct_declarator '(' ')' 
- { typeLock = false; parseFunction(functionParser,$<s>1, typeName); }
- | direct_declarator '(' identifier_list ')' 
- { typeLock = false; parseFunction(functionParser,$<s>1, typeName); }
+ | direct_declarator '(' { pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
  ;
-
 
  pointer
  : '*' type_qualifier_list pointer
@@ -558,7 +555,7 @@
  ;
 
  external_declaration
- : function_definition
+ : function_definition { popSymbolTable(symbolTable); }
  | declaration 
  ;
 
@@ -697,6 +694,11 @@ void openBraces() {
 void closeBraces() {
   printf("</block>\n</item>\n}\n</block>\n");
   popSymbolTable(symbolTable);
+}
+
+void atExitDeclaration (char * type) { 
+  typeLock = false; 
+  parseFunction(functionParser, type, typeName); 
 }
 
 void printType (char * type) 
