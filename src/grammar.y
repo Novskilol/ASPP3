@@ -15,6 +15,8 @@
   #include "util/util.h"
 
   extern int yylex();
+  extern yy_delete_buffer(yy_current_buffer);
+
 
   void yyerror(char *);
   void openBraces();
@@ -621,8 +623,10 @@ identifier
 ;
 
 string_literal
-: STRING_LITERAL { printf ("<string>\n%s\n</string>\n", $1); }
-;
+: STRING_LITERAL { 
+  printf ("<string>\n%s\n</string>\n", $1); 
+  free($1);
+};
 
 sizeof
 : SIZEOF { printf("%s\n", $1); }
@@ -796,6 +800,8 @@ int main()
   free(typeName);
   destroySymbolTable(symbolTable);
   destroyFunctionParser(functionParser);
+  
+  yylex_destroy();
 
   return 0;    
 }

@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-char * copy(char *);
+char * copy(const char *);
+
+char *replace(const char *, char, const char *);
 
 #endif

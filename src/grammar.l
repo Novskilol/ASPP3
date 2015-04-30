@@ -38,6 +38,7 @@ WS  [ \t\v\n\f]
     static int checkType(void);
     static void beginBlockComment();
     static void endBlockComment();
+    static char * replaceString(const char *);
     void saveStatementName(char **dest,char *src);
     char *tmpStatementName;
 
@@ -153,7 +154,7 @@ WS  [ \t\v\n\f]
 {HP}{H}+{P}{FS}?		            { yylval.s = yytext; return F_CONSTANT; }
 {HP}{H}*"."{H}+{P}{FS}?			    { yylval.s = yytext; return F_CONSTANT; }
 {HP}{H}+"."{P}{FS}?			        { yylval.s = yytext; return F_CONSTANT; }
-({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ yylval.s = yytext; return STRING_LITERAL; }
+({SP}?\"([^"\\\n]|{ES})*\"{WS}*)+	{ yylval.s = replaceString(yytext); return STRING_LITERAL; }
 
 <NEWLINE>{WS}*("}"|"{") {
     BEGIN INITIAL;
@@ -298,17 +299,27 @@ static int checkType(void)
     }
 }
 
+static char * replaceString(const char * s) 
+{
+    char * tmp = replace(s, '<', "&lt");
+    char * res = replace(tmp, '>', "&gt");
+    free(tmp);
+    return res; // free in grammar.y
+}
+
 void yyerror(const char *s)
 {
 	fflush(stdout);
 	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
 }
 
-void deleteIndent(){
+void deleteIndent()
+{
     indentSpacing -= REGULAR_INDENT;
     BEGIN NEWLINE;
 }
-void addIndent(){
+void addIndent()
+{
     indentSpacing += REGULAR_INDENT;
     BEGIN NEWLINE;
 }
@@ -317,15 +328,16 @@ void beginLine()
     BEGIN NEWLINE;
 }
 
-static void beginBlockComment() {
+static void beginBlockComment() 
+{
     printf("<div class=\"doc\">%s", NEWLINE_C);
 }
 
-static void endBlockComment() {
+static void endBlockComment()
+{
     printf("%s</div>", NEWLINE_C);
 }
 void saveStatementName(char **dest,char *src)
 {
   *dest=strcpy(malloc((strlen(src)+1)*sizeof(char)),src);
-
 }
