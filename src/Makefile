@@ -18,6 +18,7 @@ testDir:
 	if (test ! -d ../lib) ;then  mkdir ../lib;fi
 	if (test ! -d ../include);then mkdir ../include;fi
 	if (test ! -d ../bin);then mkdir ../bin;fi
+	if (test ! -d output);then mkdir output;fi
 
 grammar.tab.o: commun/commun.h util/util.h
 	bison -d -v grammar.y
