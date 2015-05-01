@@ -54,8 +54,7 @@ WS  [ \t\v\n\f]
 
 "/*"                        { comment(); }
 "/**"                       {   
-    fprintf(stderr,"OUHIH");                           
-    BEGIN COMMENT; 
+      BEGIN COMMENT; 
     beginBlockComment(); 
 }
 <COMMENT,COMMENT_ARGS>"*/"  { 
@@ -64,17 +63,14 @@ WS  [ \t\v\n\f]
 }
 <COMMENT>"\\return"         { 
     saveStatementName(&tmpStatementName,"\\return");
-    fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
     BEGIN COMMENT_ARGS; 
 }
 <COMMENT>"\\param"          { 
     saveStatementName(&tmpStatementName,"\\param");
-    fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
     BEGIN COMMENT_ARGS; 
 }
 <COMMENT>"\\brief"          { 
     saveStatementName(&tmpStatementName,"\\brief");
-    fprintf(stderr,"LOLOLOLO %s",tmpStatementName);
     BEGIN COMMENT_ARGS; 
 }
 <COMMENT_ARGS>.*\n          {

@@ -789,7 +789,6 @@ int main()
   appendFile("assets/html/begin.html");
   appendBeginDoc();
   yyparse();
-  printf("\na\n");
   appendEndDoc();
   appendFile("assets/html/end.html");
 
