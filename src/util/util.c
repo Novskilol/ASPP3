@@ -1,25 +1,25 @@
 #include "util.h"
 
-/* 
-allocate memory, copy argument 
-and return the new allocated string 
+/*
+allocate memory, copy argument
+and return the new allocated string
 */
 char * copy(const char * s)
 {
-	if (s == NULL) 
+	if (s == NULL)
 		return NULL;
 
 	size_t size = strlen(s) + 1;
-	
+
 	char * res = malloc(sizeof(*res) * size);
 	strcpy(res, s);
-	
+
 	return res;
 }
 
-/* 
+/*
 allocate memory, replace every occurences of 'bad' by 'replace'
-and return the new allocated string  
+and return the new allocated string
 */
 char * replace(const char * s, char bad, const char * replace) {
 	int count = 0;
@@ -36,7 +36,7 @@ char * replace(const char * s, char bad, const char * replace) {
 		if(*tmp == bad) {
 			memcpy(ptr, replace, size_replace);
 			ptr += size_replace;
-		} 
+		}
 		else {
 			*ptr++ = *tmp;
 		}

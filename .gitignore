@@ -11,3 +11,4 @@ src/*.yy.c
 src/*.output
 #*
 *#
+src/output/*

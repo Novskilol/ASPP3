@@ -1,4 +1,4 @@
-%{		
+%{
 
   #include <string.h>
   #include <stdio.h>
@@ -25,7 +25,7 @@
   void atExitDefinition();
   void printType(char *);
   void addNewSymbol(char *);
-  bool searchSymbol(char *);  
+  bool searchSymbol(char *);
   char * createClassString(char *);
   char * createDeclarationString(char *);
 
@@ -46,14 +46,14 @@
  %token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
  %token XOR_ASSIGN OR_ASSIGN
  %token ELLIPSIS
- 
+
  %token <s> IDENTIFIER I_CONSTANT F_CONSTANT STRING_LITERAL FUNC_NAME SIZEOF
  %token	<s> TYPEDEF_NAME ENUMERATION_CONSTANT
  %token	<s> TYPEDEF EXTERN STATIC AUTO REGISTER INLINE
  %token	<s> CONST RESTRICT VOLATILE
  %token	<s> BOOL CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE VOID
- %token	<s> COMPLEX IMAGINARY 
- %token	<s> STRUCT UNION ENUM 
+ %token	<s> COMPLEX IMAGINARY
+ %token	<s> STRUCT UNION ENUM
  %token	<s> CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
  %token	<s> ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
 
@@ -121,8 +121,8 @@
  | INC_OP unary_expression
  | DEC_OP unary_expression
  | unary_operator cast_expression
- | sizeof unary_expression 
- | sizeof '(' type_name ')' 
+ | sizeof unary_expression
+ | sizeof '(' type_name ')'
  | ALIGNOF '(' type_name ')' { printf("%s\n", $1); }
  ;
 
@@ -257,7 +257,7 @@
 
  init_declarator
  : declarator '=' initializer
- | declarator 
+ | declarator
  ;
 
  storage_class_specifier
@@ -378,16 +378,16 @@
 
  direct_declarator
  : IDENTIFIER { typeLock = true; addNewSymbol($1); }
- | '(' declarator ')' 
- | direct_declarator '[' ']' 
- | direct_declarator '[' '*' ']' 
- | direct_declarator '[' static type_qualifier_list assignment_expression ']' 
- | direct_declarator '[' static assignment_expression ']' 
- | direct_declarator '[' type_qualifier_list '*' ']' 
- | direct_declarator '[' type_qualifier_list static assignment_expression ']' 
- | direct_declarator '[' type_qualifier_list assignment_expression ']' 
- | direct_declarator '[' type_qualifier_list ']' 
- | direct_declarator '[' assignment_expression ']' 
+ | '(' declarator ')'
+ | direct_declarator '[' ']'
+ | direct_declarator '[' '*' ']'
+ | direct_declarator '[' static type_qualifier_list assignment_expression ']'
+ | direct_declarator '[' static assignment_expression ']'
+ | direct_declarator '[' type_qualifier_list '*' ']'
+ | direct_declarator '[' type_qualifier_list static assignment_expression ']'
+ | direct_declarator '[' type_qualifier_list assignment_expression ']'
+ | direct_declarator '[' type_qualifier_list ']'
+ | direct_declarator '[' assignment_expression ']'
  | direct_declarator '(' { pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
  | direct_declarator '(' { pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
  | direct_declarator '(' { pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
@@ -559,7 +559,7 @@
 
  external_declaration
  : function_definition { atExitDefinition(); }
- | declaration 
+ | declaration
  ;
 
  function_definition
@@ -605,7 +605,7 @@ maybeNewlineForward
     indentThat();
     addIndent();
     openBraces();
-    printf(NEWLINE_C);    
+    printf(NEWLINE_C);
     indentLvl += 1;
   }
   else {
@@ -628,8 +628,8 @@ identifier
 ;
 
 string_literal
-: STRING_LITERAL { 
-  printf ("<string>\n%s\n</string>\n", $1); 
+: STRING_LITERAL {
+  printf ("<string>\n%s\n</string>\n", $1);
   free($1);
 };
 
@@ -685,7 +685,7 @@ continue
 : CONTINUE { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
-break 
+break
 : BREAK { printf("<keyword>\n%s\n</keyword>\n", $1); }
 ;
 
@@ -705,58 +705,65 @@ void closeBraces() {
   popSymbolTable(symbolTable);
 }
 
-void atExitDeclaration (char * type) { 
-  typeLock = false; 
+void atExitDeclaration (char * type) {
+  typeLock = false;
   parseFunction(functionParser, type, typeName);
-  
+
   //printf("<declaration title=\"%s\">yoloswag</declaration>", typeName);
   resetFunctionParser(functionParser);
   //printf(NEWLINE_C);
 }
 
-void atExitDefinition() 
+void atExitDefinition()
 {
-  popSymbolTable(symbolTable); 
+  popSymbolTable(symbolTable);
   printf(NEWLINE_C);
 }
 
-void printType (char * type) 
-{ 
-  if (typeLock == false) { 
-    free(typeName); 
-    typeName = copy(type); 
-  } 
-  printf("<type>\n%s\n</type>\n", type); 
+void printType (char * type)
+{
+  if (typeLock == false) {
+    free(typeName);
+    typeName = copy(type);
+  }
+  printf("<type>\n%s\n</type>\n", type);
 }
 
 char * createDeclarationString(char * name)
 {
   char * declaration = name;
-  return declaration;  
+  return declaration;
 }
 
 void addNewSymbol(char * name) {
+
 
   TableObject to1;
   /* Check if a fonction has already been declared when we encounter its definition */
   if ((to1 = searchDeclarationFunctionSymbolTable(symbolTable, name, indentLvl)) != NULL) {
     char * declaration = to1->declaration;
     int  class = to1->class;
-    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
+    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
       uniqueId, declaration, class, name);
+    //fprintf(stderr, "old declaration -> name: %s id: %d\n", name, uniqueId);
+
   }
 
   else {
+    //fprintf(stderr, "new declaration -> name: %s id: %d\n", name, uniqueId);
+
     char * declaration = createDeclarationString(name);
     int class = uniqueId;
 
     TableObject to = createTableObject(name, class, declaration);
     addDeclarationTable(symbolTable, to, indentLvl);
 
-    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n", 
+    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
       uniqueId++, declaration, class, name);
 
     //free(declaration);
+
+
   }
 }
 
@@ -765,40 +772,75 @@ bool searchSymbol(char * name) {
   TableObject to = searchSymbolTable(symbolTable, name, indentLvl);
 
   if (to == NULL) {
-    printf("<undefined id=\"%d\">\n%s\n</undefined>\n", 
+    printf("<undefined id=\"%d\">\n%s\n</undefined>\n",
       uniqueId++, name);
     return false;
   }
   else {
     char * declaration = to->declaration;
     int class = to->class;
-    printf("<identifier id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</identifier>\n", 
+    printf("<identifier id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</identifier>\n",
       uniqueId++, declaration, class, name);
   }
   return true;
 }
 
-int main()    
+/**
+ * open pipe, send file to pipe, and change yyparse input
+ * @param file Where to read C or Latex code
+ */
+static void parseFile(char * file)
+{
+  int fd = open(file, O_RDONLY, 0444);
+  int oldfdin = dup(0);
+  int fd_p[2];
+  pid_t pid;
+
+  pipe(fd_p);
+  pid = fork();
+
+  if (pid == -1)
+    perror("fork");
+
+  if (pid == 0) {
+    dup2(fd, 0);
+    close(fd);
+    yyparse();
+    exit(0);
+  }
+  else if (pid > 0){
+    waitpid(pid, NULL, 0);
+    close(fd);
+    dup2(oldfdin, 0);
+  }
+}
+
+
+int main(int argc, char *argv[])
 {
   symbolTable = createSymbolTable();
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
-  int output = open("output/index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
-  dup2(output, 1);  
+  int output = open("output/index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
+  int oldfdout = dup2(output, 1);
   appendFile("assets/html/begin.html");
   appendBeginDoc();
-  yyparse();
+
+  parseFile(argv[1]);
+
   appendEndDoc();
   appendFile("assets/html/end.html");
 
   close(output);
-  
+  dup2(oldfdout, 1);
+  fprintf(stdout, "tototo\n");
+
   free(typeName);
   destroySymbolTable(symbolTable);
   destroyFunctionParser(functionParser);
 
   yylex_destroy();
 
-  return 0;    
+  return 0;
 }

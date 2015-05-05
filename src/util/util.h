@@ -16,4 +16,6 @@ char * replace(const char *, char, const char *);
 
 void appendFile(char *);
 
+void parseFile(char *);
+
 #endif

@@ -53,42 +53,42 @@ WS  [ \t\v\n\f]
 %%
 
 "/*"                        { comment(); }
-"/**"                       {   
-      BEGIN COMMENT; 
-    beginBlockComment(); 
+"/**"                       {
+      BEGIN COMMENT;
+    beginBlockComment();
 }
-<COMMENT,COMMENT_ARGS>"*/"  { 
-    BEGIN INITIAL; 
-    endBlockComment(); 
+<COMMENT,COMMENT_ARGS>"*/"  {
+    BEGIN INITIAL;
+    endBlockComment();
 }
-<COMMENT>"\\return"         { 
+<COMMENT>"\\return"         {
     saveStatementName(&tmpStatementName,"\\return");
-    BEGIN COMMENT_ARGS; 
+    BEGIN COMMENT_ARGS;
 }
-<COMMENT>"\\param"          { 
+<COMMENT>"\\param"          {
     saveStatementName(&tmpStatementName,"\\param");
-    BEGIN COMMENT_ARGS; 
+    BEGIN COMMENT_ARGS;
 }
-<COMMENT>"\\brief"          { 
+<COMMENT>"\\brief"          {
     saveStatementName(&tmpStatementName,"\\brief");
-    BEGIN COMMENT_ARGS; 
+    BEGIN COMMENT_ARGS;
 }
 <COMMENT_ARGS>.*\n          {
     addStatement(functionParser,tmpStatementName,yytext);
     free(tmpStatementName);
-    BEGIN COMMENT; 
+    BEGIN COMMENT;
 }
 <COMMENT>.|\n               ;
 
-"//"                         { 
-    printf("<comment>//"); 
-    BEGIN COMMENT_DOUBLE_SLASH; 
+"//"                         {
+    printf("<comment>//");
+    BEGIN COMMENT_DOUBLE_SLASH;
 }
 <COMMENT_DOUBLE_SLASH>"<"    { printf(LESS_T_C); }
 <COMMENT_DOUBLE_SLASH>">"    { printf(GREATER_T_C); }
-<COMMENT_DOUBLE_SLASH>"\n"   { 
-    printf("</comment>%s", NEWLINE_C); 
-    BEGIN NEWLINE; 
+<COMMENT_DOUBLE_SLASH>"\n"   {
+    printf("</comment>%s", NEWLINE_C);
+    BEGIN NEWLINE;
 }
 <COMMENT_DOUBLE_SLASH>.      { ECHO; }
 
@@ -107,10 +107,10 @@ WS  [ \t\v\n\f]
 "enum"					{ yylval.s = yytext; return(ENUM); }
 "extern"				{ yylval.s = yytext; return(EXTERN); }
 "float"					{ yylval.s = yytext; return(FLOAT); }
-"for"					{ 
+"for"					{
     yylval.s = yytext;
     BEGIN FOR_S;
-    return(FOR); 
+    return(FOR);
 }
 "goto"					{ yylval.s = yytext; return(GOTO); }
 "if"					{ yylval.s = yytext; return(IF); }
@@ -190,8 +190,8 @@ WS  [ \t\v\n\f]
 "=="					{ ECHO; return EQ_OP; }
 "!="					{ ECHO; return NE_OP; }
 <FOR_S>";"              { ECHO; return ';'; }
-";"					    { 
-    ECHO; 
+";"					    {
+    ECHO;
     printf(NEWLINE_C);
     BEGIN NEWLINE;
     return ';';
@@ -233,7 +233,7 @@ static void comment(void)
     printf("%s<comment>/*", NEWLINE_C);
     while ((c = input()) != 0) {
         if (c == '*') {
-            while ((c = input()) == '*') 
+            while ((c = input()) == '*')
             printf("%c", c);
 
             if (c == '/')
@@ -244,7 +244,7 @@ static void comment(void)
             if (c == 0)
             break;
         }
-        else { 
+        else {
             if (c == '<') {
                 printf(LESS_T_C);
             }
@@ -302,7 +302,7 @@ static int checkType(void)
     }
 }
 
-static char * replaceString(const char * s) 
+static char * replaceString(const char * s)
 {
     char * tmp = replace(s, '<', "&lt");
     char * res = replace(tmp, '>', "&gt");
@@ -331,7 +331,7 @@ void beginLine()
     BEGIN NEWLINE;
 }
 
-static void beginBlockComment() 
+static void beginBlockComment()
 {
     printf("<div class=\"doc\">%s", NEWLINE_C);
 }
