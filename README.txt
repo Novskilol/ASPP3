@@ -1,12 +1,7 @@
-https://titanpad.com/Ve1zjzDi5G
+Projet Analyse Syntaxique
 
-Pour compiler :
-     1. cd build
-     2. cmake ..
-     3. make
+Compiler :
+cd src ; make
 
-Pour installer :
-     1. make install
-
-Pour tester :
-     1. ctest
+Tester :
+cd src ; ../bin/doc_html src/test/fichier.c

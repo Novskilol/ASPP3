@@ -755,27 +755,21 @@ void addNewSymbol(char * name) {
   if ((to1 = searchDeclarationFunctionSymbolTable(symbolTable, name, indentLvl)) != NULL) {
     char * declaration = to1->declaration;
     int  class = to1->class;
-    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
-      uniqueId, declaration, class, name);
-    //fprintf(stderr, "old declaration -> name: %s id: %d\n", name, uniqueId);
-
+    printf("<declaration title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
+      declaration, class, name);
   }
-
   else {
-    //fprintf(stderr, "new declaration -> name: %s id: %d\n", name, uniqueId);
-
     char * declaration = createDeclarationString(name);
     int class = uniqueId;
 
     TableObject to = createTableObject(name, class, declaration);
     addDeclarationTable(symbolTable, to, indentLvl);
 
-    printf("<declaration id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
-      uniqueId++, declaration, class, name);
+    printf("<declaration title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
+      declaration, class, name);
 
+    uniqueId++;
     //free(declaration);
-
-
   }
 }
 
@@ -784,63 +778,57 @@ bool searchSymbol(char * name) {
   TableObject to = searchSymbolTable(symbolTable, name, indentLvl);
 
   if (to == NULL) {
-    printf("<undefined id=\"%d\">\n%s\n</undefined>\n",
-      uniqueId++, name);
+    printf("<undefined>\n%s\n</undefined>\n", name);
     return false;
   }
   else {
     char * declaration = to->declaration;
     int class = to->class;
-    printf("<identifier id=\"%d\" title=\"%s\" class=\"%d\">\n%s\n</identifier>\n",
-      uniqueId++, declaration, class, name);
+    printf("<identifier title=\"%s\" class=\"%d\">\n%s\n</identifier>\n",
+      declaration, class, name);
   }
   return true;
 }
 
 /**
- * open pipe, send file to pipe, and change yyparse input
+ * change yyparse input
  * @param file Where to read C or Latex code
  */
 static void parseFile(char * file)
 {
   int fd = open(file, O_RDONLY, 0444);
-  // int oldfdin = dup(0);
-  // int fd_p[2];
-  // pid_t pid;
-
-  // pipe(fd_p);
-  // pid = fork();
-
-  // if (pid == -1)
-  //   perror("fork");
-
-  // if (pid == 0) {
-  //   dup2(fd, 0);
-  //   close(fd);
-  //   yyparse();
-  //   exit(0);
-  // }
-  // else if (pid > 0){
-  //   waitpid(pid, NULL, 0);
-  //   close(fd);
-  //   dup2(oldfdin, 0);
-  // }
-
   dup2(fd, 0);
   close(fd);
   yyparse();
 
 }
 
+static openOutputFile (char * dest) {
+  char * s = "output/";
+  char buf [strlen(dest)+strlen(s)+1];
+  strcpy(buf, s);
+  strcat(buf, dest);
+  return open(buf,O_WRONLY|O_TRUNC|O_CREAT,0666);
+}
 
 int main(int argc, char *argv[])
 {
+  if (argc < 2 || argc > 3){
+    fprintf(stderr, "Usage : %s src_file.c output_name.html\n", argv[0]);
+    return -1;
+  }
+
   symbolTable = createSymbolTable();
   pushSymbolTable(symbolTable); // push initial list
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
-  int output = open("output/index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
+  int output;
+  if (argc == 2)
+    output = open("output/index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
+  else
+    output = openOutputFile(argv[2]);
+
   dup2(output, 1);
   appendFile("assets/html/begin.html");
   appendBeginDoc();
