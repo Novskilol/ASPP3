@@ -7,6 +7,9 @@ void g(int i);
 void h(int i);
 void j(int i);
 
+
+
+
 void j(int i){
 i = 4;
 }
