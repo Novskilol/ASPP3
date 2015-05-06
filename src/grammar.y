@@ -802,48 +802,54 @@ bool searchSymbol(char * name) {
 static void parseFile(char * file)
 {
   int fd = open(file, O_RDONLY, 0444);
-  int oldfdin = dup(0);
-  int fd_p[2];
-  pid_t pid;
+  // int oldfdin = dup(0);
+  // int fd_p[2];
+  // pid_t pid;
 
-  pipe(fd_p);
-  pid = fork();
+  // pipe(fd_p);
+  // pid = fork();
 
-  if (pid == -1)
-    perror("fork");
+  // if (pid == -1)
+  //   perror("fork");
 
-  if (pid == 0) {
-    dup2(fd, 0);
-    close(fd);
-    yyparse();
-    exit(0);
-  }
-  else if (pid > 0){
-    waitpid(pid, NULL, 0);
-    close(fd);
-    dup2(oldfdin, 0);
-  }
+  // if (pid == 0) {
+  //   dup2(fd, 0);
+  //   close(fd);
+  //   yyparse();
+  //   exit(0);
+  // }
+  // else if (pid > 0){
+  //   waitpid(pid, NULL, 0);
+  //   close(fd);
+  //   dup2(oldfdin, 0);
+  // }
+
+  dup2(fd, 0);
+  close(fd);
+  yyparse();
+
 }
 
 
 int main(int argc, char *argv[])
 {
+
+
   symbolTable = createSymbolTable();
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
   int output = open("output/index.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
-  int oldfdout = dup2(output, 1);
+  dup2(output, 1);
   appendFile("assets/html/begin.html");
   appendBeginDoc();
 
-  parseFile(argv[1]);
+  parseFile("test/testvar.c");
 
   appendEndDoc();
   appendFile("assets/html/end.html");
 
   close(output);
-  dup2(oldfdout, 1);
 
   free(typeName);
   destroySymbolTable(symbolTable);

@@ -18,7 +18,7 @@
 TableObject createTableObject(char * name, int class, char * declaration)
 {
   TableObject to = malloc(sizeof(*to));
-  to->name = copy(name);  
+  to->name = copy(name);
   to->class = class;
   to->declaration = copy(declaration);
   return to;
@@ -53,17 +53,17 @@ void addDeclarationTable(SymbolTable this, TableObject to, int indent)
   if (getSizeSymbolStack(this) == indent)
     pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
 
-  else if (getSizeSymbolStack(this) - 1 > indent) {
-    while (getSizeSymbolStack(this) - 1 > indent) {
-      SymbolList s = popSymbolStack(this);
-      destroySymbolList(s);
-    }
-  }
-  else {
-    while (getSizeSymbolStack(this) - 1 < indent) {
-      pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
-    }
-  }
+  // else if (getSizeSymbolStack(this) - 1 > indent) {
+  //   while (getSizeSymbolStack(this) - 1 > indent) {
+  //     SymbolList s = popSymbolStack(this);
+  //     destroySymbolList(s);
+  //   }
+  // }
+  // else {
+  //   while (getSizeSymbolStack(this) - 1 < indent) {
+  //     pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
+  //   }
+  // }
 
   SymbolList list = topSymbolStack(this);
   addSymbolList(list, to);
@@ -98,7 +98,7 @@ TableObject searchSymbolTable(SymbolTable this, char * name, int indent)
   return res;
 }
 
-TableObject searchDeclarationFunctionSymbolTable(SymbolTable this, char * name, int indent) 
+TableObject searchDeclarationFunctionSymbolTable(SymbolTable this, char * name, int indent)
 {
   assert(indent >= 0 && "negative indent in searchDeclarationSymbolTable");
 
