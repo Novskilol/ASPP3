@@ -1,14 +1,9 @@
 %{
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include "latex.tab.h"
 #include "symbolStack.h"
+
 int numParenthesis;
-enum States{BEGINS,TITLES,NONE};
+enum States{BEGINS,TITLES,AUTHOR,NONE};
 typedef enum States States;
 States state;
 SymbolStack stouck;
@@ -36,19 +31,21 @@ A   [a-zA-Z_0-9]
                  printf("\\");
                 }
 
-
-"\\usepackage{graphicx}"
-
-"\\begin"\{    {
-                printf("<h3>");
+"\\author"\{    {
+                printf("<center><font size=\"4\">");
 		++numParenthesis;
-		state=BEGINS;
+		state=AUTHOR;
                 BEGIN ACCOL;
                }
   
-"\\end"\{      {
-                ++numParenthesis;
-                BEGIN ACCOLEFF;
+"\\usepackage{graphicx}"
+
+\{             {
+                return '{';
+               }
+
+\}             {
+                return '}';
                }
 
 "\\title"\{    {
@@ -101,6 +98,11 @@ A   [a-zA-Z_0-9]
 			state=NONE;
 			BEGIN INITIAL;
 			break;
+		      case(AUTHOR) :			
+			printf("</center></font>");
+			state=NONE;
+			BEGIN INITIAL;
+			break;
 		      default:
 			break;
 		      }
@@ -108,6 +110,7 @@ A   [a-zA-Z_0-9]
 		else
 		  ECHO;
                }
+<ACCOL>\\\\           {printf("<br>");}
 
 <ACCOL>"\\textbf"\{   {
                         ++numParenthesis;
@@ -123,10 +126,10 @@ A   [a-zA-Z_0-9]
 			pushSymbolStack(stouck,st);		 
 		      }
 
-<ACCOL>.       {ECHO;}
+<ACCOL>.              {ECHO;return CONTENT;}
 \%[^\n]*
 
-\\\\ {printf("\n");}
+\\\\ {printf("<br>");}
 
 "\n\n" {printf("<br>");}
 
@@ -134,43 +137,3 @@ A   [a-zA-Z_0-9]
 
 . {ECHO;}
 
-
-%%
-
-static int printBeginFile(int output) {
-  int begin = open("assets/html/begintex.html", O_RDONLY, 0444);
-  char c;
-  while(read(begin, &c, 1) > 0)
-  printf("%c", c);
-  return begin;
-}
-
-static int printEndFile(int output) {
-  int end = open("assets/html/endtex.html", O_RDONLY, 0444);
-  char c;
-  while(read(end, &c, 1) > 0)
-  printf("%c", c);
-  return end;
-}
-
-int main()    
-{
-  state=NONE;
-  stouck=createSymbolStack();
-  
-  numParenthesis=0;
-  int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
-  dup2(output, 1);
-
-  int begin = printBeginFile(output);
-  
-  yylex();
-  
-  int end = printEndFile(output);
-
-  close(begin);
-  close(end);
-  close(output);
-
-  return 0;    
-}
