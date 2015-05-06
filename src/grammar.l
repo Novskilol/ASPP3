@@ -34,7 +34,7 @@ WS  [ \t\v\n\f]
     #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
 
     static void comment(void);
-    static void directive(void);
+    //static void directive(void);
     static int checkType(void);
     static void beginBlockComment();
     static void endBlockComment();
@@ -61,15 +61,15 @@ WS  [ \t\v\n\f]
     BEGIN INITIAL;
     endBlockComment();
 }
-<COMMENT>"\\return"         {
+<COMMENT>"@return"         {
     saveStatementName(&tmpStatementName,"\\return");
     BEGIN COMMENT_ARGS;
 }
-<COMMENT>"\\param"          {
+<COMMENT>"@param"          {
     saveStatementName(&tmpStatementName,"\\param");
     BEGIN COMMENT_ARGS;
 }
-<COMMENT>"\\brief"          {
+<COMMENT>"@brief"          {
     saveStatementName(&tmpStatementName,"\\brief");
     BEGIN COMMENT_ARGS;
 }

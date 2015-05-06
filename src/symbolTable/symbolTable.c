@@ -50,18 +50,21 @@ void destroySymbolTable(SymbolStack this)
 
 void addDeclarationTable(SymbolTable this, TableObject to, int indent)
 {
-  if (getSizeSymbolStack(this) == indent)
-    pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
+  // getSizeSymbolStack(this)  == indent)
+  //   pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
+
 
   // else if (getSizeSymbolStack(this) - 1 > indent) {
   //   while (getSizeSymbolStack(this) - 1 > indent) {
   //     SymbolList s = popSymbolStack(this);
   //     destroySymbolList(s);
+  //     printf("aaaaaaaaaaaaaaaaaaaaa");
   //   }
   // }
   // else {
   //   while (getSizeSymbolStack(this) - 1 < indent) {
   //     pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
+  //     printf("bbbbbbbbbbbbbbbbbbbbb");
   //   }
   // }
 

@@ -717,9 +717,10 @@ void closeBraces() {
 
 void atExitDeclaration (char * type) {
   typeLock = false;
-  parseFunction(functionParser, type, typeName);
 
-  //printf("<declaration title=\"%s\">yoloswag</declaration>", typeName);
+  char * s = parseFunction(functionParser, type, typeName);
+  printf("<declaration title=\"%s\">yolo</declaration>", s);
+
   resetFunctionParser(functionParser);
   //printf(NEWLINE_C);
 }
@@ -727,6 +728,7 @@ void atExitDeclaration (char * type) {
 void atExitDefinition()
 {
   popSymbolTable(symbolTable);
+  indentLvl -= 1;
   printf(NEWLINE_C);
 }
 
@@ -833,9 +835,8 @@ static void parseFile(char * file)
 
 int main(int argc, char *argv[])
 {
-
-
   symbolTable = createSymbolTable();
+  pushSymbolTable(symbolTable); // push initial list
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
@@ -844,7 +845,7 @@ int main(int argc, char *argv[])
   appendFile("assets/html/begin.html");
   appendBeginDoc();
 
-  parseFile("test/testvar.c");
+  parseFile(argv[1]);
 
   appendEndDoc();
   appendFile("assets/html/end.html");

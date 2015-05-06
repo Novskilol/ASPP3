@@ -39,20 +39,20 @@ static void resizeRules(FunctionParser this)
 {
   this->rules = realloc(this->rules,this->sizeMaxRules * 2);
   this->sizeMaxRules *= 2;
-  
+
 }
 static void resizeElements(FunctionParser this)
 {
   this->elements = realloc(this->elements,this->sizeMaxElements * 2);
   this->sizeMaxElements *= 2;
-  
+
 }
 void defaultReturnRule(FILE * f,char *data)
 {
   char *begin="<return> <h1>Return </h1>";
   char *end ="</return>";
   fprintf(f,"%s %s %s",begin,data,end);
-  
+
 
 }
 void defaultParamRule(FILE *f,char *data)
@@ -75,11 +75,11 @@ void resetFunctionParser(FunctionParser this)
   for ( i = 0 ; i < this->sizeElements ; ++i)
     {
       free(this->elements[i]->name);
-      free(this->elements[i]->data);      
+      free(this->elements[i]->data);
       free(this->elements[i]);
     }
-    
-  
+
+
   this->sizeElements=0;
 }
 void destroyFunctionParser(FunctionParser this)
@@ -89,7 +89,7 @@ void destroyFunctionParser(FunctionParser this)
   for ( i = 0 ; i < this->sizeElements ; ++i)
     {
       free(this->elements[i]->name);
-      free(this->elements[i]->data);    
+      free(this->elements[i]->data);
       free(this->elements[i]);
     }
 
@@ -101,13 +101,13 @@ void destroyFunctionParser(FunctionParser this)
   free(this->elements);
   free(this->rules);
   free(this);
-    
+
 }
 void addStatement(FunctionParser this,char *statementName,char *data)
 {
   if (isFullFunctionParserElements(this))
     resizeElements(this);
-  
+
   ParserElement toBeAdded = malloc(sizeof(*toBeAdded));
   toBeAdded->name = strcpy(malloc((strlen(statementName)+1)*sizeof(char)),statementName);
 toBeAdded->data = strcpy(malloc(sizeof(char)*(strlen(data)+1)),data);
@@ -118,12 +118,12 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
 {
   if (isFullFunctionParserRules(this))
     resizeRules(this);
-  
+
   ParserRule toBeAdded = malloc(sizeof(*toBeAdded));
   toBeAdded->rule = rule;
   toBeAdded->trigger = strcpy(malloc(sizeof(char)*(strlen(statementName)+1)),statementName);
   this->rules[this->sizeRules++] = toBeAdded;
-  
+
 
 }
 
@@ -147,20 +147,20 @@ void appendEndDoc() {
 
 
 
-void parseFunction(FunctionParser this, char *functionName,char *returntype)
+char * parseFunction(FunctionParser this, char *functionName,char *returntype)
 {
   if (this->sizeElements == 0)
-    return;
+    return NULL;
 
   FILE *f=fopen("output/doc.html","a");
   int i;
-  
+
   fprintf(f,"<div class=\"doc\">");
 
   fprintf(f,"<titre><h2>%s %s</h2></titre>",returntype,functionName);
   for( i = 0 ; i < this->sizeElements ; ++i)
     {
-      
+
       char *tmpName=this->elements[i]->name;
       char *tmpData=this->elements[i]->data;
       int y;
@@ -170,8 +170,13 @@ void parseFunction(FunctionParser this, char *functionName,char *returntype)
 
     }
   fprintf(f,"</div>");
-  
+
   fclose(f);
+
+  char * s = malloc(strlen(functionName)+strlen(returntype)+1);
+  strcpy(s, functionName);
+  strcpy(s, returntype);
+  return s;
 }
 void setDefaultRules(FunctionParser this)
 {
