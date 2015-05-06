@@ -1,25 +1,35 @@
+//int i;
 
 
-void f();
-void g();
-void h();
 
-void j(); // pas reconnu comme la declaration de j
-void j(){}
+void f(int i);
+void g(int i);
+void h(int i);
+void j(int i);
 
-void f (){
-  j();
+void j(int i){
+i = 4;
 }
 
-void g(){
-  f();
+void f (int i){
+  j(i);
 
+  i = 4;
+}
 
+void g(int i){
+  f(i);
+
+  i = 4;
 
 }
 
-void h(){
-  f();
-  g();
+void h(int i){
+  f(i);
+  i = 42;
+  g(i);
+  {
+  	int i = 2;
+  }
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 }

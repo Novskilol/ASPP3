@@ -31,11 +31,13 @@
 
   char * typeName = NULL;
   bool typeLock = false;
+  bool declarationFunction = false;
   int indentLock = 0;
   int indentLvl = 0;
   int uniqueId = 1;
 
-  %}
+
+%}
 
   %union{
    char *s;
@@ -388,9 +390,9 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' { pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
- | direct_declarator '(' { pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
- | direct_declarator '(' { pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { ++indentLvl; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { ++indentLvl; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { ++indentLvl; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
  ;
 
  pointer
@@ -620,8 +622,15 @@ maybeNewlineForward
 };
 
 semi_colon
-: ';' { if (indentLvl == 0) printf(NEWLINE_C); }
-;
+: ';' {
+  if (declarationFunction == true) {
+    declarationFunction = false;
+    popSymbolTable(symbolTable);
+    --indentLvl;
+  }
+  if (indentLvl == 0)
+    printf(NEWLINE_C);
+};
 
 identifier
 : IDENTIFIER { searchSymbol($1); }
@@ -696,6 +705,7 @@ return
 %%
 
 void openBraces() {
+  declarationFunction = false;
   printf("<block>\n<braces>\n{\n</braces>\n<item>\n<block>\n");
   pushSymbolTable(symbolTable);
 }
@@ -834,7 +844,6 @@ int main(int argc, char *argv[])
 
   close(output);
   dup2(oldfdout, 1);
-  fprintf(stdout, "tototo\n");
 
   free(typeName);
   destroySymbolTable(symbolTable);

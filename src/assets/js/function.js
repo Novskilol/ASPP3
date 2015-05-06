@@ -2,7 +2,7 @@
 function highlight(name){
 	var list = document.getElementsByClassName(name);
 	for (var i = 0; i < list.length; i++) {
-		list[i].style.background = "#282828";
+		list[i].style.background = "#fff";
 	}
 }
 
@@ -19,7 +19,7 @@ function highlightIdentifiers(){
 		function (){
 			highlight($(this).attr('class'));
 		},
-		function (){ 
+		function (){
 			removeHighlight();
 		});
 }
@@ -53,7 +53,7 @@ function gotoDeclaration(){
     $(".code identifier").click(function goto() {
         var list = $('declaration.'+$(this).attr('class'));
         $('html, body').animate(
-             {scrollTop: list.offset().top}, 
+             {scrollTop: list.offset().top},
              'fast');
     });
 }
