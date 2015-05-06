@@ -3,6 +3,13 @@
 	src: url('../fonts/DroidSansMono.ttf') format('truetype');
 }
 
+.abstract {
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    background-color: #181818;
+}
+
 body {
 	background-color: #181818;
 	color: #D4D6D7;
@@ -98,6 +105,4 @@ body {
 	font-family: DroidSansMono;
 	background-color: #282828;
 	font-size: 1 em;
-
-
 }
