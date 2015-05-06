@@ -1,5 +1,5 @@
-#ifndef COMMUN_H
-#define COMMUN_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +15,5 @@ char * copy(const char *);
 char * replace(const char *, char, const char *);
 
 void appendFile(char *);
-
-void parseFile(char *);
 
 #endif
