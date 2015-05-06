@@ -3,16 +3,18 @@ LIBS = -lfl -ly -lm
 INCDIR=../include
 LDIR=../lib
 
-all: testDir compilation latex
+all: testDir latex compilation
 
 latex:
-	flex latex.l
-	$(CC) lex.yy.c -I$(INCDIR) $(LDIR)/symbolStack.o -lfl -lm -o rapport_html
-	mv rapport_html ../bin
+	flex --outfile=latex.yy.c latex.l
+	bison -d -v latex.y
 
 compilation: commun/commun.o util/util.o symbolTable/symbolTable.o symbolStack/symbolStack.o symbolList/symbolList.o functionParser/functionParser.o grammar.tab.o lex.yy.o
 	$(CC) $^ $(LIBS) -o doc_html
+	$(CC) latex.yy.c -I$(INCDIR) $(LDIR)/symbolStack.o -lfl -lm -o rapport_html
 	mv doc_html ../bin
+	mv rapport_html ../bin
+
 
 testDir:
 	if (test ! -d ../lib) ;then  mkdir ../lib;fi
