@@ -827,15 +827,13 @@ int main(int argc, char *argv[])
   int i;
   char *html=".html";
   char *filename;
-  int save=dup(1);
+
   for (i = 1 ; i < argc ; ++i)
     {
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
-      fprintf(stderr,"ARGV %s \n",argv[i]);
       filename=concat(argv[i],html);
       output = open(filename,O_WRONLY|O_TRUNC|O_CREAT,0666);
-      fprintf(stderr,"%s\n",filename);
       free(filename);
       dup2(output, 1);
       close(output);
@@ -846,7 +844,6 @@ int main(int argc, char *argv[])
       appendEndDoc();
       appendFile("assets/html/end.html");
       close(1);
-      // dup2(save,1);
       printf("OK");
       destroySymbolTable(symbolTable);
       free(typeName);
