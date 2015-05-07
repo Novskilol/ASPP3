@@ -833,8 +833,9 @@ int main(int argc, char *argv[])
     {
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
-      filename=concat(argv[i],html);
-      output = open(filename,O_WRONLY|O_TRUNC|O_CREAT,0666);
+      fullfilename=concat(argv[i],html);
+      filename=argv[i];
+      output = open(fullfilename,O_WRONLY|O_TRUNC|O_CREAT,0666);
       
       dup2(output, 1);
       close(output);
@@ -848,8 +849,7 @@ int main(int argc, char *argv[])
    
       destroySymbolTable(symbolTable);
       free(typeName);
-      free(filename);
-      filename = NULL; 
+      free(fullfilename);
       typeName = NULL;
 
     }
