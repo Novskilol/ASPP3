@@ -10,7 +10,7 @@ A   [a-zA-Z_0-9]
 %x ACCOLEFF
 
 %%
-"\maketitle"    {
+"\\maketitle"    {
                 }
 
 "\\documentclass{article}"
@@ -27,6 +27,39 @@ A   [a-zA-Z_0-9]
                  return SECTION;
                 }
 
+"\\subsection"  {
+                 return SUBSECTION;
+                }
+
+"\\item"	{
+		return ITEM;
+		}
+
+"itemize"    	{
+		 yylval.s = strdup(yytext);
+	  	 return ITEMIZE;
+		}
+		
+"tabular"    	{
+		 yylval.s = strdup(yytext);
+	  	 return TABULAR;
+		}		
+		
+"equation"      {
+		 yylval.s = strdup(yytext);
+                 return EQUATION;
+                }
+		
+"equation\*"    {
+		 yylval.s = strdup(yytext);
+                 return EQUATIONETOILE;
+                }
+		
+"enumerate"     {
+		 yylval.s = strdup(yytext);
+                 return ENUMERATE;
+                }
+		
 "\\backslash"   {
                  return BACKSLASH;
                 }
@@ -68,7 +101,7 @@ A   [a-zA-Z_0-9]
 
 \%[^\n]*
 
-\\\\ {printf("<br>");}
+\\\\ {return BREAKLINE;}
 
 "\n\n" {printf("<br>");}
 

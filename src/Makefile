@@ -5,13 +5,10 @@ LDIR=../lib
 
 all: testDir  compilation
 
-latex:
-	flex --outfile=latex.yy.c latex.l
-	bison -d -v latex.y
-	$(CC) latex.yy.c -I$(INCDIR) $(LDIR)/symbolStack.o -lfl -lm -o rapport_html
+latex:commun/commun.o symbolStack/symbolStack.o latex.tab.o latex.yy.o
+	$(CC) $^ $(LIBS) -o rapport_html
 	mv rapport_html ../bin
-
-
+	
 
 compilation: commun/commun.o util/util.o symbolTable/symbolTable.o symbolStack/symbolStack.o symbolList/symbolList.o functionParser/functionParser.o grammar.tab.o lex.yy.o
 	$(CC) $^ $(LIBS) -o doc_html
@@ -28,6 +25,15 @@ grammar.tab.o: commun/commun.h util/util.h
 	bison -d -v grammar.y
 	cp grammar.tab.h $(INCDIR)
 	$(CC) -c -I$(INCDIR) grammar.tab.c -o grammar.tab.o
+
+latex.tab.o: commun/commun.h util/util.h
+	bison -d -v latex.y
+	cp latex.tab.h $(INCDIR)
+	gcc -c -I$(INCDIR) latex.tab.c -o latex.tab.o
+latex.yy.o :
+	flex latex.l
+	mv lex.yy.c latex.yy.c
+	gcc -c -I$(INCDIR) latex.yy.c -o latex.yy.o
 
 lex.yy.o: commun/commun.h
 	flex grammar.l
