@@ -124,8 +124,8 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   this->rules[this->sizeRules++] = toBeAdded;
 }
 
-void appendBeginDoc() {
-  FILE *f=fopen("output/doc.html","w");
+void appendBeginDoc(char * fullFileName) {
+  FILE *f=fopen(fullFileName,"w");
 
   fprintf(f,"<!DOCTYPE html><head><html>");
   fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"../assets/css/style.css\"/>");
@@ -133,8 +133,8 @@ void appendBeginDoc() {
   fclose(f);
 }
 
-void appendEndDoc() {
-    FILE *f=fopen("output/doc.html","a");
+void appendEndDoc(char * fullFileName) {
+    FILE *f=fopen(fullFileName,"a");
 
   fprintf(f,"</body></html>");
   fclose(f);
@@ -161,6 +161,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
     fullFileName = concat(fileName, ".doc.html");
 
   FILE *f=fopen(fullFileName,"a");
+  free(fullFileName);
   int i;
 
   fprintf(f,"<div class=\"doc\">");
@@ -179,7 +180,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
    fprintf(f,"</div>");
 
    fclose(f);
-   tooltip(this,functionName,returnType);
+   //tooltip(this,functionName,returnType);
  }
 
  void setDefaultRules(FunctionParser this)

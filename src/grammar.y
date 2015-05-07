@@ -37,7 +37,7 @@
   int indentLvl = 0;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
-  
+
 %}
 
   %union{
@@ -292,7 +292,7 @@
  ;
 
  struct_or_union_specifier
- : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}' 
+ : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
  | struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}' {addType();}
  | struct_or_union identifier {addType();}
  ;
@@ -718,8 +718,9 @@ void closeBraces() {
 void atExitDeclaration (char * type) {
   typeLock = false;
 
-  char * s = parseFunction(functionParser, type, typeName);
-  // printf("<declaration title=\"%s\">yolo</declaration>", s);
+  //printf("<declaration title=\"");
+  parseFunction(functionParser, type, typeName, filename);
+  //printf("\">yolosweg</declaration>");
 
   resetFunctionParser(functionParser);
   //printf(NEWLINE_C);
@@ -728,7 +729,7 @@ void addType()
 {
 
   addSymbolList(typeSymbolList,copy(saveLastIdentifier));
- 
+
 }
 void atExitDefinition()
 {
@@ -808,13 +809,13 @@ static void parseFile(char * file)
 
 }
 
-static int openOutputFile (char * dest) {
-  char * s = "output/";
-  char buf [strlen(dest)+strlen(s)+1];
-  strcpy(buf, s);
-  strcat(buf, dest);
-  return open(buf,O_WRONLY|O_TRUNC|O_CREAT,0666);
-}
+// static int openOutputFile (char * dest) {
+//   char * s = "output/";
+//   char buf [strlen(dest)+strlen(s)+1];
+//   strcpy(buf, s);
+//   strcat(buf, dest);
+//   return open(buf,O_WRONLY|O_TRUNC|O_CREAT,0666);
+// }
 
 int main(int argc, char *argv[])
 {
@@ -831,7 +832,9 @@ int main(int argc, char *argv[])
 
   int i;
   char *html=".html";
+  char *doc=".doc.html";
   char *fullfilename;
+  char *docfilename;
 
   for (i = 1 ; i < argc ; ++i)
     {
@@ -840,27 +843,29 @@ int main(int argc, char *argv[])
       pushSymbolTable(symbolTable);
       fullfilename=concat(argv[i],html);
       filename=argv[i];
+      docfilename=concat(filename, doc);
       output = open(fullfilename,O_WRONLY|O_TRUNC|O_CREAT,0666);
-      
+
       dup2(output, 1);
       close(output);
-      
+
       appendFile("assets/html/begin.html");
-      appendBeginDoc();
+      appendBeginDoc(docfilename);
       parseFile(argv[i]);
-      appendEndDoc();
+      appendEndDoc(docfilename);
       appendFile("assets/html/end.html");
 
       fflush(NULL);
       close(1);
-   
+
       destroySymbolTable(symbolTable);
       destroySymbolList(typeSymbolList);
       free(typeName);
+      free(docfilename);
       free(fullfilename);
       free(saveLastIdentifier);
       typeName = NULL;
-      
+
     }
 
 
