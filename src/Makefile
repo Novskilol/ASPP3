@@ -39,7 +39,7 @@ commun/commun.o: commun/commun.h commun/commun.c
 util/util.o: util/util.h util/util.c
 	make -C util/
 
-functionParser/functionParser.o:
+functionParser/functionParser.o: functionParser/functionParser.h util/util.h
 	make -C functionParser/
 
 symbolList/symbolList.o:
