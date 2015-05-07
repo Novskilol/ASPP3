@@ -3,10 +3,86 @@
 
 <head>
 	<meta charset="utf-8" lang="us"/>
-	<link rel="stylesheet" type="text/css" href="../assets/css/style.css"/>
-	<script src="../assets/js/jquery-1.11.2.min.js"></script>
-	<title>Doc C</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="../assets/css/style.css" type="text/css"/>
+	<link rel="stylesheet" href="../assets/css/cssmenu.css" type="text/css">
+
+	<script src="../assets/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+	<script src="../assets/js/jsmenu.js"></script>
+
+	<title>Projet Analyse Syntaxique</title>
 </head>
 
 <body>
-	<div class="code">
+
+	<div id="sidebar">
+		<div id='cssmenu'>
+			<ul>
+				<li><a href='#'><span>Top</span></a></li>
+				<li class='has-sub'><a href='#'><span>Code</span></a>
+					<ul>
+						<li class='has-sub'><a href='#'><span>Parse C code</span></a>
+							<ul>
+								<li><a href='#'><span>grammar.y</span></a></li>
+								<li class='last'><a href='#'><span>grammar.l</span></a></li>
+							</ul>
+						</li>
+						<li class='has-sub'><a href='#'><span>Parse Latex</span></a>
+							<ul>
+								<li><a href='#'><span>latex.y</span></a></li>
+								<li class='last'><a href='#'><span>latex.l</span></a></li>
+							</ul>
+						</li>
+						<li class='has-sub'><a href='#'><span>Parse Doxycode</span></a>
+							<ul>
+								<li><a href='#'><span>functionParser.c</span></a></li>
+								<li class='last'><a href='#'><span>functionParser.h</span></a></li>
+							</ul>
+						</li>
+						<li class='has-sub'><a href='#'><span>Tools</span></a>
+							<ul>
+								<li><a href='#'><span>util.c</span></a></li>
+								<li class='last'><a href='#'><span>util.h</span></a></li>
+							</ul>
+						</li>
+						<li class='has-sub'><a href='#'><span>Commun</span></a>
+							<ul>
+								<li><a href='#'><span>commun.c</span></a></li>
+								<li class='last'><a href='#'><span>commun.h</span></a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li class='has-sub'><a href='#'><span>Structure</span></a>
+					<ul>
+						<li class='has-sub'><a href='#'><span>Stack</span></a>
+							<ul>
+								<li><a href='#'><span>symbolStack.c</span></a></li>
+								<li><a href='#'><span>symbolStack.h</span></a></li>
+								<li class='last'><a href='#'><span>testSymbolStack.c</span></a></li>
+							</ul>
+						</li>
+						<li class='has-sub'><a href='#'><span>LinkedList</span></a>
+							<ul>
+								<li><a href='#'><span>symbolList.c</span></a></li>
+								<li><a href='#'><span>symbolList.h</span></a></li>
+								<li class='last'><a href='#'><span>testSymbolList.c</span></a></li>
+							</ul>
+						</li>
+						<li class='has-sub'><a href='#'><span>Symbol Table</span></a>
+							<ul>
+								<li><a href='#'><span>symbolTable.c</span></a></li>
+								<li><a href='#'><span>symbolTable.h</span></a></li>
+								<li class='last'><a href='#'><span>testSymbolTable.c</span></a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li class='last'><a href='#' target='_blank'><span>Rapport</span></a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="outer" class="code">

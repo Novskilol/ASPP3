@@ -1,2 +1,0 @@
-cd src/ ; make clean ; make ; ../bin/doc_html < test/test.c ; cd ..
-cd src/ ; make clean ; make ; ../bin/doc_html < test/rtjhrhu.c ; cd ..

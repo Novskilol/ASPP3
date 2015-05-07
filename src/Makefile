@@ -3,17 +3,19 @@ LIBS = -lfl -ly -lm
 INCDIR=../include
 LDIR=../lib
 
-all: testDir latex compilation
+all: testDir  compilation
 
 latex:
 	flex --outfile=latex.yy.c latex.l
 	bison -d -v latex.y
+	$(CC) latex.yy.c -I$(INCDIR) $(LDIR)/symbolStack.o -lfl -lm -o rapport_html
+	mv rapport_html ../bin
+
+
 
 compilation: commun/commun.o util/util.o symbolTable/symbolTable.o symbolStack/symbolStack.o symbolList/symbolList.o functionParser/functionParser.o grammar.tab.o lex.yy.o
 	$(CC) $^ $(LIBS) -o doc_html
-	$(CC) latex.yy.c -I$(INCDIR) $(LDIR)/symbolStack.o -lfl -lm -o rapport_html
 	mv doc_html ../bin
-	mv rapport_html ../bin
 
 
 testDir:
@@ -50,4 +52,4 @@ symbolTable/symbolTable.o: symbolTable/symbolTable.h symbolStack/symbolStack.h s
 	make -C symbolTable
 
 clean:
-	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c output/* ../bin/* ../lib/* symbolTable/testSymbolTable symbolStack/testSymbolStack symbolList/testSymbolList functionParser/testFunctionParser */*.o *.o
+	/bin/rm -f *.output *.tab.h *.tab.c *.yy.c output/* ../bin/* ../lib/* symbolTable/testSymbolTable symbolStack/testSymbolStack symbolList/testSymbolList functionParser/testFunctionParser */*.o *.o ../include/*.h

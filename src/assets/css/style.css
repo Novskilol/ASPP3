@@ -3,12 +3,28 @@
 	src: url('../fonts/DroidSansMono.ttf') format('truetype');
 }
 
-body {
+html,body {
 	background-color: #181818;
 	color: #D4D6D7;
+	margin: 0;
+	padding: 0
+}
+
+#sidebar{
+	position:fixed;
+	left:0;
+	top:0;
+}
+
+.abstract {
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    background-color: #181818;
 }
 
 .code {
+	margin-left: 11em;
 	font-family: DroidSansMono;
 }
 
@@ -16,7 +32,7 @@ body {
 	color : #DC9656;
 }
 
-.code type{ 
+.code type{
 	color : #F0C3F3;
 }
 
@@ -29,23 +45,13 @@ body {
 	color : #7CAFC2;
 }
 
-.tooltip { 
-	display: none;
-	position: absolute;
-	font-family: DroidSansMono;
-	font-size: 1em;
-	padding: 10px;
-	color: #D4D6D7;
-	background-color: #282828
-}
-
 .code string{
 	color : #A1B56C;
 }
 
 
 .code comment{
-	color : #585858;
+	color : #686868
 }
 
 .code include{
@@ -65,9 +71,21 @@ body {
 	font-family: DroidSansMono;
 	background-color: #282828;
 }
+
+
+.tooltip {
+	display: none;
+	position: absolute;
+	font-family: DroidSansMono;
+	font-size: 1em;
+	padding: 10px;
+	color: #D4D6D7;
+	background-color: #282828
+}
+
 .doc return
 {
-	
+
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
@@ -76,7 +94,7 @@ body {
 }
 .doc brief
 {
-	
+
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
@@ -85,7 +103,7 @@ body {
 }
 .doc param
 {
-	
+
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
@@ -98,6 +116,4 @@ body {
 	font-family: DroidSansMono;
 	background-color: #282828;
 	font-size: 1 em;
-
-
 }
