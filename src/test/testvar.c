@@ -1,8 +1,15 @@
 //int i;
 
 
-
+/**
+ * [f description]
+ * @param i [description]
+ */
 void f(int i);
+/**
+ * [g description]
+ * @param i [description]
+ */
 void g(int i);
 void h(int i);
 void j(int i);
