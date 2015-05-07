@@ -203,7 +203,7 @@ WS  [ \t\v\n\f]
 "~"					    { ECHO; return '~'; }
 "-"					    { ECHO; return '-'; }
 "+"					    { ECHO; return '+'; }
-"*"					    { ECHO; return '*'; }
+"*"					    { return '*'; }
 "/"					    { ECHO; return '/'; }
 "%"					    { ECHO; return '%'; }
 "<"					    { printf(LESS_T_C); return '<'; }

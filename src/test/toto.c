@@ -1,25 +1,14 @@
-int constante;
+char ***s;
+char **************fepijfzoejhfeozfhj ();
+/**
+ * [f description]
+ * @param  s1 [description]
+ * @param  s2 [description]
+ * @return    [description]
+ */
+char ** f(char***s1, char **s2){
+***constante = 42;
 
-int f();
-
-int f() { 
-	return 4;
 }
 
-int main() {
-	f();
 
-if (true) return;
-else return;
-
-	{ 
-		int constante = 16;
-	}
-	constante = 42;
-	{ 
-		int constante = 16;
-		constante = 2;
-	}
-
-	constante = 1;
-}

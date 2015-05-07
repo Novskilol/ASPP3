@@ -1,6 +1,7 @@
 %{
 
   #include <string.h>
+  #include <assert.h>
   #include <stdio.h>
   #include <stdbool.h>
   #include <math.h>
@@ -131,7 +132,7 @@
 
  unary_operator
  : '&'
- | '*'
+ | star
  | '+'
  | '-'
  | '~'
@@ -145,7 +146,7 @@
 
  multiplicative_expression
  : cast_expression
- | multiplicative_expression '*' cast_expression
+ | multiplicative_expression star cast_expression
  | multiplicative_expression '/' cast_expression
  | multiplicative_expression '%' cast_expression
  ;
@@ -383,10 +384,10 @@
  : IDENTIFIER { typeLock = true; addNewSymbol($1);}
  | '(' declarator ')'
  | direct_declarator '[' ']'
- | direct_declarator '[' '*' ']'
+ | direct_declarator '[' star ']'
  | direct_declarator '[' static type_qualifier_list assignment_expression ']'
  | direct_declarator '[' static assignment_expression ']'
- | direct_declarator '[' type_qualifier_list '*' ']'
+ | direct_declarator '[' type_qualifier_list star ']'
  | direct_declarator '[' type_qualifier_list static assignment_expression ']'
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
@@ -397,11 +398,22 @@
  ;
 
  pointer
- : '*' type_qualifier_list pointer
- | '*' type_qualifier_list
- | '*' pointer
- | '*'
+ : star type_qualifier_list pointer
+ | star type_qualifier_list
+ | star pointer
+ | star
  ;
+
+ star
+ : '*' {
+  assert(typeName && "NULL typeName in rule star");
+  if (typeLock == false) {
+    char * tmp = typeName;
+    typeName = concat(typeName, "*");
+    free(tmp);
+  }
+  printf("*");
+};
 
  type_qualifier_list
  : type_qualifier
@@ -444,7 +456,7 @@
  direct_abstract_declarator
  : '(' abstract_declarator ')'
  | '[' ']'
- | '[' '*' ']'
+ | '[' star ']'
  | '[' static type_qualifier_list assignment_expression ']'
  | '[' static assignment_expression ']'
  | '[' type_qualifier_list static assignment_expression ']'
@@ -452,7 +464,7 @@
  | '[' type_qualifier_list ']'
  | '[' assignment_expression ']'
  | direct_abstract_declarator '[' ']'
- | direct_abstract_declarator '[' '*' ']'
+ | direct_abstract_declarator '[' star ']'
  | direct_abstract_declarator '[' static type_qualifier_list assignment_expression ']'
  | direct_abstract_declarator '[' static assignment_expression ']'
  | direct_abstract_declarator '[' type_qualifier_list assignment_expression ']'
