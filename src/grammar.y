@@ -28,7 +28,7 @@
   bool searchSymbol(char *);
   char * createClassString(char *);
   char * createDeclarationString(char *);
-
+  void addType();
   char * typeName = NULL;
   char *filename;
   bool typeLock = false;
@@ -36,8 +36,8 @@
   int indentLock = 0;
   int indentLvl = 0;
   int uniqueId = 1;
-
-
+  char *saveLastIdentifier=NULL;
+  
 %}
 
   %union{
@@ -292,9 +292,9 @@
  ;
 
  struct_or_union_specifier
- : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
- | struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
- | struct_or_union identifier
+ : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}' 
+ | struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}' {addType();}
+ | struct_or_union identifier {addType();}
  ;
 
  struct_or_union
@@ -380,7 +380,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { typeLock = true; addNewSymbol($1); }
+ : IDENTIFIER { typeLock = true; addNewSymbol($1);}
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' '*' ']'
@@ -634,9 +634,8 @@ semi_colon
 };
 
 identifier
-: IDENTIFIER { searchSymbol($1); }
+: IDENTIFIER { searchSymbol($1);free(saveLastIdentifier);saveLastIdentifier=copy($1);}
 ;
-
 string_literal
 : STRING_LITERAL {
   printf ("<string>\n%s\n</string>\n", $1);
@@ -720,12 +719,17 @@ void atExitDeclaration (char * type) {
   typeLock = false;
 
   char * s = parseFunction(functionParser, type, typeName);
-  printf("<declaration title=\"%s\">yolo</declaration>", s);
+  // printf("<declaration title=\"%s\">yolo</declaration>", s);
 
   resetFunctionParser(functionParser);
   //printf(NEWLINE_C);
 }
+void addType()
+{
 
+  addSymbolList(typeSymbolList,copy(saveLastIdentifier));
+ 
+}
 void atExitDefinition()
 {
   popSymbolTable(symbolTable);
@@ -827,10 +831,11 @@ int main(int argc, char *argv[])
 
   int i;
   char *html=".html";
-
+  char *fullfilename;
 
   for (i = 1 ; i < argc ; ++i)
     {
+      typeSymbolList = createSymbolList(compareChar,destroyChar);
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
       fullfilename=concat(argv[i],html);
@@ -845,13 +850,17 @@ int main(int argc, char *argv[])
       parseFile(argv[i]);
       appendEndDoc();
       appendFile("assets/html/end.html");
+
+      fflush(NULL);
       close(1);
    
       destroySymbolTable(symbolTable);
+      destroySymbolList(typeSymbolList);
       free(typeName);
       free(fullfilename);
+      free(saveLastIdentifier);
       typeName = NULL;
-
+      
     }
 
 

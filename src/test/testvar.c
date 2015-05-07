@@ -9,8 +9,10 @@ void j(int i);
 
 
 
-
-void j(int i){
+struct olilol{
+  int a;
+};
+olilol j(int i){
 i = 4;
 }
 

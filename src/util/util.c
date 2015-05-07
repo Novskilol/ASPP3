@@ -16,7 +16,15 @@ char * copy(const char * s)
 
 	return res;
 }
+void destroyChar(void *a)
+{
+  free(a);
+}
+int compareChar(void *a,void *b)
+{
+  return strcmp((char*)a,(char*)b) == 0 ;
 
+}
 /*
 allocate memory, replace every occurences of 'bad' by 'replace'
 and return the new allocated string

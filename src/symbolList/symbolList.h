@@ -15,5 +15,6 @@ void addSymbolList(SymbolList this,void* value);
 
 void* searchSymbolList(SymbolList this, void* value);
 
+void* getLastSymbolList(SymbolList this);
 
 #endif
