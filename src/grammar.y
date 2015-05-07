@@ -30,6 +30,7 @@
   char * createDeclarationString(char *);
 
   char * typeName = NULL;
+  char *filename;
   bool typeLock = false;
   bool declarationFunction = false;
   int indentLock = 0;
@@ -826,15 +827,16 @@ int main(int argc, char *argv[])
 
   int i;
   char *html=".html";
-  char *filename;
+
 
   for (i = 1 ; i < argc ; ++i)
     {
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
-      filename=concat(argv[i],html);
-      output = open(filename,O_WRONLY|O_TRUNC|O_CREAT,0666);
-      free(filename);
+      fullfilename=concat(argv[i],html);
+      filename=argv[i];
+      output = open(fullfilename,O_WRONLY|O_TRUNC|O_CREAT,0666);
+      
       dup2(output, 1);
       close(output);
       
@@ -844,10 +846,11 @@ int main(int argc, char *argv[])
       appendEndDoc();
       appendFile("assets/html/end.html");
       close(1);
-      printf("OK");
+   
       destroySymbolTable(symbolTable);
       free(typeName);
-      typeName= NULL;
+      free(fullfilename);
+      typeName = NULL;
 
     }
 
