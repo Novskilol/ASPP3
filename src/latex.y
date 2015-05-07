@@ -248,6 +248,8 @@ static int printEndFile(int output) {
   return end;
 }
 
+
+
 int main(int argc, char *argv[])
 {
   mode=NONE;

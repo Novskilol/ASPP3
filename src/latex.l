@@ -1,7 +1,9 @@
 %{
 #include "latex.tab.h"
+
 %}
 
+%option yylineno
 %option nounput noinput
 
 A   [a-zA-Z_0-9]
@@ -109,3 +111,10 @@ A   [a-zA-Z_0-9]
 
 . {yylval.s = strdup(yytext);return CONTENT;}
 
+%%
+
+void yyerror(const char *s)
+{
+	fflush(stdout);
+	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
+}
