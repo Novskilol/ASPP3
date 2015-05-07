@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <util.h>
 #define DEFAULT_SIZE_MAX_ELEMENTS 5
 #define DEFAULT_SIZE_MAX_RULES 5
 typedef struct parserElement *ParserElement;
@@ -52,8 +53,6 @@ void defaultReturnRule(FILE * f,char *data)
   char *begin="<return> <h1>Return </h1>";
   char *end ="</return>";
   fprintf(f,"%s %s %s",begin,data,end);
-
-
 }
 void defaultParamRule(FILE *f,char *data)
 {
@@ -123,10 +122,7 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   toBeAdded->rule = rule;
   toBeAdded->trigger = strcpy(malloc(sizeof(char)*(strlen(statementName)+1)),statementName);
   this->rules[this->sizeRules++] = toBeAdded;
-
-
 }
-
 
 void appendBeginDoc() {
   FILE *f=fopen("output/doc.html","w");
@@ -145,45 +141,54 @@ void appendEndDoc() {
 
 }
 
+static void tooltip(FunctionParser this, char *functionName, char *returnType)
+{
+
+  printf("%s %s", functionName, returnType);
 
 
-char * parseFunction(FunctionParser this, char *functionName,char *returntype)
+}
+
+void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName)
 {
   if (this->sizeElements == 0)
-    return NULL;
+    return;
 
-  FILE *f=fopen("output/doc.html","a");
+  char * fullFileName;
+  if (fileName == NULL)
+    fullFileName = "output/doc.html";
+  else
+    fullFileName = concat(fileName, ".doc.html");
+
+  FILE *f=fopen(fullFileName,"a");
   int i;
 
   fprintf(f,"<div class=\"doc\">");
 
-  fprintf(f,"<titre><h2>%s %s</h2></titre>",returntype,functionName);
+  fprintf(f,"<titre><h2>%s %s</h2></titre>",returnType,functionName);
   for( i = 0 ; i < this->sizeElements ; ++i)
-    {
+  {
 
-      char *tmpName=this->elements[i]->name;
-      char *tmpData=this->elements[i]->data;
-      int y;
-      for( y = 0 ; y < this->sizeRules ; ++y)
-	if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
-	  this->rules[y]->rule(f,tmpData);
+    char *tmpName=this->elements[i]->name;
+    char *tmpData=this->elements[i]->data;
+    int y;
+    for( y = 0 ; y < this->sizeRules ; ++y)
+     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
+       this->rules[y]->rule(f,tmpData);
+   }
+   fprintf(f,"</div>");
 
-    }
-  fprintf(f,"</div>");
+   fclose(f);
+   tooltip(this,functionName,returnType);
+ }
 
-  fclose(f);
-
-  char * s = malloc(strlen(functionName)+strlen(returntype)+1);
-  strcpy(s, functionName);
-  strcpy(s, returntype);
-  return s;
-}
-void setDefaultRules(FunctionParser this)
-{
+ void setDefaultRules(FunctionParser this)
+ {
   setRuleForStatement(this,"\\return",defaultReturnRule);
   setRuleForStatement(this,"\\brief",defaultBriefRule);
   setRuleForStatement(this,"\\param",defaultParamRule);
 }
+
 FunctionParser createFunctionParser()
 {
   FunctionParser this=malloc(sizeof(*this));
@@ -196,3 +201,4 @@ FunctionParser createFunctionParser()
 
   return this;
 }
+
