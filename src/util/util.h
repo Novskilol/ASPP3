@@ -17,4 +17,12 @@ char * replace(const char *, char, const char *);
 void appendFile(char *);
 
 char *concat(const char *a,const char * b);
+
+/*
+ * Functions for CompareFunction and DestroyFunction , see SymboleList
+ */
+void destroyChar(void *a);
+
+int compareChar(void *,void *);
+
 #endif

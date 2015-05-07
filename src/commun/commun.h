@@ -8,7 +8,7 @@
 
 #include "../symbolTable/symbolTable.h"
 #include "../functionParser/functionParser.h"
-
+#include "../symbolList/symbolList.h"
 #define NEWLINE_C "<br>\n"
 #define SPACE_C "&nbsp"
 #define LESS_T_C "&lt"
@@ -22,6 +22,7 @@ extern void beginLine();
 void indentThat();
 
 SymbolTable symbolTable;
+SymbolList typeSymbolList;
 FunctionParser functionParser;
 int indentSpacing;
 

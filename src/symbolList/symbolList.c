@@ -13,6 +13,7 @@ struct symbolList{
   CompareFunction compareCellValueFunction;
 
 };
+
 void destroySymbolList(SymbolList this)
 {
   struct cell_symbol_list *curseur;
@@ -27,6 +28,10 @@ void destroySymbolList(SymbolList this)
 
   free(this);
 
+}
+void* getLastSymbolList(SymbolList this)
+{
+  return this->last->value;
 }
 void* searchSymbolList(SymbolList this, void *value)
 {

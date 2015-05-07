@@ -290,6 +290,9 @@ static int checkType(void)
         return ENUMERATION_CONSTANT;
         default:                          /* includes undefined */
         yylval.s = yytext;
+        TableObject t;
+        if ( (t=searchSymbolList(typeSymbolList,yylval.s)) != NULL)
+             return VOID;
         return IDENTIFIER;
     }
 }
