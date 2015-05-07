@@ -36,8 +36,6 @@ WS  [ \t\v\n\f]
     static void comment(void);
     //static void directive(void);
     static int checkType(void);
-    static void beginBlockComment();
-    static void endBlockComment();
     static char * replaceString(const char *);
     void saveStatementName(char **dest,char *src);
     char *tmpStatementName;
@@ -53,14 +51,8 @@ WS  [ \t\v\n\f]
 %%
 
 "/*"                        { comment(); }
-"/**"                       {
-      BEGIN COMMENT;
-    beginBlockComment();
-}
-<COMMENT,COMMENT_ARGS>"*/"  {
-    BEGIN INITIAL;
-    endBlockComment();
-}
+"/**"                       { BEGIN COMMENT; }
+<COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; }
 <COMMENT>"@return"         {
     saveStatementName(&tmpStatementName,"\\return");
     BEGIN COMMENT_ARGS;
@@ -334,15 +326,6 @@ void beginLine()
     BEGIN NEWLINE;
 }
 
-static void beginBlockComment()
-{
-    printf("<div class=\"doc\">%s", NEWLINE_C);
-}
-
-static void endBlockComment()
-{
-    printf("%s</div>", NEWLINE_C);
-}
 void saveStatementName(char **dest,char *src)
 {
   *dest=strcpy(malloc((strlen(src)+1)*sizeof(char)),src);
