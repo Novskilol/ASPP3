@@ -52,3 +52,12 @@ void appendFile(char * src) {
 		printf("%c", c);
 	close(fd);
 }
+
+char *concat(const char *a,const char *b)
+{
+  char *r=malloc((strlen(a)+strlen(b)+1)*sizeof(char));
+  strcat(r,a);
+  strcat(r,b);
+  return r;
+  
+}

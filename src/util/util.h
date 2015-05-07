@@ -16,4 +16,5 @@ char * replace(const char *, char, const char *);
 
 void appendFile(char *);
 
+char *concat(const char *a,const char * b);
 #endif
