@@ -19,7 +19,7 @@ void j(int i);
 struct olilol{
   int a;
 };
-char j(int i){
+olilol j(int i){
 i = 4;
 }
 
@@ -27,6 +27,9 @@ void * f (int i){
   j(i);
 
   i = 4;
+  /**
+   * @param Ma variable ultra cool
+   */
   int a;
 }
 

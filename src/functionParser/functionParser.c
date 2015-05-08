@@ -123,7 +123,10 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   toBeAdded->trigger = strcpy(malloc(sizeof(char)*(strlen(statementName)+1)),statementName);
   this->rules[this->sizeRules++] = toBeAdded;
 }
-
+int emptyFunctionParser(FunctionParser this)
+{
+  return this->sizeElements == 0 ;
+}
 void appendBeginDoc(char * fullFileName) {
   FILE *f=fopen(fullFileName,"w");
 
@@ -141,16 +144,48 @@ void appendEndDoc(char * fullFileName) {
 
 }
 
-static void printTooltip(FunctionParser this, int id, char *functionName, char *returnType)
+static void printTooltip(FunctionParser this, char *functionName, char *returnType, int id)
 {
   printf("<titlefortooltip class=\"%d\" title=\"%s %s<br>\
          Param : i test\"></titlefortooltip>",
          id, returnType, functionName);
 }
 
-void parseFunction(FunctionParser this, int id, char *functionName,char *returnType, char *fileName)
+void parseVar(FunctionParser this,char *varName,char *fileName)
 {
- printTooltip(this,id,functionName,returnType);
+ char * fullFileName;
+  if (fileName == NULL)
+    fullFileName = "output/doc.html";
+  else
+    fullFileName = concat(fileName, ".doc.html");
+
+  FILE *f=fopen(fullFileName,"a");
+  free(fullFileName);
+   int i;
+
+  fprintf(f,"<div class=\"doc\">");
+
+  fprintf(f,"<titre><h2>%s</h2></titre>",varName);
+
+  for( i = 0 ; i < this->sizeElements ; ++i)
+  {
+    char *tmpName=this->elements[i]->name;
+    char *tmpData=this->elements[i]->data;
+    int y;
+    for( y = 0 ; y < this->sizeRules ; ++y)
+     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
+       this->rules[y]->rule(f,tmpData);
+   }
+   fprintf(f,"</div>");
+
+   fclose(f);
+
+}
+
+void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName, int id)
+{
+  printTooltip(this, functionName, returnType, id);
+
   /*
     We do not create a function block if function has no specific comment
    */
@@ -187,6 +222,7 @@ void parseFunction(FunctionParser this, int id, char *functionName,char *returnT
 
    fclose(f);
  }
+
 
  void setDefaultRules(FunctionParser this)
  {

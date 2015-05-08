@@ -42,6 +42,8 @@
   int indentLvl = 0;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
+  char *saveFunctionName=NULL;
+  bool isFunction=false;
   int saveLastId;
 
 %}
@@ -241,9 +243,12 @@
  ;
 
  declaration
- : declaration_specifiers semi_colon
- | declaration_specifiers init_declarator_list semi_colon
- | static_assert_declaration
+ : declaration_specifiers semi_colon  {if (typeLock == false && !emptyFunctionParser(functionParser))
+   parseVar(functionParser,saveLastIdentifier,filename);resetFunctionParser(functionParser);}
+ | declaration_specifiers init_declarator_list semi_colon {if (typeLock == false && !emptyFunctionParser(functionParser))
+   parseVar(functionParser,saveLastIdentifier,filename);resetFunctionParser(functionParser);}
+ | static_assert_declaration {if (typeLock == false && !emptyFunctionParser(functionParser))
+       parseVar(functionParser,saveLastIdentifier,filename);resetFunctionParser(functionParser);}
  ;
 
  declaration_specifiers
@@ -386,7 +391,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { addNewSymbol($1);}
+ : IDENTIFIER { addNewSymbol($1); }
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' star ']'
@@ -397,9 +402,9 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
-| direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
-| direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; isFunction = true ; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { free(saveFunctionName);saveFunctionName=copy($<s>1);typeLock = false;  atExitDeclaration($<s>1);}
+| direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; isFunction = true ;typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { free(saveFunctionName);saveFunctionName=copy($<s>1);typeLock = false;  atExitDeclaration($<s>1);}
+| direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; isFunction = true ;typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { free(saveFunctionName);saveFunctionName=copy($<s>1); typeLock = false; atExitDeclaration($<s>1);}
  ;
 
  pointer
@@ -579,13 +584,13 @@
  ;
 
  external_declaration
- : function_definition { atExitDefinition(); }
+ : function_definition
  | declaration
  ;
 
  function_definition
- : declaration_specifiers declarator  declaration_list compound_statement
- | declaration_specifiers declarator  compound_statement
+ : declaration_specifiers declarator  declaration_list compound_statement {atExitDefinition(saveFunctionName);}
+ | declaration_specifiers declarator  compound_statement {atExitDefinition(saveFunctionName);}
  ;
 
  declaration_list
@@ -735,15 +740,16 @@ void closeBraces() {
 
 void atExitDeclaration (char * functionName) {
   typeLock = false;
-  parseFunction(functionParser, saveLastId,functionName, typeName, filename);
+  parseFunction(functionParser, functionName, typeName, filename, saveLastId);
   resetFunctionParser(functionParser);
+  isFunction = false;
 }
+
 void addType()
 {
-
   addSymbolList(typeSymbolList,copy(saveLastIdentifier));
-
 }
+
 void atExitDefinition()
 {
   popSymbolTable(symbolTable);
@@ -754,10 +760,13 @@ void atExitDefinition()
 void printType (char * type)
 {
   if (typeLock == false) {
+    if (typeName != NULL)
+      fprintf(stderr,"REPLACE %s WITH %s",typeName,type);
     free(typeName);
+
     typeName = copy(type);
   }
-  fprintf(stderr,"LAST TYPE %s",type);
+
   printf("<type>\n%s\n</type>\n", type);
 }
 
@@ -765,9 +774,9 @@ void addNewSymbol(char * name) {
 
 
   TableObject to1;
+  to1 = searchDeclarationFunctionSymbolTable(symbolTable, name, indentLvl);
   /* Check if a fonction has already been declared when we encounter its definition */
-  if ((to1 = searchDeclarationFunctionSymbolTable(symbolTable, name, indentLvl)) != NULL) {
-    char * declaration = to1->declaration;
+  if (to1 != NULL) {
     int  class = to1->class;
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
       class, name);
@@ -870,6 +879,7 @@ int main(int argc, char *argv[])
       free(docfilename);
       free(fullfilename);
       free(saveLastIdentifier);
+      free(saveFunctionName);
       typeName = NULL;
 
     }
