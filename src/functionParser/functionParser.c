@@ -155,6 +155,7 @@ static void printDocumentation(FunctionParser this, char *functionName, char *re
   printf("<titlefortooltip class=\"%d\" title=\"", id);
   printf("%s %s<br>", returnType, functionName);
 
+  // ici on affiche les brief param return
   int i;
   for(i = 0 ; i < this->sizeElements ; ++i) // :-(
      printf("%s %s<br>", this->elements[i]->name, this->elements[i]->data);

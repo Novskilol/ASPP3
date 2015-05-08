@@ -46,7 +46,7 @@
   char *saveLastIdentifier=NULL;
   char *saveFunctionName=NULL;
   bool isFunction=false;
-  int saveLastId;
+  int saveLastClass;
   bool yolo = false; // encore un
 
 %}
@@ -745,13 +745,13 @@ void closeBraces() {
 }
 
 void fautTrouverUnNom()
-{/*
+{
   //printf("la");
   if (typeLock == false && !emptyFunctionParser(functionParser)) {
     //printf("ici");
    parseVar(functionParser,saveLastIdentifier,filename);
  }
- resetFunctionParser(functionParser);*/
+ resetFunctionParser(functionParser);
 }
 
 void unlock()
@@ -769,7 +769,7 @@ void atExitPrototype(char * functionName)
   isFunction = false;
   free(saveFunctionName);
   saveFunctionName=copy(functionName);
-  parseFunction(functionParser, functionName, typeName, filename, saveLastId);
+  parseFunction(functionParser, functionName, typeName, filename, saveLastClass);
   resetFunctionParser(functionParser);
 }
 
@@ -807,7 +807,7 @@ void addNewSymbol(char * name) {
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
            class, name);
     if (indentLvl == 0)
-      saveLastId = class;
+      saveLastClass = class;
   }
   else {
     int class = uniqueId;
@@ -819,7 +819,7 @@ void addNewSymbol(char * name) {
            class, name);
 
     if (indentLvl == 0)
-      saveLastId = uniqueId;
+      saveLastClass = uniqueId;
     uniqueId++;
   }
 }
