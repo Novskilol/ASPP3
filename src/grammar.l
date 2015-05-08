@@ -127,7 +127,8 @@ WS  [ \t\v\n\f]
 "_Alignas"              { yylval.s = yytext; return ALIGNAS; }
 "_Alignof"              { yylval.s = yytext; return ALIGNOF; }
 "_Atomic"               { yylval.s = yytext; return ATOMIC; }
-"_Bool"                 { yylval.s = yytext; return BOOL; }
+"_Bool"                 |
+"bool"                  { yylval.s = yytext; return BOOL; }
 "_Complex"              { yylval.s = yytext; return COMPLEX; }
 "_Generic"              { yylval.s = yytext; return GENERIC; }
 "_Imaginary"            { yylval.s = yytext; return IMAGINARY; }
@@ -291,8 +292,8 @@ static int checkType(void)
         default:                          /* includes undefined */
         yylval.s = yytext;
         TableObject t;
-        if ( (t=searchSymbolList(typeSymbolList,yylval.s)) != NULL)
-             return VOID;
+        if (searchSymbolList(typeSymbolList,yylval.s) != NULL)
+             return USER_TYPE;
         return IDENTIFIER;
     }
 }

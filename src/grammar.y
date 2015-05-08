@@ -67,6 +67,7 @@
  %token	<s> CONST RESTRICT VOLATILE
  %token	<s> BOOL CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE VOID
  %token	<s> COMPLEX IMAGINARY
+ %token <s> USER_TYPE
  %token	<s> STRUCT UNION ENUM
  %token	<s> CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
  %token	<s> ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
@@ -300,6 +301,7 @@
  | struct_or_union_specifier
  | enum_specifier
  | TYPEDEF_NAME	 { printType($1); }
+ | USER_TYPE { printType($1); }
  ;
 
  struct_or_union_specifier
