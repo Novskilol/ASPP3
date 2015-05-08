@@ -42,6 +42,7 @@ void g(int i){
 }
 
 void h(int i){
+
   f(i);
   i = 42;
   g(i);

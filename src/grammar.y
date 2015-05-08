@@ -47,6 +47,7 @@
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastId;
+  bool yolo = false; // encore un
 
 %}
 
@@ -514,7 +515,7 @@
  ;
 
  static_assert_declaration
- : STATIC_ASSERT '(' constant_expression ',' string_literal ')' semi_colon 
+ : STATIC_ASSERT '(' constant_expression ',' string_literal ')' semi_colon
  { printf("%s\n", $1); }
  ;
 
@@ -588,9 +589,9 @@
  ;
 
  function_definition
- : declaration_specifiers declarator  declaration_list compound_statement 
+ : declaration_specifiers declarator  declaration_list compound_statement
  { atExitDefinition(saveFunctionName); }
- | declaration_specifiers declarator  compound_statement 
+ | declaration_specifiers declarator  compound_statement
  { atExitDefinition(saveFunctionName); }
  ;
 
@@ -658,7 +659,7 @@ semi_colon
 };
 
 identifier
-: IDENTIFIER { 
+: IDENTIFIER {
   searchSymbol($1);
   free(saveLastIdentifier);
   saveLastIdentifier=copy($1);
@@ -763,8 +764,7 @@ void unlock()
 }
 
 void atExitPrototype(char * functionName)
-{ 
-  saveLastId = uniqueId - 3; // incorrect
+{
   typeLock = false;
   isFunction = false;
   free(saveFunctionName);
@@ -799,15 +799,15 @@ void printType(char * type)
 }
 
 void addNewSymbol(char * name) {
-
-
   TableObject to1;
   to1 = searchFunctionSymbolTable(symbolTable, name, indentLvl);
   /* Check if a fonction has already been declared when we encounter its definition */
   if (to1 != NULL) {
     int  class = to1->class;
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
-      class, name);
+           class, name);
+    if (indentLvl == 0)
+      saveLastId = class;
   }
   else {
     int class = uniqueId;
@@ -816,8 +816,10 @@ void addNewSymbol(char * name) {
     addDeclarationTable(symbolTable, to, indentLvl);
 
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
-      class, name);
+           class, name);
 
+    if (indentLvl == 0)
+      saveLastId = uniqueId;
     uniqueId++;
   }
 }
