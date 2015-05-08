@@ -386,7 +386,8 @@
  ;
 
  direct_declarator
- : IDENTIFIER { addNewSymbol($1);}
+ : IDENTIFIER { addNewSymbol($1); 
+				    }
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' star ']'

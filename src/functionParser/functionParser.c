@@ -123,7 +123,10 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
   toBeAdded->trigger = strcpy(malloc(sizeof(char)*(strlen(statementName)+1)),statementName);
   this->rules[this->sizeRules++] = toBeAdded;
 }
-
+int emptyFunctionParser(FunctionParser this)
+{
+  return this->sizeElements == 0 ;
+}
 void appendBeginDoc(char * fullFileName) {
   FILE *f=fopen(fullFileName,"w");
 
@@ -148,7 +151,36 @@ static void tooltip(FunctionParser this, char *functionName, char *returnType)
 
 
 }
+void parseVar(FunctionParser this,char *varName,char *fileName)
+{
+ char * fullFileName;
+  if (fileName == NULL)
+    fullFileName = "output/doc.html";
+  else
+    fullFileName = concat(fileName, ".doc.html");
 
+  FILE *f=fopen(fullFileName,"a");
+  free(fullFileName);
+   int i;
+
+  fprintf(f,"<div class=\"doc\">");
+
+  fprintf(f,"<titre><h2>%s</h2></titre>",varName);
+
+  for( i = 0 ; i < this->sizeElements ; ++i)
+  {
+    char *tmpName=this->elements[i]->name;
+    char *tmpData=this->elements[i]->data;
+    int y;
+    for( y = 0 ; y < this->sizeRules ; ++y)
+     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
+       this->rules[y]->rule(f,tmpData);
+   }
+   fprintf(f,"</div>");
+
+   fclose(f);
+  
+}
 void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName)
 {
   /*

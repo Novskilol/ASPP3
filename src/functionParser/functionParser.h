@@ -12,7 +12,8 @@ void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule r
 void setDefaultRules(FunctionParser this);
 void appendBeginDoc();
 void appendEndDoc();
-
+int emptyFunctionParser(FunctionParser this);
+void parseVar(FunctionParser this,char *varName,char *filename);
 
 /*
   Default rules functions
