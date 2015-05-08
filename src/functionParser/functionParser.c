@@ -152,8 +152,11 @@ static void tooltip(FunctionParser this, char *functionName, char *returnType)
 void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName)
 {
   /*
-    We do create a function block even if function has no specific comment
+    We do not create a function block if function has no specific comment
    */
+  if  ( this->sizeElements <= 0 )
+    return ;
+
   
   char * fullFileName;
   if (fileName == NULL)
