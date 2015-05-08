@@ -42,6 +42,7 @@
   int indentLvl = 0;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
+  int saveLastId;
 
 %}
 
@@ -396,9 +397,9 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' { ++indentLvl; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
-| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
-| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
+| direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
+| direct_declarator '(' { saveLastId = uniqueId-1; ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
  ;
 
  pointer
@@ -734,13 +735,8 @@ void closeBraces() {
 
 void atExitDeclaration (char * functionName) {
   typeLock = false;
-
-  //printf("<declaration title=\"");
-  parseFunction(functionParser, functionName, typeName, filename);
-  //printf("\">yolosweg</declaration>");
-
+  parseFunction(functionParser, saveLastId,functionName, typeName, filename);
   resetFunctionParser(functionParser);
-  //printf(NEWLINE_C);
 }
 void addType()
 {
@@ -765,12 +761,6 @@ void printType (char * type)
   printf("<type>\n%s\n</type>\n", type);
 }
 
-char * createDeclarationString(char * name)
-{
-  char * declaration = name;
-  return declaration;
-}
-
 void addNewSymbol(char * name) {
 
 
@@ -779,18 +769,17 @@ void addNewSymbol(char * name) {
   if ((to1 = searchDeclarationFunctionSymbolTable(symbolTable, name, indentLvl)) != NULL) {
     char * declaration = to1->declaration;
     int  class = to1->class;
-    printf("<declaration title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
-      declaration, class, name);
+    printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
+      class, name);
   }
   else {
-    char * declaration = createDeclarationString(name);
     int class = uniqueId;
 
-    TableObject to = createTableObject(name, class, declaration);
+    TableObject to = createTableObject(name, class, NULL);
     addDeclarationTable(symbolTable, to, indentLvl);
 
-    printf("<declaration title=\"%s\" class=\"%d\">\n%s\n</declaration>\n",
-      declaration, class, name);
+    printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
+      class, name);
 
     uniqueId++;
     //free(declaration);
@@ -806,10 +795,9 @@ bool searchSymbol(char * name) {
     return false;
   }
   else {
-    char * declaration = to->declaration;
     int class = to->class;
-    printf("<identifier title=\"%s\" class=\"%d\">\n%s\n</identifier>\n",
-      declaration, class, name);
+    printf("<identifier class=\"%d\">\n%s\n</identifier>\n",
+      class, name);
   }
   return true;
 }

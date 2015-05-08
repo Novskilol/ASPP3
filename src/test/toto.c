@@ -1,14 +1,21 @@
-char ***s;
-char **************fepijfzoejhfeozfhj ();
+struct toto {
+	int a;
+	int b;
+};
+
+typedef toto * Toto;
+
 /**
  * [f description]
- * @param  s1 [description]
- * @param  s2 [description]
- * @return    [description]
+ * @return [description]
  */
-char ** f(char***s1, char **s2){
-***constante = 42;
+int **  f(int a, int b, int t []) {
 
 }
 
+int * j (int a){
 
+}
+
+int g(){
+	f();;;;;;;;;;;;;;;;;;;;;;}

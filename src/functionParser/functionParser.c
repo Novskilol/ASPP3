@@ -141,23 +141,23 @@ void appendEndDoc(char * fullFileName) {
 
 }
 
-static void tooltip(FunctionParser this, char *functionName, char *returnType)
+static void printTooltip(FunctionParser this, int id, char *functionName, char *returnType)
 {
-
-  printf("%s %s", functionName, returnType);
-
-
+  printf("<titlefortooltip class=\"%d\" title=\"%s %s<br>\
+         Param : i test\"></titlefortooltip>",
+         id, returnType, functionName);
 }
 
-void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName)
+void parseFunction(FunctionParser this, int id, char *functionName,char *returnType, char *fileName)
 {
+ printTooltip(this,id,functionName,returnType);
   /*
     We do not create a function block if function has no specific comment
    */
   if  ( this->sizeElements <= 0 )
     return ;
 
-  
+
   char * fullFileName;
   if (fileName == NULL)
     fullFileName = "output/doc.html";
@@ -175,7 +175,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
   for( i = 0 ; i < this->sizeElements ; ++i)
   {
 
-    
+
     char *tmpName=this->elements[i]->name;
     char *tmpData=this->elements[i]->data;
     int y;
@@ -186,7 +186,6 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
    fprintf(f,"</div>");
 
    fclose(f);
-   //tooltip(this,functionName,returnType);
  }
 
  void setDefaultRules(FunctionParser this)

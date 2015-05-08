@@ -58,8 +58,20 @@ function gotoDeclaration(){
     });
 }
 
+function findTooltip(){
+	$("titlefortooltip").each(function setTooltip(){
+		var title = $(this).prop('title');
+		var list = $('declaration.'+$(this).attr('class'));
+		$(list).prop('title', title);
+		var list = $('identifier.'+$(this).attr('class'));
+		$(list).prop('title', title);
+	});
+}
+
 $(document).ready(function(){
 	gotoDeclaration();
+	findTooltip();
+
 	simpleTooltip("tooltip");
 	highlightIdentifiers();
 	expandCollapse();
