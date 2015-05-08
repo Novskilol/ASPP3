@@ -42,6 +42,7 @@
   int indentLvl = 0;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
+  char *saveFunctionName=NULL;
 
 %}
 
@@ -240,9 +241,9 @@
  ;
 
  declaration
- : declaration_specifiers semi_colon
- | declaration_specifiers init_declarator_list semi_colon
- | static_assert_declaration
+ : declaration_specifiers semi_colon {atExitDeclaration(saveFunctionName);}
+ | declaration_specifiers init_declarator_list semi_colon {atExitDeclaration(saveFunctionName);}
+ | static_assert_declaration {atExitDeclaration(saveFunctionName);}
  ;
 
  declaration_specifiers
@@ -396,9 +397,9 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' { ++indentLvl; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
-| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
-| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { ++indentLvl; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { free(saveFunctionName);saveFunctionName=copy($<s>1);}
+| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { free(saveFunctionName);saveFunctionName=copy($<s>1); }
+| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { free(saveFunctionName);saveFunctionName=copy($<s>1); }
  ;
 
  pointer
@@ -578,13 +579,13 @@
  ;
 
  external_declaration
- : function_definition { atExitDefinition(); }
+ : function_definition
  | declaration
  ;
 
  function_definition
- : declaration_specifiers declarator  declaration_list compound_statement
- | declaration_specifiers declarator  compound_statement
+ : declaration_specifiers declarator  declaration_list compound_statement {atExitDefinition(saveFunctionName);}
+ | declaration_specifiers declarator  compound_statement {atExitDefinition(saveFunctionName);}
  ;
 
  declaration_list
@@ -735,12 +736,9 @@ void closeBraces() {
 void atExitDeclaration (char * functionName) {
   typeLock = false;
 
-  //printf("<declaration title=\"");
   parseFunction(functionParser, functionName, typeName, filename);
-  //printf("\">yolosweg</declaration>");
-
   resetFunctionParser(functionParser);
-  //printf(NEWLINE_C);
+  
 }
 void addType()
 {
@@ -750,6 +748,7 @@ void addType()
 }
 void atExitDefinition()
 {
+
   popSymbolTable(symbolTable);
   indentLvl -= 1;
   printf(NEWLINE_C);
@@ -882,6 +881,7 @@ int main(int argc, char *argv[])
       free(docfilename);
       free(fullfilename);
       free(saveLastIdentifier);
+      free(saveFunctionName);
       typeName = NULL;
 
     }

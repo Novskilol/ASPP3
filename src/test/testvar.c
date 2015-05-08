@@ -19,7 +19,7 @@ void j(int i);
 struct olilol{
   int a;
 };
-char j(int i){
+olilol j(int i){
 i = 4;
 }
 
