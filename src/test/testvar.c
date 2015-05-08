@@ -27,6 +27,9 @@ void * f (int i){
   j(i);
 
   i = 4;
+  /**
+   * @param Ma variable ultra cool
+   */
   int a;
 }
 
