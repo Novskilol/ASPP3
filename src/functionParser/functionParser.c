@@ -144,11 +144,22 @@ void appendEndDoc(char * fullFileName) {
 
 }
 
-static void printTooltip(FunctionParser this, char *functionName, char *returnType, int id)
+static void printPrototype(FunctionParser this, char *functionName, char *returnType, int id)
 {
-  printf("<titlefortooltip class=\"%d\" title=\"%s %s<br>\
-         Param : i test\"></titlefortooltip>",
+  printf("<titlefortooltip class=\"%d\" title=\"%s %s\"></titlefortooltip>",
          id, returnType, functionName);
+}
+
+static void printDocumentation(FunctionParser this, char *functionName, char *returnType, int id)
+{
+  printf("<titlefortooltip class=\"%d\" title=\"", id);
+  printf("%s %s<br>", returnType, functionName);
+
+  int i;
+  for(i = 0 ; i < this->sizeElements ; ++i) // :-(
+     printf("%s %s<br>", this->elements[i]->name, this->elements[i]->data);
+
+  printf("\"></titlefortooltip>");
 }
 
 void parseVar(FunctionParser this,char *varName,char *fileName)
@@ -184,14 +195,14 @@ void parseVar(FunctionParser this,char *varName,char *fileName)
 
 void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName, int id)
 {
-  printTooltip(this, functionName, returnType, id);
 
   /*
     We do not create a function block if function has no specific comment
    */
-  if  ( this->sizeElements <= 0 )
-    return ;
-
+  if  ( this->sizeElements <= 0 ) {
+    printPrototype(this, functionName, returnType, id);
+    return;
+  }
 
   char * fullFileName;
   if (fileName == NULL)
@@ -221,6 +232,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
    fprintf(f,"</div>");
 
    fclose(f);
+   printDocumentation(this, functionName, returnType, id);
  }
 
 

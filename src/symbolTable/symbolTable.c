@@ -101,7 +101,7 @@ TableObject searchSymbolTable(SymbolTable this, char * name, int indent)
   return res;
 }
 
-TableObject searchDeclarationFunctionSymbolTable(SymbolTable this, char * name, int indent)
+TableObject searchFunctionSymbolTable(SymbolTable this, char * name, int indent)
 {
   assert(indent >= 0 && "negative indent in searchDeclarationSymbolTable");
 

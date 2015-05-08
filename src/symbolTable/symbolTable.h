@@ -13,9 +13,9 @@ typedef struct {
 	char * declaration;
 }* TableObject;
 
-TableObject createTableObject(char * name, int class, char * declaration); 
+TableObject createTableObject(char * name, int class, char * declaration);
 
-void destroyTableObject(void * this); 
+void destroyTableObject(void * this);
 
 SymbolTable createSymbolTable();
 
@@ -27,7 +27,7 @@ int getIdDeclaration(void * this);
 
 TableObject searchSymbolTable(SymbolTable this, char * name, int indent);
 
-TableObject searchDeclarationFunctionSymbolTable(SymbolTable this, char * name, int indent);
+TableObject searchFunctionSymbolTable(SymbolTable this, char * name, int indent);
 
 void pushSymbolTable(SymbolTable this);
 

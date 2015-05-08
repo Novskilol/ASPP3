@@ -5,7 +5,7 @@
  * [f description]
  * @param i [description]
  */
-void f(int i);
+char * f(int i, int a);
 /**
  * [g description]
  * @param i [description]
@@ -23,8 +23,9 @@ olilol j(int i){
 i = 4;
 }
 
-void * f (int i){
-  j(i);
+char * f(int i, int a){
+
+ j(i);
 
   i = 4;
   /**
