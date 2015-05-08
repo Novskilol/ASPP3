@@ -151,9 +151,10 @@ static void tooltip(FunctionParser this, char *functionName, char *returnType)
 
 void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName)
 {
-  if (this->sizeElements == 0)
-    return;
-
+  /*
+    We do create a function block even if function has no specific comment
+   */
+  
   char * fullFileName;
   if (fileName == NULL)
     fullFileName = "output/doc.html";
@@ -167,9 +168,11 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
   fprintf(f,"<div class=\"doc\">");
 
   fprintf(f,"<titre><h2>%s %s</h2></titre>",returnType,functionName);
+
   for( i = 0 ; i < this->sizeElements ; ++i)
   {
 
+    
     char *tmpName=this->elements[i]->name;
     char *tmpData=this->elements[i]->data;
     int y;

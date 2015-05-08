@@ -30,6 +30,10 @@
   char * createClassString(char *);
   char * createDeclarationString(char *);
   void addType();
+
+  /*
+   *Typename = function name
+   */
   char * typeName = NULL;
   char *filename;
   bool typeLock = false;
@@ -381,7 +385,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { typeLock = true; addNewSymbol($1);}
+ : IDENTIFIER { addNewSymbol($1);}
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' star ']'
@@ -392,9 +396,9 @@
  | direct_declarator '[' type_qualifier_list assignment_expression ']'
  | direct_declarator '[' type_qualifier_list ']'
  | direct_declarator '[' assignment_expression ']'
- | direct_declarator '(' { ++indentLvl; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
- | direct_declarator '(' { ++indentLvl; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
- | direct_declarator '(' { ++indentLvl; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
+ | direct_declarator '(' { ++indentLvl; typeLock = true ; declarationFunction = true; pushSymbolTable(symbolTable); } parameter_type_list ')' { atExitDeclaration($<s>1); }
+| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } ')' { atExitDeclaration($<s>1); }
+| direct_declarator '(' { ++indentLvl; typeLock = true; declarationFunction = true; pushSymbolTable(symbolTable); } identifier_list ')' { atExitDeclaration($<s>1); }
  ;
 
  pointer
@@ -403,6 +407,7 @@
  | star pointer
  | star
  ;
+
 
  star
  : '*' {
@@ -727,11 +732,11 @@ void closeBraces() {
   popSymbolTable(symbolTable);
 }
 
-void atExitDeclaration (char * type) {
+void atExitDeclaration (char * functionName) {
   typeLock = false;
 
   //printf("<declaration title=\"");
-  parseFunction(functionParser, type, typeName, filename);
+  parseFunction(functionParser, functionName, typeName, filename);
   //printf("\">yolosweg</declaration>");
 
   resetFunctionParser(functionParser);
@@ -756,6 +761,7 @@ void printType (char * type)
     free(typeName);
     typeName = copy(type);
   }
+  fprintf(stderr,"LAST TYPE %s",type);
   printf("<type>\n%s\n</type>\n", type);
 }
 

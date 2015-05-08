@@ -19,14 +19,15 @@ void j(int i);
 struct olilol{
   int a;
 };
-olilol j(int i){
+char j(int i){
 i = 4;
 }
 
-void f (int i){
+void * f (int i){
   j(i);
 
   i = 4;
+  int a;
 }
 
 void g(int i){
