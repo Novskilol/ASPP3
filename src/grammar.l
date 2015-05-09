@@ -297,6 +297,11 @@ static int checkType(void)
     }
 }
 
+/**
+ * @detail Replace characted that could be interpreted as html code such as '<' and '>'
+ * @param  s Our src string
+ * @return   The new allocated string without the bad characters
+ */
 static char * replaceString(const char * s)
 {
     char * tmp = replace(s, '<', "&lt");

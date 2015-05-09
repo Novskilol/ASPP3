@@ -15,10 +15,24 @@
 #define GREATER_T_C "&gt"
 #define REGULAR_INDENT 4
 
+/**
+ * @detail Increase the indentation level, called whenever we get in a code block, change flex mode for NEWLINE
+ */
 extern void addIndent();
+
+/**
+ * @detail Decrease the indentation level, called whenever we get out of a code block, change flex mode for NEWLINE
+ */
 extern void deleteIndent();
+
+/**
+ * @detail Lex function : change flex mode for NEWLINE
+ */
 extern void beginLine();
 
+/**
+ * @detail Print as much as space as needed to get a correct indentation in html
+ */
 void indentThat();
 
 SymbolTable symbolTable;

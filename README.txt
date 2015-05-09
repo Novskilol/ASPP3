@@ -1,7 +1,9 @@
 Projet Analyse Syntaxique
 
-Compiler :
+Compile :
 cd src ; make
 
-Tester :
-cd src ; ../bin/doc_html src/test/fichier.c
+Usage :
+cd src ; ../bin/doc_html src/fichier1.c src/file2.c ... src/fileN.c
+
+All files are generated in their own directory

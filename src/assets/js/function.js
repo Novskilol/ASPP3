@@ -1,4 +1,4 @@
-/* change background color of elements with class name 'name' */
+/* change background color of elements with class 'name', usually an id */
 function highlight(name){
 	var list = document.getElementsByClassName(name);
 	for (var i = 0; i < list.length; i++) {
@@ -31,8 +31,10 @@ function expandCollapse(){
 	});
 }
 
-/* show tooltip on hover containing prototype or doxygen documentation */
-/* work for identifiers and declarations */
+/*
+	show tooltip on hover containing prototype or doxygen documentation
+	work for identifiers and declarations
+*/
 function simpleTooltip(name){
 	$("identifier, declaration").each(function(i){
 		$("body").append("<div class='"+name+"' id='"+name+i+"'><p>"+$(this).attr('title')+"</p></div>");
@@ -58,6 +60,10 @@ function gotoDeclaration(){
     });
 }
 
+/*
+	search for 'titlefortooltip' html tag in the code,
+	then set the this element's title to the identifier's title with the same id
+*/
 function findTooltip(){
 	$("titlefortooltip").each(function setTooltip(){
 		var title = $(this).prop('title');

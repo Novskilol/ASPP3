@@ -1,9 +1,5 @@
 #include "util.h"
 
-/*
-allocate memory, copy argument
-and return the new allocated string
-*/
 char * copy(const char * s)
 {
 	if (s == NULL)
@@ -25,10 +21,7 @@ int compareChar(void *a,void *b)
   return strcmp((char*)a,(char*)b) == 0 ;
 
 }
-/*
-allocate memory, replace every occurences of 'bad' by 'replace'
-and return the new allocated string
-*/
+
 char * replace(const char * s, char bad, const char * replace) {
 	int count = 0;
 	const char *tmp;
@@ -67,5 +60,5 @@ char *concat(const char *a,const char *b)
   strcat(r,a);
   strcat(r,b);
   return r;
-  
+
 }

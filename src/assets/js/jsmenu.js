@@ -1,3 +1,6 @@
+/* Portion de code emprunté sur internet */
+/* Sert à l'affichage d'une sidebar */
+
 ( function( $ ) {
 $( document ).ready(function() {
 $('#cssmenu li.has-sub>a').on('click', function(){
