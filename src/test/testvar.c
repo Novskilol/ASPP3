@@ -21,7 +21,8 @@ olilol j(int i){
 i = 4;
 }
 
-char * f(int i, int a){
+
+char * y(int i, int a){
 
  j(i);
 

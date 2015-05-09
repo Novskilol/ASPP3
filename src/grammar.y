@@ -44,6 +44,7 @@
   int indentLvl = 0;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
+  char *saveLastIdentifierNotF=NULL;
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastClass;
@@ -301,11 +302,11 @@
  | struct_or_union_specifier
  | enum_specifier
  | TYPEDEF_NAME	 { printType($1); }
- | USER_TYPE { printType($1); }
+ | USER_TYPE {  printType($1); }
  ;
 
  struct_or_union_specifier
- : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
+ : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { addType();}
  | struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { addType(); }
  | struct_or_union identifier { addType(); }
  ;
@@ -664,6 +665,8 @@ identifier
 : IDENTIFIER {
   free(saveLastIdentifier);
   saveLastIdentifier=copy($1);
+  free(saveLastIdentifierNotF);
+  saveLastIdentifierNotF=copy($1);
   searchSymbol($1);
 
 };
@@ -779,7 +782,7 @@ void atExitPrototype(char * functionName)
 
 void addType()
 {
-  addSymbolList(typeSymbolList,copy(saveLastIdentifier));
+  addSymbolList(typeSymbolList,copy(saveLastIdentifierNotF));
 }
 
 void atExitDefinition()
@@ -875,10 +878,10 @@ int main(int argc, char *argv[])
   char *doc=".doc.html";
   char *fullfilename;
   char *docfilename;
-
+ typeSymbolList = createSymbolList(compareChar,destroyChar);
   for (i = 1 ; i < argc ; ++i)
     {
-      typeSymbolList = createSymbolList(compareChar,destroyChar);
+     
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
       fullfilename=concat(argv[i],html);
@@ -899,16 +902,17 @@ int main(int argc, char *argv[])
       close(1);
 
       destroySymbolTable(symbolTable);
-      destroySymbolList(typeSymbolList);
+     
       free(typeName);
       free(docfilename);
       free(fullfilename);
       free(saveLastIdentifier);
+      free(saveLastIdentifierNotF);
       free(saveFunctionName);
       typeName = NULL;
 
     }
-
+ destroySymbolList(typeSymbolList);
 
 
   destroyFunctionParser(functionParser);
