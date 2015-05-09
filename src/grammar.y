@@ -23,7 +23,7 @@
   void openBraces();
   void closeBraces();
   void unlock();
-  void fautTrouverUnNom();
+  void endDeclaration();
   void atExitPrototype(char *);
   void atExitDefinition();
   void printType(char *);
@@ -247,9 +247,9 @@
  ;
 
  declaration
- : declaration_specifiers semi_colon  { fautTrouverUnNom(); }
- | declaration_specifiers init_declarator_list semi_colon { fautTrouverUnNom(); }
- | static_assert_declaration { fautTrouverUnNom(); }
+ : declaration_specifiers semi_colon  { endDeclaration(); }
+ | declaration_specifiers init_declarator_list semi_colon { endDeclaration(); }
+ | static_assert_declaration { endDeclaration(); }
  ;
 
  declaration_specifiers
@@ -393,7 +393,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { addNewSymbol($1); }
+ : IDENTIFIER { free(saveLastIdentifier); saveLastIdentifier = copy($1);addNewSymbol($1); }
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' star ']'
@@ -662,9 +662,10 @@ semi_colon
 
 identifier
 : IDENTIFIER {
-  searchSymbol($1);
   free(saveLastIdentifier);
   saveLastIdentifier=copy($1);
+  searchSymbol($1);
+
 };
 
 string_literal
@@ -746,12 +747,13 @@ void closeBraces() {
   popSymbolTable(symbolTable);
 }
 
-void fautTrouverUnNom()
+void endDeclaration()
 {
   //printf("la");
+  assert(saveLastIdentifier != NULL);
   if (typeLock == false && !emptyFunctionParser(functionParser)) {
     //printf("ici");
-   parseVar(functionParser,saveLastIdentifier,filename);
+    parseVar(functionParser,saveLastIdentifier,filename,uniqueId-1);
  }
  resetFunctionParser(functionParser);
 }

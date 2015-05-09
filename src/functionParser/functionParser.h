@@ -13,7 +13,7 @@ void setDefaultRules(FunctionParser this);
 void appendBeginDoc();
 void appendEndDoc();
 int emptyFunctionParser(FunctionParser this);
-void parseVar(FunctionParser this,char *varName,char *filename);
+void parseVar(FunctionParser this,char *varName,char *filename,int id);
 
 /*
   Default rules functions

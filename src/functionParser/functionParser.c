@@ -144,14 +144,51 @@ void appendEndDoc(char * fullFileName) {
 
 }
 
-static void printPrototype(FunctionParser this, char *functionName, char *returnType, int id)
+static void parseRules(FunctionParser this,FILE *f)
 {
-  printf("<titlefortooltip class=\"%d\" title=\"%s %s\"></titlefortooltip>",
-         id, returnType, functionName);
+  int i;
+  for( i = 0 ; i < this->sizeElements ; ++i)
+  {
+    char *tmpName=this->elements[i]->name;
+    char *tmpData=this->elements[i]->data;
+    int y;
+    for( y = 0 ; y < this->sizeRules ; ++y)
+     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
+       this->rules[y]->rule(f,tmpData);
+   }
+  
+
+}
+static void printDocumentation(FunctionParser this, char *functionName,char *fileName, char *returnType, int id)
+{
+  char *html=".html";
+  char *varName=concat(fileName,html);
+  
+  free(varName);
+  
+  fprintf(stdout,"<titlefortooltip class=\"%d\"  title=\"",id);
+  if (returnType != NULL)
+    printf("<titre><h2>%s %s</h2></titre>",returnType,functionName );
+  else{
+    
+    printf("<titre><h2>%s</h2></titre>",functionName );
+
+  }
+  parseRules(this,stdout);
+  
+  printf("\"></titlefortooltip>");
+
+
+  // fclose(f);
+   
+
+  
+
 }
 
-static void printDocumentation(FunctionParser this, char *functionName, char *returnType, int id)
+static void printPrototype(FunctionParser this, char *functionName, char *fileName,char *returnType, int id)
 {
+  /*
   printf("<titlefortooltip class=\"%d\" title=\"", id);
   printf("%s %s<br>", returnType, functionName);
 
@@ -160,11 +197,12 @@ static void printDocumentation(FunctionParser this, char *functionName, char *re
   for(i = 0 ; i < this->sizeElements ; ++i) // :-(
      printf("%s %s<br>", this->elements[i]->name, this->elements[i]->data);
 
-  printf("\"></titlefortooltip>");
+     printf("\"></titlefortooltip>");*/
 }
 
-void parseVar(FunctionParser this,char *varName,char *fileName)
+void parseVar(FunctionParser this,char *varName,char *fileName,int id)
 {
+  //fprintf(stderr,"%s",varName);
  char * fullFileName;
   if (fileName == NULL)
     fullFileName = "output/doc.html";
@@ -190,6 +228,7 @@ void parseVar(FunctionParser this,char *varName,char *fileName)
    }
    fprintf(f,"</div>");
 
+   printDocumentation(this,varName,fileName,NULL,id);
    fclose(f);
 
 }
@@ -201,7 +240,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
     We do not create a function block if function has no specific comment
    */
   if  ( this->sizeElements <= 0 ) {
-    printPrototype(this, functionName, returnType, id);
+    printDocumentation(this, functionName, fileName,returnType, id);
     return;
   }
 
@@ -233,7 +272,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
    fprintf(f,"</div>");
 
    fclose(f);
-   printDocumentation(this, functionName, returnType, id);
+   printDocumentation(this, functionName, fileName,returnType, id);
  }
 
 
