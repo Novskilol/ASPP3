@@ -156,48 +156,34 @@ static void parseRules(FunctionParser this,FILE *f)
      if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
        this->rules[y]->rule(f,tmpData);
    }
-  
+
 
 }
 static void printDocumentation(FunctionParser this, char *functionName,char *fileName, char *returnType, int id)
 {
   char *html=".html";
   char *varName=concat(fileName,html);
-  
+
   free(varName);
-  
+
   fprintf(stdout,"<titlefortooltip class=\"%d\"  title=\"",id);
   if (returnType != NULL)
     printf("<titre><h2>%s %s</h2></titre>",returnType,functionName );
   else{
-    
+
     printf("<titre><h2>%s</h2></titre>",functionName );
 
   }
   parseRules(this,stdout);
-  
+
   printf("\"></titlefortooltip>");
 
 
   // fclose(f);
-   
 
-  
 
-}
 
-static void printPrototype(FunctionParser this, char *functionName, char *fileName,char *returnType, int id)
-{
-  /*
-  printf("<titlefortooltip class=\"%d\" title=\"", id);
-  printf("%s %s<br>", returnType, functionName);
 
-  // ici on affiche les brief param return
-  int i;
-  for(i = 0 ; i < this->sizeElements ; ++i) // :-(
-     printf("%s %s<br>", this->elements[i]->name, this->elements[i]->data);
-
-     printf("\"></titlefortooltip>");*/
 }
 
 void parseVar(FunctionParser this,char *varName,char *fileName,int id)

@@ -291,7 +291,6 @@ static int checkType(void)
         return ENUMERATION_CONSTANT;
         default:                          /* includes undefined */
         yylval.s = yytext;
-        TableObject t;
         if (searchSymbolList(typeSymbolList,yylval.s) != NULL)
              return USER_TYPE;
         return IDENTIFIER;

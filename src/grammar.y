@@ -795,8 +795,8 @@ void atExitDefinition()
 void printType(char * type)
 {
   if (typeLock == false) {
-    if (typeName != NULL)
-      fprintf(stderr,"REPLACE %s WITH %s",typeName,type);
+    //if (typeName != NULL)
+      //fprintf(stderr,"REPLACE %s WITH %s",typeName,type);
     free(typeName);
 
     typeName = copy(type);
@@ -881,7 +881,7 @@ int main(int argc, char *argv[])
  typeSymbolList = createSymbolList(compareChar,destroyChar);
   for (i = 1 ; i < argc ; ++i)
     {
-     
+
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
       fullfilename=concat(argv[i],html);
@@ -902,7 +902,7 @@ int main(int argc, char *argv[])
       close(1);
 
       destroySymbolTable(symbolTable);
-     
+
       free(typeName);
       free(docfilename);
       free(fullfilename);

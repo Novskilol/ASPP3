@@ -66,13 +66,6 @@ html,body {
 	cursor: pointer;
 }
 
-.doc {
-	margin: 40px;
-	font-family: DroidSansMono;
-	background-color: #282828;
-}
-
-
 .tooltip {
 	display: none;
 	position: absolute;
@@ -83,37 +76,47 @@ html,body {
 	background-color: #282828
 }
 
+.doc {
+	margin: 40px;
+	font-family: DroidSansMono;
+	background-color: #282828;
+
+}
+
+h1 {
+	font-size: 0.9em;
+}
+
+h2 {
+	font-size: 1.1em;
+}
+
 .doc return
 {
 
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
-	font-size: 0.7 em;
-
 }
+
 .doc brief
 {
 
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
-	font-size: 0.7 em;
-
 }
+
 .doc param
 {
-
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
-	font-size: 0.7 em;
-
 }
+
 .doc titre
 {
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
-	font-size: 1 em;
 }
