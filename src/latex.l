@@ -21,6 +21,10 @@ A   [a-zA-Z_0-9]
                  return TEXTBF;		 
 	        }
 
+"\\tableofcontents"      {
+                         setContent();		 
+	                 }
+
 "\\textit"      {
                  return TEXTIT;		 
 	        }
@@ -32,6 +36,11 @@ A   [a-zA-Z_0-9]
 "\\subsection"  {
                  return SUBSECTION;
                 }
+
+"\\subsubsection"  {
+                   return SUBSUBSECTION;
+                   }
+
 
 "\\item"	{
 		return ITEM;
@@ -61,6 +70,10 @@ A   [a-zA-Z_0-9]
 		 yylval.s = strdup(yytext);
                  return ENUMERATE;
                 }
+
+"\\label"       {
+                 return LABEL;
+                }
 		
 "\\backslash"   {
                  return BACKSLASH;
@@ -88,6 +101,7 @@ A   [a-zA-Z_0-9]
                }
   
 "\\usepackage{graphicx}"
+"\\usepackage{amsmath}"
 
 \{             {
                 return '{';
