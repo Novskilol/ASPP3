@@ -8,7 +8,7 @@ all: testDir  compilation
 latex:commun/commun.o symbolStack/symbolStack.o latex.tab.o latex.yy.o
 	$(CC) $^ $(LIBS) -o rapport_html
 	mv rapport_html ../bin
-	
+
 
 compilation: commun/commun.o util/util.o symbolTable/symbolTable.o symbolStack/symbolStack.o symbolList/symbolList.o functionParser/functionParser.o grammar.tab.o lex.yy.o
 	$(CC) $^ $(LIBS) -o doc_html

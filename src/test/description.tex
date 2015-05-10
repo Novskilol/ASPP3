@@ -2,6 +2,7 @@
 
 \documentclass{article}
 \usepackage{graphicx}
+\usepackage{amsmath}
 
 \begin{document}
 
@@ -12,11 +13,13 @@
    école d'informatique
 }
 
+\tableofcontents
 \maketitle
 
 \begin{abstract}
   \textbf{The}.
   \textit{abstracttextgoeshere}
+  
   and there is more just to know how it goes, tis the story of the long long johnson,
   oh don piano where have you been my dear lord?
 \end{abstract}
@@ -45,17 +48,27 @@ Case 2,1&Case 2,2&Case 2,3\\
 \item trois
 \end{itemize}
 
-\begin{equation}
-%    \label{simple_equation}
-%    \alpha = \sqrt{ \beta }
+\begin{equation} 
+\label{eq:1}
+     y = 5
 \end{equation}
 
+\begin{equation*}
+  x = 2
+\end{equation*}
+
+\begin{equation}
+     y = 10
+\end{equation}
+
+
 \subsection{Subsection Heading Here}
+\subsubsection{Well hello there}
+ Write your subsubsection text here.
 Write your subsection text here.
 \subsection{Subsection Heading Here 2 boys}
 Ici la subsection number two.
-
 \section{Conclusion}
 Write your conclusion here.
-
+\ref{eq:1}
 \end{document}

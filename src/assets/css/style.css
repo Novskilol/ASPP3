@@ -23,6 +23,31 @@ html,body {
     background-color: #181818;
 }
 
+.alignleft{
+  float: left;
+  width:33.33333%;
+  text-align:left;
+}
+
+.aligncenter{
+  float: left;
+  width:33.33333%;
+  text-align:center;
+}
+
+.alignright{
+  float: left;
+  width:33.33333%;
+  text-align:left;
+}
+
+.equation {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    background-color: #181818;
+}
+
 .code {
 	margin-left: 11em;
 	font-family: DroidSansMono;
