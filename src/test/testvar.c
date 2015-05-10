@@ -4,7 +4,7 @@ int a;
 char * b;
 };
 
-//typedef int * Toto;
+typedef int * poto;
 
 /**
  * @brief [main description]
@@ -14,7 +14,7 @@ char * b;
  */
 int main(int a, char **** c){
   toto t;
-  //Toto to;
+  poto to;
 }
 
 /**

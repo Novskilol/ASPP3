@@ -28,6 +28,7 @@
   void atExitDefinition();
   void printType(char *);
   void addNewSymbol(char *);
+  void refreshType(bool *);
   bool searchSymbol(char *);
   char * createClassString(char *);
   char * createDeclarationString(char *);
@@ -39,6 +40,7 @@
   char * typeName = NULL;
   char *filename;
   bool typeLock = false;
+  bool typeMustBeSave=false;
   bool declarationFunction = false;
   int indentLock;
   int indentLvl;
@@ -247,13 +249,13 @@
  ;
 
  declaration
- : declaration_specifiers semi_colon  { endDeclaration(); }
- | declaration_specifiers init_declarator_list semi_colon { endDeclaration(); }
- | static_assert_declaration { endDeclaration(); }
+ : declaration_specifiers semi_colon  { endDeclaration(); refreshType(&typeMustBeSave); }
+ | declaration_specifiers init_declarator_list semi_colon { endDeclaration(); refreshType(&typeMustBeSave);}
+ | static_assert_declaration { endDeclaration(); refreshType(&typeMustBeSave);} 
  ;
 
  declaration_specifiers
- : storage_class_specifier declaration_specifiers
+ : storage_class_specifier declaration_specifiers {typeMustBeSave=true;}
  | storage_class_specifier
  | type_specifier declaration_specifiers
  | type_specifier
@@ -300,7 +302,7 @@
  | atomic_type_specifier
  | struct_or_union_specifier
  | enum_specifier
- | TYPEDEF_NAME	 { printType($1); }
+ | TYPEDEF_NAME	 { printType($1);}
  | USER_TYPE {  printType($1); }
  ;
 
@@ -778,9 +780,16 @@ void atExitPrototype(char * functionName)
   parseFunction(functionParser, functionName, typeName, filename, saveLastClass);
   resetFunctionParser(functionParser);
 }
+void refreshType(bool *a){
+  if (*a == true){
+    addSymbolList(typeSymbolList,copy(saveLastIdentifier));
+    *a=false;
+  }
 
+}
 void addType()
 {
+
   addSymbolList(typeSymbolList,copy(saveLastIdentifierNotF));
 }
 
