@@ -33,6 +33,7 @@ WS  [ \t\v\n\f]
 
     #define sym_type(identifier) IDENTIFIER /* with no symbol table, fake it */
 
+   bool identifierIsType=false;
     static void comment(void);
     //static void directive(void);
     static int checkType(void);
@@ -73,7 +74,7 @@ WS  [ \t\v\n\f]
 }
 <COMMENT>.|\n               ;
 
-/* Replace character '<' and '>' in comment */
+
 "//"                         {
     printf("<comment>//");
     BEGIN COMMENT_DOUBLE_SLASH;
@@ -295,6 +296,7 @@ static int checkType(void)
         yylval.s = yytext;
         if (searchSymbolList(typeSymbolList,yylval.s) != NULL)
              return USER_TYPE;
+       
         return IDENTIFIER;
     }
 }
