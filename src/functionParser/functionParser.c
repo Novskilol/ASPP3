@@ -189,7 +189,7 @@ static void parseRules(FunctionParser this,FILE *f)
 /**
  * @detail Print new html element that contains the prototype and the doxygen documentation if it exists
  * @param this         Our structure containing the parsed doxygen doc
- * @param name         Our identifier name
+ * @param name         Our identifier prototype
   * @param returnType   The return type of our function or NULL if it's a variable
  * @param id            The html class to give to our element, it should be the same id for the corresponding identifier
  */
