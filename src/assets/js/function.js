@@ -64,20 +64,18 @@ function gotoDeclaration(){
 	search for 'titlefortooltip' html tag in the code,
 	then set the this element's title to the identifier's title with the same id
 */
-function findTooltip(){
+function findTooltip(name){
 	$("titlefortooltip").each(function setTooltip(){
 		var title = $(this).prop('title');
-		var list = $('declaration.'+$(this).attr('class'));
-		$(list).prop('title', title);
-		var list = $('identifier.'+$(this).attr('class'));
+		var list = $(name+$(this).attr('class'));
 		$(list).prop('title', title);
 	});
 }
 
 $(document).ready(function(){
 	gotoDeclaration();
-	findTooltip();
-
+	findTooltip('identifier.');
+	findTooltip('declaration.');
 	simpleTooltip("tooltip");
 	highlightIdentifiers();
 	expandCollapse();

@@ -47,6 +47,6 @@ void destroyChar(void *a);
 * @detail Compare two string, given to the linked list as argument function creation
 * @return true if s1 and s2 are the same string
 */
-int compareChar(void *s1, void *s1);
+int compareChar(void *s1, void *s2);
 
 #endif

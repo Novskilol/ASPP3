@@ -40,15 +40,14 @@
   char *filename;
   bool typeLock = false;
   bool declarationFunction = false;
-  int indentLock = 0;
-  int indentLvl = 0;
+  int indentLock;
+  int indentLvl;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
   char *saveLastIdentifierNotF=NULL;
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastClass;
-  bool yolo = false; // encore un
 
 %}
 
