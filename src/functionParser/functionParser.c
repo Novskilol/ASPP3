@@ -57,33 +57,27 @@ static void resizeElements(FunctionParser this)
 
 void defaultReturnRule(FILE * f,char *data)
 {
-  char *begin="<return> <h1>Return </h1>";
-  char *end ="</return>";
-  fprintf(f,"%s %s %s",begin,data,end);
+  fprintf(f,"<balise>Return</balise><br><description>%s</description><br>",data);
 }
 
 void defaultParamRule(FILE *f,char *data)
 {
-  char *begin="<param> <h1> Param </h1>";
-  char *end ="</param>";
-  fprintf(f,"%s %s %s",begin,data,end);
+ fprintf(f,"<balise>Param</balise><br><description>%s</description><br>",data);
 }
+
 static void addLabel(char *labelName,FILE *f)
 {
-  fprintf(f,"<label class=%s>%s</label>",labelName,labelName);
-
+  fprintf(f,"<label class=%s>%s</label><br>",labelName,labelName);
 }
+
 static void setRef(char *labelName,FILE *f)
 {
-   fprintf(f,"<h1> Référence </h1><reference class=%s> Voir %s </reference>",labelName,labelName);
-
-
+   fprintf(f,"<balise>Référence</balise><br><reference class=%s>Voir %s</reference><br>",labelName,labelName);
 }
+
 void defaultBriefRule(FILE *f,char *data)
 {
-  char *begin="<brief> <h1> Brief </h1>";
-  char *end ="</brief>";
-  fprintf(f,"%s %s %s",begin,data,end);
+ fprintf(f,"<balise>Brief</balise><br><description>%s</description><br>",data);
 }
 
 void resetFunctionParser(FunctionParser this)
@@ -192,9 +186,9 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
 {
   fprintf(stdout,"<titlefortooltip class=\"%d\"  title=\"",id);
   if (returnType != NULL)
-    printf("<titre><h2>%s %s</h2></titre>",returnType,name );
+    printf("<titre>%s %s</titre><br><br>",returnType,name );
   else{
-    printf("<titre><h2>%s</h2></titre>",name );
+    printf("<titre>%s</titre><br><br>",name );
   }
   parseRules(this,stdout);
   printf("\"></titlefortooltip>");
@@ -215,7 +209,7 @@ void parseVar(FunctionParser this,char *varName,char *fileName,int id)
 
   fprintf(f,"<div class=\"doc\">");
 
-  fprintf(f,"<titre><h2>%s</h2></titre>",varName);
+  fprintf(f,"<titre>%s</titre><br><br>",varName);
 
   parseRules(this,f);
 
@@ -243,7 +237,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
 
 
   fprintf(f,"<div class=\"doc\">");
-  fprintf(f,"<titre><h2>%s %s</h2></titre>",returnType,functionName);
+  fprintf(f,"<titre>%s %s</titre><br><br>",returnType,functionName);
 
   parseRules(this,f);
 

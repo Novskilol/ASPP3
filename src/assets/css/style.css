@@ -80,54 +80,31 @@ html,body {
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
-
 }
 
-h1 {
-	font-size: 0.9em;
+titre {
+	font-size: 1.5em;
 }
 
-h2 {
-	font-size: 1.1em;
-}
-
-.doc return
-{
-
+balise {
 	margin: 40px;
-	font-family: DroidSansMono;
-	background-color: #282828;
+	font-size: 1em;
+	font-weight: bold;
 }
 
-.doc brief
-{
-
-	margin: 40px;
-	font-family: DroidSansMono;
-	background-color: #282828;
+description {
+	font-size: 0.8em;
 }
 
-.doc param
-{
-	margin: 40px;
-	font-family: DroidSansMono;
-	background-color: #282828;
-}
-
-.doc titre
-{
-	margin: 40px;
-	font-family: DroidSansMono;
-	background-color: #282828;
-}
-
-.doc reference
+reference
 {
 	color: #BA8BAF;
 	cursor: pointer;
+	font-size: 0.8em;
 }
 
-.doc label
+label
 {
 	color: #7CAFC2;
+	font-size: 0.8em;
 }
