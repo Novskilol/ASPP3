@@ -70,7 +70,7 @@ void defaultParamRule(FILE *f,char *data)
 }
 static void addLabel(char *labelName,FILE *f)
 {
-  fprintf(f,"<label class=%s>%s</label>",labelName,labelName); 
+  fprintf(f,"<label class=%s>%s</label>",labelName,labelName);
 
 }
 static void setRef(char *labelName,FILE *f)
@@ -148,19 +148,14 @@ int emptyFunctionParser(FunctionParser this)
 
 void appendBeginDoc(char * fullFileName) {
   FILE *f=fopen(fullFileName,"w");
-
-  fprintf(f,"<!DOCTYPE html><head><html>");
-  fprintf(f,"<link rel=\"stylesheet\" type=\"text/css\" href=\"../assets/css/style.css\"/>");
-  fprintf(f,"</head><body>");
+  appendFile(f, "assets/html/begin.html");
   fclose(f);
 }
 
 void appendEndDoc(char * fullFileName) {
     FILE *f=fopen(fullFileName,"a");
-
-  fprintf(f,"</body></html>");
-  fclose(f);
-
+    appendFile(f, "assets/html/end.html");
+    fclose(f);
 }
 
 static void parseRules(FunctionParser this,FILE *f)
@@ -223,7 +218,7 @@ void parseVar(FunctionParser this,char *varName,char *fileName,int id)
   fprintf(f,"<titre><h2>%s</h2></titre>",varName);
 
   parseRules(this,f);
-  
+
   fprintf(f,"</div>");
 
   printDocumentation(this,varName,NULL,id);
@@ -245,7 +240,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
 
   FILE *f=fopen(fullFileName,"a");
   free(fullFileName);
- 
+
 
   fprintf(f,"<div class=\"doc\">");
   fprintf(f,"<titre><h2>%s %s</h2></titre>",returnType,functionName);

@@ -10,11 +10,11 @@ html,body {
 	padding: 0
 }
 
-#sidebar{
+/*#sidebar{
 	position:fixed;
 	left:0;
 	top:0;
-}
+}*/
 
 .abstract {
     margin-left: auto;
@@ -119,4 +119,15 @@ h2 {
 	margin: 40px;
 	font-family: DroidSansMono;
 	background-color: #282828;
+}
+
+.doc reference
+{
+	color: #BA8BAF;
+	cursor: pointer;
+}
+
+.doc label
+{
+	color: #7CAFC2;
 }

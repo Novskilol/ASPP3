@@ -46,11 +46,11 @@ char * replace(const char * s, char bad, const char * replace) {
 	return res;
 }
 
-void appendFile(char * src) {
+void appendFile(FILE * dest, char * src) {
 	int fd = open(src, O_RDONLY, 0444);
 	char c;
 	while(read(fd, &c, 1) > 0)
-		printf("%c", c);
+		fprintf(dest,"%c", c);
 	close(fd);
 }
 
