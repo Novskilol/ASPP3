@@ -38,7 +38,6 @@
    *Typename = function name
    */
   char * typeName = NULL;
-  char *fileName;
   bool typeLock = false;
   bool typeMustBeSave=false;
   bool declarationFunction = false;
@@ -421,11 +420,13 @@
 
  star
  : '*' {
-  assert(typeName && "NULL typeName in rule star");
-  if (typeLock == false) {
-    char * tmp = typeName;
-    typeName = concat(typeName, "*");
-    free(tmp);
+  //assert(typeName && "NULL typeName in rule star");
+  if (typeName != NULL) {
+    if (typeLock == false) {
+      char * tmp = typeName;
+      typeName = concat(typeName, "*");
+      free(tmp);
+    }
   }
   printf("*");
 };
@@ -788,7 +789,7 @@ void refreshType(bool *a){
     else
       addSymbolList(typeSymbolList,copy(saveLastIdentifier));
     *a=false;
-
+    fprintf(stderr, "on add : %s\n", saveLastIdentifier);
   }
   typeIsStruct=false;
 }
@@ -803,7 +804,7 @@ void addType()
   }
   else
     addSymbolList(typeSymbolList,  copy(saveLastIdentifier));
-
+    fprintf(stderr, "on add : %s\n", saveLastIdentifier);
 }
 
 void atExitDefinition()
@@ -933,7 +934,7 @@ int main(int argc, char *argv[])
     free(docFileName);
     docFileName = NULL;
 
-    free(saveFunctionName); // fuite memoire ?
+    free(saveFunctionName);
     saveFunctionName = NULL;
     free(saveLastIdentifier);
     saveLastIdentifier = NULL;

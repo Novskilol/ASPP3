@@ -55,4 +55,10 @@ FunctionParser functionParser;
  */
 int indentSpacing;
 
+/**
+ * @brief The current file
+ */
+char *fileName;
+
+
 #endif

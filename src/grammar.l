@@ -337,7 +337,7 @@ static char * replaceString(const char * s)
 void yyerror(const char *s)
 {
 	fflush(stdout);
-	fprintf(stderr, "line : %d msg: %s\n",yylineno, s);
+	fprintf(stderr, "In file : %s, at line : %d, %s\n",fileName, yylineno, s);
 }
 
 void deleteIndent()
