@@ -46,7 +46,8 @@ WS  [ \t\v\n\f]
 %option yylineno nounput
 
 %s FOR_S
-%x NEWLINE COMMENT COMMENT_ARGS COMMENT_DOUBLE_SLASH
+%x NEWLINE COMMENT COMMENT_ARGS COMMENT_DOUBLE_SLASH 
+%x COMMENT_ARGS_LABEL
 
 
 %%
@@ -56,16 +57,32 @@ WS  [ \t\v\n\f]
 "/**"                       { BEGIN COMMENT; }
 <COMMENT,COMMENT_ARGS>"*/"  { BEGIN INITIAL; }
 <COMMENT>"@return"         {
-    saveStatementName(&tmpStatementName,"\\return");
+    saveStatementName(&tmpStatementName,"@return");
     BEGIN COMMENT_ARGS;
 }
 <COMMENT>"@param"          {
-    saveStatementName(&tmpStatementName,"\\param");
+    saveStatementName(&tmpStatementName,"@param");
     BEGIN COMMENT_ARGS;
 }
 <COMMENT>"@brief"          {
-    saveStatementName(&tmpStatementName,"\\brief");
+    saveStatementName(&tmpStatementName,"@brief");
     BEGIN COMMENT_ARGS;
+}
+<COMMENT>"@label{"   {
+ saveStatementName(&tmpStatementName,"@label");
+ BEGIN COMMENT_ARGS_LABEL;
+
+}
+<COMMENT>"@ref{"   {
+ saveStatementName(&tmpStatementName,"@ref");
+ BEGIN COMMENT_ARGS_LABEL;
+
+}
+<COMMENT_ARGS_LABEL>[a-zA-Z]+   {
+  addStatement(functionParser,tmpStatementName,yytext);
+  free(tmpStatementName);
+  BEGIN COMMENT;
+
 }
 <COMMENT_ARGS>.*\n          {
     addStatement(functionParser,tmpStatementName,yytext);

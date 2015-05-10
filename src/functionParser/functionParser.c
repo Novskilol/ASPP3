@@ -68,7 +68,17 @@ void defaultParamRule(FILE *f,char *data)
   char *end ="</param>";
   fprintf(f,"%s %s %s",begin,data,end);
 }
+static void addLabel(char *labelName,FILE *f)
+{
+  fprintf(f,"<label class=%s>%s</label>",labelName,labelName); 
 
+}
+static void setRef(char *labelName,FILE *f)
+{
+   fprintf(f,"<h1> Référence </h1><reference class=%s> Voir %s </reference>",labelName,labelName);
+
+
+}
 void defaultBriefRule(FILE *f,char *data)
 {
   char *begin="<brief> <h1> Brief </h1>";
@@ -160,10 +170,19 @@ static void parseRules(FunctionParser this,FILE *f)
   {
     char *tmpName=this->elements[i]->name;
     char *tmpData=this->elements[i]->data;
+    if (strcmp(tmpName,"@label") == 0 ){
+      addLabel(tmpData,f);
+      continue;
+    }
+    else if (strcmp(tmpName,"@ref") == 0 ){
+      setRef(tmpData,f);
+      continue;
+    }
     int y;
     for( y = 0 ; y < this->sizeRules ; ++y)
-     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
-       this->rules[y]->rule(f,tmpData);
+      if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
+	this->rules[y]->rule(f,tmpData);
+    fprintf(stderr,"%s",tmpName);
    }
 }
 
@@ -197,25 +216,18 @@ void parseVar(FunctionParser this,char *varName,char *fileName,int id)
 
   FILE *f=fopen(fullFileName,"a");
   free(fullFileName);
-   int i;
+
 
   fprintf(f,"<div class=\"doc\">");
 
   fprintf(f,"<titre><h2>%s</h2></titre>",varName);
 
-  for( i = 0 ; i < this->sizeElements ; ++i)
-  {
-    char *tmpName=this->elements[i]->name;
-    char *tmpData=this->elements[i]->data;
-    int y;
-    for( y = 0 ; y < this->sizeRules ; ++y)
-     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
-       this->rules[y]->rule(f,tmpData);
-   }
-   fprintf(f,"</div>");
+  parseRules(this,f);
+  
+  fprintf(f,"</div>");
 
-   printDocumentation(this,varName,NULL,id);
-   fclose(f);
+  printDocumentation(this,varName,NULL,id);
+  fclose(f);
 }
 
 void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName, int id)
@@ -233,32 +245,25 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
 
   FILE *f=fopen(fullFileName,"a");
   free(fullFileName);
-  int i;
+ 
 
   fprintf(f,"<div class=\"doc\">");
-
   fprintf(f,"<titre><h2>%s %s</h2></titre>",returnType,functionName);
 
-  for( i = 0 ; i < this->sizeElements ; ++i)
-  {
-    char *tmpName=this->elements[i]->name;
-    char *tmpData=this->elements[i]->data;
-    int y;
-    for( y = 0 ; y < this->sizeRules ; ++y)
-     if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
-       this->rules[y]->rule(f,tmpData);
-   }
-   fprintf(f,"</div>");
+  parseRules(this,f);
 
-   fclose(f);
-   printDocumentation(this, functionName, returnType, id);
+  fprintf(f,"</div>");
+
+  fclose(f);
+
+  printDocumentation(this, functionName, returnType, id);
  }
 
  void setDefaultRules(FunctionParser this)
  {
-  setRuleForStatement(this,"\\return",defaultReturnRule);
-  setRuleForStatement(this,"\\brief",defaultBriefRule);
-  setRuleForStatement(this,"\\param",defaultParamRule);
+  setRuleForStatement(this,"@return",defaultReturnRule);
+  setRuleForStatement(this,"@brief",defaultBriefRule);
+  setRuleForStatement(this,"@param",defaultParamRule);
 }
 
 FunctionParser createFunctionParser()
