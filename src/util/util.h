@@ -11,7 +11,7 @@
 
 /**
  * @detail Copy the string src
- * @param  src The stirng to be copied
+ * @param  src The string to be copied
  * @return     The new allocated string
  */
 char * copy(const char * src);
