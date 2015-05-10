@@ -10,11 +10,11 @@ html,body {
 	padding: 0
 }
 
-/*#sidebar{
+#sidebar{
 	position:fixed;
 	left:0;
 	top:0;
-}*/
+}
 
 .abstract {
     margin-left: auto;
@@ -78,6 +78,7 @@ html,body {
 
 .doc {
 	margin: 40px;
+	margin-left: 11em;
 	font-family: DroidSansMono;
 	background-color: #282828;
 }

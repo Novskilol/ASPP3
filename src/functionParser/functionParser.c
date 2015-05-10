@@ -140,9 +140,10 @@ int emptyFunctionParser(FunctionParser this)
   return this->sizeElements == 0 ;
 }
 
-void appendBeginDoc(char * fullFileName) {
+void appendBeginDoc(char * fullFileName, char **filesArray, int size, char *fileName) {
   FILE *f=fopen(fullFileName,"w");
   appendFile(f, "assets/html/begin.html");
+  appendSidebar(f, filesArray, size, fileName, false);
   fclose(f);
 }
 

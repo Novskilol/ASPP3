@@ -884,8 +884,8 @@ static void parseFile(char * file)
 
 int main(int argc, char *argv[])
 {
-  if (argc < 2 || argc > 3){
-    fprintf(stderr, "Usage : %s src_file.c output_name.html\n", argv[0]);
+  if (argc < 2) {
+    fprintf(stderr, "Usage : %s src_file1.c src_file1.h ... src_fileN.h src_fileN.c\n", argv[0]);
     return -1;
   }
 
@@ -899,53 +899,52 @@ int main(int argc, char *argv[])
   char *html=".html";
   char *doc=".doc.html";
   char *fullFileName;
-  char *docFileName;
+  char *docFileName ;
 
-  for (i = 1 ; i < argc ; ++i)
-    {
-      fullFileName=concat(argv[i],html);
-      fileName=argv[i];
-      docFileName=concat(fileName, doc);
+  for (i = 1; i < argc; ++i)
+  {
+    fullFileName = concat(argv[i], html);
+    docFileName = concat(argv[i], doc);
+    fileName=argv[i];
 
-      typeSymbolList = createSymbolList(compareChar,destroyChar);
-      symbolTable = createSymbolTable();
-      pushSymbolTable(symbolTable);
+    typeSymbolList = createSymbolList(compareChar,destroyChar);
+    symbolTable = createSymbolTable();
+    pushSymbolTable(symbolTable);
 
-      output = open(fullFileName,O_WRONLY|O_TRUNC|O_CREAT,0666);
+    output = open(fullFileName,O_WRONLY|O_TRUNC|O_CREAT,0666);
 
-      dup2(output, 1);
-      close(output);
+    dup2(output, 1);
+    close(output);
 
-      appendFile(stdout, "assets/html/begin.html");
-      fprintf(stdout, "<div id=\"outer\" class=\"code\">");
-      appendBeginDoc(docFileName);
-      parseFile(argv[i]);
-      appendEndDoc(docFileName);
-      fprintf(stdout, "</div>");
-      appendFile(stdout, "assets/html/end.html");
+    appendFile(stdout, "assets/html/begin.html");
+    appendSidebar(stdout, argv+1, argc-1, fileName, true);
+    fprintf(stdout, "<div id=\"outer\" class=\"code\">");
+    appendBeginDoc(docFileName, argv+1, argc-1, fileName);
+    parseFile(argv[i]);
+    appendEndDoc(docFileName);
+    fprintf(stdout, "</div>");
+    appendFile(stdout, "assets/html/end.html");
 
-      fflush(NULL);
+    fflush(NULL);
 
-      destroySymbolTable(symbolTable);
+    destroySymbolTable(symbolTable);
 
+    free(fullFileName);
+    fullFileName = NULL;
+    free(docFileName);
+    docFileName = NULL;
 
-      free(docFileName);
-      docFileName=NULL;
-      free(fullFileName);
-      fullFileName=NULL;
-      free(saveLastIdentifier);
-      saveLastIdentifier=NULL;
-      free(saveLastIdentifierNotF);
-      saveLastIdentifierNotF=NULL;
-      free(saveFunctionName);
-      saveFunctionName=NULL;
-       free(typeName);
-      typeName = NULL;
-      destroySymbolList(typeSymbolList);
-      typeSymbolList=NULL;
-    }
-
-
+    //free(saveFunctionName); // fuite memoire ?
+    //saveFunctionName = NULL;
+    free(saveLastIdentifier);
+    saveLastIdentifier = NULL;
+    free(saveLastIdentifierNotF);
+    saveLastIdentifierNotF = NULL;
+    free(typeName);
+    typeName = NULL;
+    destroySymbolList(typeSymbolList);
+    typeSymbolList = NULL;
+  }
 
   destroyFunctionParser(functionParser);
 

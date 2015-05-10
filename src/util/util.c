@@ -54,6 +54,26 @@ void appendFile(FILE * dest, char * src) {
 	close(fd);
 }
 
+void appendSidebar(FILE * dest, char **filesArray, int size, char *fileName, bool isCode)
+{
+	fprintf(dest, "<div id=\"sidebar\"><div id='cssmenu'><ul>");
+	fprintf(dest, "<li><a href='#'><span>Top</span></a></li>");
+
+	if (isCode == true)
+		fprintf(dest, "<li><a href='../%s.doc.html'><span>See Doc.</span></a></li>", fileName);
+	else
+		fprintf(dest, "<li><a href='../%s.html'><span>See Code</span></a></li>", fileName);
+
+	fprintf(dest, "<li class='has-sub'><a><span>Code</span></a><ul>");
+
+	int i;
+	for (i = 0; i < size; ++i)
+	{
+		fprintf(dest, "<li><a href='../%s.html'><span>%s</span></a></li>", filesArray[i], filesArray[i]);
+	}
+	fprintf(dest, "</ul></li><li><a href='../rapport/rapport.html' target='_blank'><span>Rapport</span></a></li></ul></div></div>");
+}
+
 char *concat(const char *a,const char *b)
 {
   char *r=calloc((strlen(a)+strlen(b)+1),sizeof(char));

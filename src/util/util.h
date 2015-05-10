@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdbool.h>
 
 /**
  * @detail Copy the string src
@@ -31,6 +32,8 @@ char * replace(const char * s, char bad, const char * rep);
  * @param src The file from where to read
  */
 void appendFile(FILE * dest, char * src);
+
+void appendSidebar(FILE * dest, char **filesArray, int size, char *fileName, bool isCode);
 
 /**
  * @detail Allocate the appropriate memory concatenate two string
