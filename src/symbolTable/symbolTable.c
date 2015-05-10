@@ -50,24 +50,6 @@ void destroySymbolTable(SymbolStack this)
 
 void addDeclarationTable(SymbolTable this, TableObject to, int indent)
 {
-  // getSizeSymbolStack(this)  == indent)
-  //   pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
-
-
-  // else if (getSizeSymbolStack(this) - 1 > indent) {
-  //   while (getSizeSymbolStack(this) - 1 > indent) {
-  //     SymbolList s = popSymbolStack(this);
-  //     destroySymbolList(s);
-  //     printf("aaaaaaaaaaaaaaaaaaaaa");
-  //   }
-  // }
-  // else {
-  //   while (getSizeSymbolStack(this) - 1 < indent) {
-  //     pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
-  //     printf("bbbbbbbbbbbbbbbbbbbbb");
-  //   }
-  // }
-
   SymbolList list = topSymbolStack(this);
   addSymbolList(list, to);
 }
@@ -120,12 +102,10 @@ TableObject searchFunctionSymbolTable(SymbolTable this, char * name, int indent)
   return res;
 }
 
-/* Add empty List at stack top */
 void pushSymbolTable(SymbolTable this) {
   pushSymbolStack(this, createSymbolList(compareObject, destroyTableObject));
 }
 
-/* Remove list from stack top */
 void popSymbolTable(SymbolTable this) {
   SymbolList s = popSymbolStack(this);
   destroySymbolList(s);
