@@ -27,9 +27,10 @@ char * replace(const char * s, char bad, const char * rep);
 
 /**
  * @detail Print the content of the file src in the standard output
+ * @param dest Where to write
  * @param src The file from where to read
  */
-void appendFile(char * src);
+void appendFile(FILE * dest, char * src);
 
 /**
  * @detail Allocate the appropriate memory concatenate two string

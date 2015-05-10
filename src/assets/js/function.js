@@ -51,9 +51,9 @@ function simpleTooltip(name){
 }
 
 /* scroll screen to the declaration of an identifier  */
-function gotoDeclaration(){
-    $(".code identifier").click(function goto() {
-        var list = $('declaration.'+$(this).attr('class'));
+function gotoDeclaration(src, dest){
+    $(src).click(function goto() {
+        var list = $(dest+$(this).attr('class'));
         $('html, body').animate(
              {scrollTop: list.offset().top},
              'fast');
@@ -75,7 +75,8 @@ function findTooltip(name){
 }
 
 $(document).ready(function(){
-	gotoDeclaration();
+	gotoDeclaration(".code identifier", "declaration.");
+	gotoDeclaration(".doc reference", "label.");
 	findTooltip('identifier.');
 	findTooltip('declaration.');
 	simpleTooltip("tooltip");

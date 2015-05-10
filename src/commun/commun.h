@@ -35,9 +35,24 @@ extern void beginLine();
  */
 void indentThat();
 
+/**
+ * @brief Where we store all our identifiers, for each code block there is a corresponding linked lisk, all the lists are stored in a Stack
+ */
 SymbolTable symbolTable;
+
+/**
+ * @brief Where we store all our user type (struct and typedef)
+ */
 SymbolList typeSymbolList;
+
+/**
+ * @brief Structure used to store function and variable doxygen documentation
+ */
 FunctionParser functionParser;
+
+/**
+ * @brief Contains the numbre of space that we have to print to correct indentation level
+ */
 int indentSpacing;
 
 #endif

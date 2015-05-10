@@ -253,7 +253,7 @@
  declaration
  : declaration_specifiers semi_colon  { endDeclaration(); refreshType(&typeMustBeSave); }
  | declaration_specifiers init_declarator_list semi_colon { endDeclaration(); refreshType(&typeMustBeSave);}
- | static_assert_declaration { endDeclaration(); refreshType(&typeMustBeSave);} 
+ | static_assert_declaration { endDeclaration(); refreshType(&typeMustBeSave);}
  ;
 
  declaration_specifiers
@@ -911,11 +911,13 @@ int main(int argc, char *argv[])
       dup2(output, 1);
       close(output);
 
-      appendFile("assets/html/begin.html");
+      appendFile(stdout, "assets/html/begin.html");
+      fprintf(stdout, "<div id=\"outer\" class=\"code\">");
       appendBeginDoc(docfilename);
       parseFile(argv[i]);
       appendEndDoc(docfilename);
-      appendFile("assets/html/end.html");
+      fprintf(stdout, "</div>");
+      appendFile(stdout, "assets/html/end.html");
 
       fflush(NULL);
       close(1);
