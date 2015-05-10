@@ -900,10 +900,10 @@ int main(int argc, char *argv[])
   char *doc=".doc.html";
   char *fullfilename;
   char *docfilename;
- typeSymbolList = createSymbolList(compareChar,destroyChar);
+ 
   for (i = 1 ; i < argc ; ++i)
     {
-
+typeSymbolList = createSymbolList(compareChar,destroyChar);
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
       fullfilename=concat(argv[i],html);
@@ -927,16 +927,23 @@ int main(int argc, char *argv[])
 
       destroySymbolTable(symbolTable);
 
-      free(typeName);
-      free(docfilename);
-      free(fullfilename);
-      free(saveLastIdentifier);
-      free(saveLastIdentifierNotF);
-      free(saveFunctionName);
-      typeName = NULL;
 
+      free(docfilename);
+      docfilename=NULL;
+      free(fullfilename);
+      fullfilename=NULL;
+      free(saveLastIdentifier);
+      saveLastIdentifier=NULL;
+      free(saveLastIdentifierNotF);
+      saveLastIdentifierNotF=NULL;
+      free(saveFunctionName);
+      saveFunctionName=NULL;
+       free(typeName);
+      typeName = NULL;
+destroySymbolList(typeSymbolList);
+typeSymbolList=NULL;
     }
- destroySymbolList(typeSymbolList);
+ 
 
 
   destroyFunctionParser(functionParser);
