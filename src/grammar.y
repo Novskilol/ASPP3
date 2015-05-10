@@ -789,7 +789,7 @@ void refreshType(bool *a){
     else
       addSymbolList(typeSymbolList,copy(saveLastIdentifier));
     *a=false;
-    
+
   }
   typeIsStruct=false;
 }
@@ -804,7 +804,7 @@ void addType()
   }
   else
     addSymbolList(typeSymbolList,  copy(saveLastIdentifier));
-  
+
 }
 
 void atExitDefinition()
@@ -900,7 +900,7 @@ int main(int argc, char *argv[])
   char *doc=".doc.html";
   char *fullfilename;
   char *docfilename;
- 
+
   for (i = 1 ; i < argc ; ++i)
     {
 typeSymbolList = createSymbolList(compareChar,destroyChar);
@@ -923,7 +923,6 @@ typeSymbolList = createSymbolList(compareChar,destroyChar);
       appendFile(stdout, "assets/html/end.html");
 
       fflush(NULL);
-      close(1);
 
       destroySymbolTable(symbolTable);
 
@@ -940,10 +939,10 @@ typeSymbolList = createSymbolList(compareChar,destroyChar);
       saveFunctionName=NULL;
        free(typeName);
       typeName = NULL;
-destroySymbolList(typeSymbolList);
-typeSymbolList=NULL;
+      destroySymbolList(typeSymbolList);
+      typeSymbolList=NULL;
     }
- 
+
 
 
   destroyFunctionParser(functionParser);
