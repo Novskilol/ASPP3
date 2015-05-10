@@ -302,16 +302,16 @@
  | COMPLEX    { printType($1); }
  | IMAGINARY  { printType($1); }
  | atomic_type_specifier
- | struct_or_union_specifier {typeIsStruct =true;}
+ | struct_or_union_specifier {}
  | enum_specifier
  | TYPEDEF_NAME	 { printType($1);}
  | USER_TYPE {  printType($1); }
  ;
 
  struct_or_union_specifier
- : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { addType();}
- | struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { addType(); }
- | struct_or_union identifier { addType(); }
+ : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { typeIsStruct = true;addType();}
+| struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { typeIsStruct = true;addType(); }
+ | struct_or_union identifier { typeIsStruct = true;addType();}
  ;
 
  struct_or_union
@@ -789,9 +789,9 @@ void refreshType(bool *a){
     else
       addSymbolList(typeSymbolList,copy(saveLastIdentifier));
     *a=false;
-    typeIsStruct=false;
+    
   }
-
+  typeIsStruct=false;
 }
 /**
  * This function should only be called by struct definition/declaration
@@ -802,6 +802,9 @@ void addType()
     addSymbolList(typeSymbolList,  concat("struct ",saveLastIdentifier));
     typeIsStruct=false;
   }
+  else
+    addSymbolList(typeSymbolList,  copy(saveLastIdentifier));
+  
 }
 
 void atExitDefinition()
