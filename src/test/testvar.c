@@ -10,6 +10,7 @@ typedef int * poto;
  * @brief [main description]
  * @param  a [description]
  * @param  c [description]
+ * @label{test}
  * @return   [description]
  */
 int main(int a, char **** c){
@@ -19,6 +20,7 @@ int main(int a, char **** c){
 
 /**
  * @brief [f description]
+ * @ref{test}
  */
 void f() {
   main(42, "ddr");
