@@ -38,7 +38,7 @@
    *Typename = function name
    */
   char * typeName = NULL;
-  char *filename;
+  char *fileName;
   bool typeLock = false;
   bool typeMustBeSave=false;
   bool declarationFunction = false;
@@ -759,7 +759,7 @@ void endDeclaration()
   assert(saveLastIdentifier != NULL);
   if (typeLock == false && !emptyFunctionParser(functionParser)) {
     //printf("ici");
-    parseVar(functionParser,saveLastIdentifier,filename,uniqueId-1);
+    parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1);
  }
  resetFunctionParser(functionParser);
 }
@@ -779,7 +779,7 @@ void atExitPrototype(char * functionName)
   isFunction = false;
   free(saveFunctionName);
   saveFunctionName=copy(functionName);
-  parseFunction(functionParser, functionName, typeName, filename, saveLastClass);
+  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass);
   resetFunctionParser(functionParser);
 }
 void refreshType(bool *a){
@@ -898,27 +898,29 @@ int main(int argc, char *argv[])
   int i;
   char *html=".html";
   char *doc=".doc.html";
-  char *fullfilename;
-  char *docfilename;
+  char *fullFileName;
+  char *docFileName;
 
   for (i = 1 ; i < argc ; ++i)
     {
-typeSymbolList = createSymbolList(compareChar,destroyChar);
+      fullFileName=concat(argv[i],html);
+      fileName=argv[i];
+      docFileName=concat(fileName, doc);
+
+      typeSymbolList = createSymbolList(compareChar,destroyChar);
       symbolTable = createSymbolTable();
       pushSymbolTable(symbolTable);
-      fullfilename=concat(argv[i],html);
-      filename=argv[i];
-      docfilename=concat(filename, doc);
-      output = open(fullfilename,O_WRONLY|O_TRUNC|O_CREAT,0666);
+
+      output = open(fullFileName,O_WRONLY|O_TRUNC|O_CREAT,0666);
 
       dup2(output, 1);
       close(output);
 
       appendFile(stdout, "assets/html/begin.html");
       fprintf(stdout, "<div id=\"outer\" class=\"code\">");
-      appendBeginDoc(docfilename);
+      appendBeginDoc(docFileName);
       parseFile(argv[i]);
-      appendEndDoc(docfilename);
+      appendEndDoc(docFileName);
       fprintf(stdout, "</div>");
       appendFile(stdout, "assets/html/end.html");
 
@@ -927,10 +929,10 @@ typeSymbolList = createSymbolList(compareChar,destroyChar);
       destroySymbolTable(symbolTable);
 
 
-      free(docfilename);
-      docfilename=NULL;
-      free(fullfilename);
-      fullfilename=NULL;
+      free(docFileName);
+      docFileName=NULL;
+      free(fullFileName);
+      fullFileName=NULL;
       free(saveLastIdentifier);
       saveLastIdentifier=NULL;
       free(saveLastIdentifierNotF);

@@ -171,7 +171,6 @@ static void parseRules(FunctionParser this,FILE *f)
     for( y = 0 ; y < this->sizeRules ; ++y)
       if ( strcmp(this->rules[y]->trigger,tmpName) == 0 )
 	this->rules[y]->rule(f,tmpData);
-    fprintf(stderr,"%s",tmpName);
    }
 }
 
