@@ -51,7 +51,6 @@
   bool isFunction=false;
   int saveLastClass;
   bool typeIsStruct=false;
-  bool yolo = false; // encore un
 
 %}
 
@@ -885,7 +884,7 @@ static void parseFile(char * file)
 int main(int argc, char *argv[])
 {
   if (argc < 2) {
-    fprintf(stderr, "Usage : %s src_file1.c src_file1.h ... src_fileN.h src_fileN.c\n", argv[0]);
+    fprintf(stderr, "Usage : %s file1.h ... fileN.h file1.c ... fileN.c\n", argv[0]);
     return -1;
   }
 
@@ -934,8 +933,8 @@ int main(int argc, char *argv[])
     free(docFileName);
     docFileName = NULL;
 
-    //free(saveFunctionName); // fuite memoire ?
-    //saveFunctionName = NULL;
+    free(saveFunctionName); // fuite memoire ?
+    saveFunctionName = NULL;
     free(saveLastIdentifier);
     saveLastIdentifier = NULL;
     free(saveLastIdentifierNotF);
