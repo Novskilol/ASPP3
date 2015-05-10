@@ -42,14 +42,16 @@
   bool typeLock = false;
   bool typeMustBeSave=false;
   bool declarationFunction = false;
-  int indentLock;
-  int indentLvl;
+  int indentLock = 0;
+  int indentLvl = 0;
   int uniqueId = 1;
   char *saveLastIdentifier=NULL;
   char *saveLastIdentifierNotF=NULL;
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastClass;
+  bool typeIsStruct=false;
+  bool yolo = false; // encore un
 
 %}
 
@@ -300,7 +302,7 @@
  | COMPLEX    { printType($1); }
  | IMAGINARY  { printType($1); }
  | atomic_type_specifier
- | struct_or_union_specifier
+ | struct_or_union_specifier {typeIsStruct =true;}
  | enum_specifier
  | TYPEDEF_NAME	 { printType($1);}
  | USER_TYPE {  printType($1); }
@@ -782,15 +784,24 @@ void atExitPrototype(char * functionName)
 }
 void refreshType(bool *a){
   if (*a == true){
-    addSymbolList(typeSymbolList,copy(saveLastIdentifier));
+    if (typeIsStruct)
+      addSymbolList(typeSymbolList,concat("struct ",saveLastIdentifier));
+    else
+      addSymbolList(typeSymbolList,copy(saveLastIdentifier));
     *a=false;
+    typeIsStruct=false;
   }
 
 }
+/**
+ * This function should only be called by struct definition/declaration
+ */
 void addType()
 {
-
-  addSymbolList(typeSymbolList,copy(saveLastIdentifierNotF));
+  if (typeIsStruct){
+    addSymbolList(typeSymbolList,  concat("struct ",saveLastIdentifier));
+    typeIsStruct=false;
+  }
 }
 
 void atExitDefinition()
