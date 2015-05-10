@@ -49,7 +49,7 @@ html,body {
 }
 
 .code {
-	margin-left: 11em;
+	margin-left: 16em;
 	font-family: DroidSansMono;
 }
 
@@ -103,7 +103,7 @@ html,body {
 
 .doc {
 	margin: 40px;
-	margin-left: 11em;
+	margin-left: 16em;
 	font-family: DroidSansMono;
 	background-color: #282828;
 }

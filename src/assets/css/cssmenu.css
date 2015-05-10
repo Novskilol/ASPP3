@@ -16,7 +16,7 @@
   box-sizing: border-box;
 }
 #cssmenu {
-  width: 150px;
+  width: 15em;
   font-family: 'DroidSansMono';
   src: url('../fonts/DroidSansMono.ttf') format('truetype');
   color: #ffffff;

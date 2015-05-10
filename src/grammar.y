@@ -879,7 +879,15 @@ static void parseFile(char * file)
   dup2(fd, 0);
   close(fd);
   yyparse();
+}
 
+static void createIndexFile(char ** fileArray, int size)
+{
+  FILE *f = fopen("output/index.html", "w");
+  appendFile(f, "assets/html/begin.html");
+  appendSidebar(f, fileArray, size, "index", true);
+  appendFile(f, "assets/html/end.html");
+  fclose(f);
 }
 
 int main(int argc, char *argv[])
@@ -892,6 +900,8 @@ int main(int argc, char *argv[])
  // push initial list
   functionParser = createFunctionParser();
   setDefaultRules(functionParser);
+
+  createIndexFile(argv+1, argc-1);
 
   int output;
 
