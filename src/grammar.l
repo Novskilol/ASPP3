@@ -73,7 +73,7 @@ WS  [ \t\v\n\f]
 }
 <COMMENT>.|\n               ;
 
-/* Replace character '<' and '>' in comment */
+
 "//"                         {
     printf("<comment>//");
     BEGIN COMMENT_DOUBLE_SLASH;
