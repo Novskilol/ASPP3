@@ -46,7 +46,7 @@ WS  [ \t\v\n\f]
 %option yylineno nounput
 
 %s FOR_S
-%x NEWLINE COMMENT COMMENT_ARGS COMMENT_DOUBLE_SLASH 
+%x NEWLINE COMMENT COMMENT_ARGS COMMENT_DOUBLE_SLASH
 %x COMMENT_ARGS_LABEL
 
 
@@ -156,6 +156,9 @@ WS  [ \t\v\n\f]
 "_Static_assert"        { yylval.s = yytext; return STATIC_ASSERT; }
 "_Thread_local"         { yylval.s = yytext; return THREAD_LOCAL; }
 "__func__"              { yylval.s = yytext; return FUNC_NAME; }
+
+"FILE" |
+"size_t"                { yylval.s = yytext; return USER_TYPE; }
 
 {L}{A}*					            { return checkType(); }
 {HP}{H}+{IS}?				        { yylval.s = yytext; return I_CONSTANT; }
@@ -313,7 +316,7 @@ static int checkType(void)
         yylval.s = yytext;
         if (searchSymbolList(typeSymbolList,yylval.s) != NULL)
              return USER_TYPE;
-       
+
         return IDENTIFIER;
     }
 }

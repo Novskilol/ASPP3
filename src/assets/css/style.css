@@ -83,16 +83,16 @@ html,body {
 }
 
 titre {
-	font-size: 1.5em;
+	font-size: 1.2em;
 }
 
 balise {
-	margin: 40px;
 	font-size: 1em;
 	font-weight: bold;
 }
 
 description {
+	margin: 20px;
 	font-size: 0.8em;
 }
 
