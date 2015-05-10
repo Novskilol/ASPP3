@@ -68,7 +68,9 @@ function findTooltip(name){
 	$("titlefortooltip").each(function setTooltip(){
 		var title = $(this).prop('title');
 		var list = $(name+$(this).attr('class'));
-		$(list).prop('title', title);
+		if ($(list).attr('title') == undefined) {
+		 $(list).prop('title', title);
+		}
 	});
 }
 
