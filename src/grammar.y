@@ -897,6 +897,7 @@ int main(int argc, char *argv[])
 
  // push initial list
   functionParser = createFunctionParser();
+  typeSymbolList = createSymbolList(compareChar,destroyChar);
   setDefaultRules(functionParser);
 
   createIndexFile(argv+1, argc-1);
@@ -915,7 +916,6 @@ int main(int argc, char *argv[])
     docFileName = concat(argv[i], doc);
     fileName=argv[i];
 
-    typeSymbolList = createSymbolList(compareChar,destroyChar);
     symbolTable = createSymbolTable();
     pushSymbolTable(symbolTable);
 
@@ -950,12 +950,11 @@ int main(int argc, char *argv[])
     saveLastIdentifierNotF = NULL;
     free(typeName);
     typeName = NULL;
-    destroySymbolList(typeSymbolList);
-    typeSymbolList = NULL;
 
     yylex_destroy();
   }
 
+  destroySymbolList(typeSymbolList);
   destroyFunctionParser(functionParser);
 
   return 0;
