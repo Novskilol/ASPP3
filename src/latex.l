@@ -8,8 +8,6 @@
 
 A   [a-zA-Z_0-9]
 
-%x ACCOL
-%x ACCOLEFF
 
 %%
 "\\maketitle"    {
@@ -106,6 +104,14 @@ A   [a-zA-Z_0-9]
   
 "\\usepackage{graphicx}"
 "\\usepackage{amsmath}"
+
+\\\{           {
+                 yylval.s = strdup(yytext+1);return CONTENT;
+               }
+
+\\\}           {
+                 yylval.s = strdup(yytext+1);return CONTENT;
+               }
 
 \{             {
                 return '{';
