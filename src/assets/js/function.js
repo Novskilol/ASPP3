@@ -61,24 +61,26 @@ function gotoDeclaration(src, dest){
 }
 
 /*
-	search for 'titlefortooltip' html tag in the code,
+	search for 'titleForTooltip' html tag in the code,
 	then set the this element's title to the identifier's title with the same id
 */
-function findTooltip(name){
-	$("titlefortooltip").each(function setTooltip(){
+function findTooltip(name, tag){
+	$(tag).each(function setTooltip(){
 		var title = $(this).prop('title');
 		var list = $(name+$(this).attr('class'));
-		if ($(list).attr('title') == undefined) {
+		//if ($(list).attr('title') == undefined) {
 		 $(list).prop('title', title);
-		}
+		//}
 	});
 }
 
 $(document).ready(function(){
 	gotoDeclaration(".code identifier", "declaration.");
 	gotoDeclaration(".doc reference", "label.");
-	findTooltip('identifier.');
-	findTooltip('declaration.');
+	// findTooltip('identifier.', 'protoForTooltip');
+	findTooltip('declaration.', 'protoForTooltip');
+	// findTooltip('identifier.', 'docuForTooltip');
+	findTooltip('declaration.', 'docuForTooltip');
 	simpleTooltip("tooltip");
 	highlightIdentifiers();
 	expandCollapse();

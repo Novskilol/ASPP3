@@ -10,7 +10,7 @@ latex:commun/commun.o symbolStack/symbolStack.o latex.tab.o latex.yy.o
 	mv rapport_html ../bin
 
 
-compilation: commun/commun.o util/util.o symbolTable/symbolTable.o symbolStack/symbolStack.o symbolList/symbolList.o functionParser/functionParser.o grammar.tab.o lex.yy.o
+compilation: util/util.o symbolStack/symbolStack.o symbolList/symbolList.o symbolTable/symbolTable.o functionParser/functionParser.o commun/commun.o grammar.tab.o lex.yy.o
 	$(CC) $^ $(LIBS) -o doc_html
 	mv doc_html ../bin
 
@@ -45,7 +45,7 @@ commun/commun.o: commun/commun.h commun/commun.c
 util/util.o: util/util.h util/util.c
 	make -C util/
 
-functionParser/functionParser.o: functionParser/functionParser.h util/util.h
+functionParser/functionParser.o: functionParser/functionParser.h util/util.h symbolTable/symbolTable.h symbolStack/symbolStack.h symbolList/symbolList.h
 	make -C functionParser/
 
 symbolList/symbolList.o:

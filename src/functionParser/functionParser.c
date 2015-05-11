@@ -67,7 +67,7 @@ void defaultParamRule(FILE *f,char *data)
 
 static void addLabel(char *labelName,FILE *f)
 {
-  fprintf(f,"<label class=%s>%s</label><br>",labelName,labelName);
+  fprintf(f,"<label class=%s></label>",labelName);
 }
 
 static void setRef(char *labelName,FILE *f)
@@ -182,48 +182,83 @@ static void parseRules(FunctionParser this,FILE *f)
   * @param returnType   The return type of our function or NULL if it's a variable
  * @param id            The html class to give to our element, it should be the same id for the corresponding identifier
  */
-static void printDocumentation(FunctionParser this, char *name, char *returnType, int id)
+static void printDocumentation(FunctionParser this, char *name, char *returnType, int id, TableObject to)
 {
-  fprintf(stdout,"<titlefortooltip class=\"%d\"  title=\"",id);
-  if (returnType != NULL)
-    printf("<titre>%s %s</titre><br><br>",returnType,name );
-  else{
-    printf("<titre>%s</titre><br><br>",name );
+  // if (this->sizeElements <= 0) {
+  //   fprintf(stdout,"<protoForTooltip class=\"%d\"  title=\"",id);
+  //   if (returnType != NULL) {
+  //     printf("<titre>%s %s</titre><br><br>",returnType,name );
+  //   }
+  //   else {
+  //     printf("<titre>%s</titre><br><br>",name);
+  //   }
+  //   fprintf(stdout, "\"></protoForTooltip>");
+  // }
+
+  if (to != NULL) {
+
+    fprintf(stdout,"<docuForTooltip class=\"%d\"  title=\"",id);
+
+    if (to->declaration == NULL) {
+
+      char * title;
+      char * tmp;
+      FILE * t = fopen("documentation.tmp", "w");
+
+      if (returnType != NULL) {
+        fprintf(t, "<titre>%s %s</titre><br><br>", returnType, name);
+      }
+      else {
+        fprintf(t, "<titre>%s</titre><br><br>", name);
+      }
+
+      parseRules(this, t);
+
+
+      to->declaration = title;
+    }
+
+    fprintf(stdout, "%s", to->declaration);
+
+    parseRules(this,stdout);
+    fprintf(stdout, "\"></docuForTooltip>");
   }
-  parseRules(this,stdout);
-  printf("\"></titlefortooltip>");
+
+else {
+
+}
+
 }
 
 void parseVar(FunctionParser this,char *varName,char *fileName,int id)
 {
   //fprintf(stderr,"%s",varName);
  char * fullFileName;
-  if (fileName == NULL)
+  if (fileName == NULL) {
     fullFileName = "output/doc.html";
-  else
+  }
+  else {
     fullFileName = concat(fileName, ".doc.html");
+  }
 
   FILE *f=fopen(fullFileName,"a");
   free(fullFileName);
 
 
   fprintf(f,"<div class=\"doc\">");
-
   fprintf(f,"<titre>%s</titre><br><br>",varName);
-
   parseRules(this,f);
-
   fprintf(f,"</div>");
-
-  printDocumentation(this,varName,NULL,id);
   fclose(f);
+
+  printDocumentation(this,varName,NULL,id,NULL);
 }
 
-void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName, int id)
+void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName, int id, TableObject to)
 {
   /* We do not create a function block if function has no specific comment */
   if  ( this->sizeElements <= 0 ) {
-    printDocumentation(this, functionName, returnType, id);
+    printDocumentation(this, functionName, returnType, id, to);
     return;
   }
   char * fullFileName;
@@ -235,17 +270,13 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
   FILE *f=fopen(fullFileName,"a");
   free(fullFileName);
 
-
   fprintf(f,"<div class=\"doc\">");
   fprintf(f,"<titre>%s %s</titre><br><br>",returnType,functionName);
-
   parseRules(this,f);
-
   fprintf(f,"</div>");
-
   fclose(f);
 
-  printDocumentation(this, functionName, returnType, id);
+  printDocumentation(this, functionName, returnType, id, to);
  }
 
  void setDefaultRules(FunctionParser this)

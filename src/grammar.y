@@ -11,10 +11,10 @@
   #include <unistd.h>
 
 
-  #include "commun/commun.h"
-  #include "symbolTable/symbolTable.h"
-  #include "functionParser.h"
-  #include "util/util.h"
+  #include <commun.h>
+  #include <symbolTable.h>
+  #include <functionParser.h>
+  #include <util.h>
 
   extern int yylex();
   extern int yylex_destroy();
@@ -49,6 +49,7 @@
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastClass;
+  char * saveLastFunction; // last declaration of function
   bool typeIsStruct=false;
 
 %}
@@ -777,7 +778,8 @@ void atExitPrototype(char * functionName)
   isFunction = false;
   free(saveFunctionName);
   saveFunctionName=copy(functionName);
-  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass);
+  TableObject to = searchFunctionSymbolTable(symbolTable, saveLastFunction, indentLvl);
+  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass, to);
   resetFunctionParser(functionParser);
 }
 void refreshType(bool *a){
@@ -849,6 +851,10 @@ void addNewSymbol(char * name) {
       saveLastClass = uniqueId;
     uniqueId++;
   }
+  if (indentLvl == 0) {
+    free(saveLastFunction);
+    saveLastFunction = copy(name);
+  }
 }
 
 bool searchSymbol(char * name) {
@@ -896,8 +902,12 @@ int main(int argc, char *argv[])
   }
 
  // push initial list
-  functionParser = createFunctionParser();
+  symbolTable = createSymbolTable();
+  pushSymbolTable(symbolTable);
   typeSymbolList = createSymbolList(compareChar,destroyChar);
+
+
+  functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
   createIndexFile(argv+1, argc-1);
@@ -916,9 +926,6 @@ int main(int argc, char *argv[])
     docFileName = concat(argv[i], doc);
     fileName=argv[i];
 
-    symbolTable = createSymbolTable();
-    pushSymbolTable(symbolTable);
-
     output = open(fullFileName,O_WRONLY|O_TRUNC|O_CREAT,0666);
 
     dup2(output, 1);
@@ -934,8 +941,6 @@ int main(int argc, char *argv[])
     appendFile(stdout, "assets/html/end.html");
 
     fflush(NULL);
-
-    destroySymbolTable(symbolTable);
 
     free(fullFileName);
     fullFileName = NULL;
@@ -954,6 +959,7 @@ int main(int argc, char *argv[])
     yylex_destroy();
   }
 
+  destroySymbolTable(symbolTable);
   destroySymbolList(typeSymbolList);
   destroyFunctionParser(functionParser);
 
