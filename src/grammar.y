@@ -49,7 +49,7 @@
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastClass;
-  char * saveLastFunction; // last declaration of function
+  TableObject saveLastFunction;
   bool typeIsStruct=false;
 
 %}
@@ -778,8 +778,7 @@ void atExitPrototype(char * functionName)
   isFunction = false;
   free(saveFunctionName);
   saveFunctionName=copy(functionName);
-  TableObject to = searchFunctionSymbolTable(symbolTable, saveLastFunction, indentLvl);
-  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass, to);
+  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass, saveLastFunction);
   resetFunctionParser(functionParser);
 }
 void refreshType(bool *a){
@@ -835,8 +834,10 @@ void addNewSymbol(char * name) {
     int  class = to1->class;
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
            class, name);
-    if (indentLvl == 0)
+    if (indentLvl == 0) {
       saveLastClass = class;
+      saveLastFunction = to1;
+    }
   }
   else {
     int class = uniqueId;
@@ -847,13 +848,11 @@ void addNewSymbol(char * name) {
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
            class, name);
 
-    if (indentLvl == 0)
+    if (indentLvl == 0) {
       saveLastClass = uniqueId;
+      saveLastFunction = to;
+    }
     uniqueId++;
-  }
-  if (indentLvl == 0) {
-    free(saveLastFunction);
-    saveLastFunction = copy(name);
   }
 }
 

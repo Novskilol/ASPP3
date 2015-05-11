@@ -216,7 +216,7 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
       fclose(t);
 
       int sizeFile=fileSize("documentation.tmp");
-      
+
       to->declaration = fileToChar("documentation.tmp",sizeFile);
       remove("documentation.tmp");
     }
@@ -228,7 +228,6 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
   }
 
 else {
-
 }
 
 }
