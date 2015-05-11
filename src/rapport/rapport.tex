@@ -1,7 +1,13 @@
 \documentclass{article}
 \begin{document}
+\title{Projet ASPP3}
+\author{Charles Le Mero\\Louis Douriez\\Loris Lucido}
+\tableofcontents
+\section{Lien du projet}
+\begin{verbatim}
+git https://github.com/Novskilol/ASPP3
+\end{verbatim}
 \section{Code C }
-
 
 \subsection{Indentation et mise en page}
 
@@ -128,6 +134,20 @@ Un travail similaire est aussi effectué pour les variables, on peut documenter 
 \\
 
 Pour lier l'\textit{identifier} et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
+
+
+\subsection{Debuggage}
+Au fur et à mesure de l'avancement du projet nous avons fait attention à ne pas avoir de fuites mémoire. Nous avons donc utiliser valgrind pour supprimer les erreurs et les fuites mémoires .
+
+\subsection{Améliorations possibles}
+Le projet final fonctionne assez bien sur des fichiers C , cependant de nombreuses améliorations sont possible notamment
+\begin{itemize}
+\item Pouvoir cliquer sur les définitions de fonction pour allez sur la documentation ( on peut pour le moment cliquer sur les déclaration pour allez au niveau de la définition) OU
+\item Permettre d'allez au fichier contenant la définition d'une fonction en cliquant sur son nom.
+\item Parser des fichiers bisons et lex .
+\item Passer la document doxygen à notre parseur latex
+\item Passer la balise code de notre parseur latex au parseur c
+\end{itemize}
 
 
 \end{document}
