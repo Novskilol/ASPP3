@@ -31,7 +31,7 @@ bool lockArray;
 bool lockAlinea;
 void writeContents();
 
-enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,VERBATIMMODE,
+ enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,VERBATIMMODE,AUTHORMODE,
 	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,REFMODE,NONE};
 enum modes mode;
 enum modes mode2;
@@ -260,8 +260,8 @@ begin_env_types : DOCUMENT
                 | VERBATIM
                 ;
 
-author_s : AUTHOR {printf("<center><font size=\"4\">");} accolades_std
-		  {printf("</center></font>");}
+author_s : AUTHOR {mode=AUTHORMODE;printf("<center><font size=\"4\">");} accolades_std
+                  {mode=NONE;printf("</center></font>");}
          ;
 
 title_s : TITLE {
@@ -323,7 +323,12 @@ content_s :  {
 
           | begin_env_types {printf("%s", $1);}
 	  | BREAKLINE {
-	    	      if(mode==TABULARMODE)
+	              if(mode==AUTHORMODE)
+			{
+	                lockAlinea=false;
+			printf("</center><br><center>");
+			}
+	    	      else if(mode==TABULARMODE)
 		      {
 			lockArray=false;
 			printf("</td>");
