@@ -78,9 +78,7 @@ $(document).ready(function(){
     gotoDeclaration(".code identifier", "declaration.");
     gotoDeclaration(".doc reference", "label.");
     gotoDeclaration(".latex reference", "label.");
-    // findTooltip('identifier.', 'protoForTooltip');
-    //findTooltip('declaration.', 'protoForTooltip');
-    // findTooltip('identifier.', 'docuForTooltip');
+    findTooltip('identifier.', 'docuForTooltip');
     findTooltip('declaration.', 'docuForTooltip');
     simpleTooltip("tooltip");
     highlightIdentifiers();

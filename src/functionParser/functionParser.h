@@ -29,7 +29,7 @@ void appendEndDoc();
 
 int emptyFunctionParser(FunctionParser this);
 
-void parseVar(FunctionParser this,char *varName,char *filename,int id);
+void parseVar(FunctionParser this,char *varName,char *filename,int id,TableObject to);
 
 /*
   Default rules functions

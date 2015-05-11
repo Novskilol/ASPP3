@@ -223,7 +223,7 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
 
     fprintf(stdout, "%s", to->declaration);
 
-    parseRules(this,stdout);
+    //parseRules(this,stdout);
     fprintf(stdout, "\"></docuForTooltip>");
   }
 
@@ -232,7 +232,7 @@ else {
 
 }
 
-void parseVar(FunctionParser this,char *varName,char *fileName,int id)
+void parseVar(FunctionParser this,char *varName,char *fileName,int id,TableObject to)
 {
   //fprintf(stderr,"%s",varName);
  char * fullFileName;
@@ -253,7 +253,7 @@ void parseVar(FunctionParser this,char *varName,char *fileName,int id)
   fprintf(f,"</div>");
   fclose(f);
 
-  printDocumentation(this,varName,NULL,id,NULL);
+  printDocumentation(this,varName,NULL,id,to);
 }
 
 void parseFunction(FunctionParser this, char *functionName,char *returnType, char *fileName, int id, TableObject to)

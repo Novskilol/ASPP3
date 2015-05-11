@@ -50,6 +50,7 @@
   bool isFunction=false;
   int saveLastClass;
   TableObject saveLastFunction;
+  TableObject saveLastVariable;
   bool typeIsStruct=false;
 
 %}
@@ -758,7 +759,7 @@ void endDeclaration()
 {
   assert(saveLastIdentifier != NULL);
   if (typeLock == false && !emptyFunctionParser(functionParser)) {
-    parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1);
+    parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1, saveLastVariable);
   }
  resetFunctionParser(functionParser);
 }
@@ -838,6 +839,7 @@ void addNewSymbol(char * name) {
       saveLastClass = class;
       saveLastFunction = to1;
     }
+    saveLastVariable = to1;
   }
   else {
     int class = uniqueId;
@@ -852,6 +854,7 @@ void addNewSymbol(char * name) {
       saveLastClass = uniqueId;
       saveLastFunction = to;
     }
+    saveLastVariable = to;
     uniqueId++;
   }
 }
