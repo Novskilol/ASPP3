@@ -48,7 +48,7 @@ void yyerror(char *);
 %token <s> BEGINS DOCUMENT ENDS ABSTRACT TEXTIT TEXTBF SECTION EQUATION
 %token <s> SUBSECTION ENUMERATE ITEM ITEMIZE TABULAR BREAKLINE EQUATIONETOILE
 %token <s> SUBSUBSECTION LABEL REF VERBATIM
-  
+
 %type <s> begin_env_types
 
 %start init
@@ -56,7 +56,7 @@ void yyerror(char *);
 %%
 
 
-init : 
+init :
      | content_s init
      | label_s init
      | ref_s init
@@ -81,7 +81,7 @@ init :
 			    }
 		  	 }
 			 init
-			 
+
      ;
 
 subsection_s : SUBSECTION {
@@ -89,7 +89,7 @@ subsection_s : SUBSECTION {
 	    	     	  numsubsection++;
 			  mode2=SECTIONSMODE;
 			  numsubsubsection = 0;
-	    	    	  printf("<div align=\"left\"><font size=\"5\">");
+	    	    	  printf("<div style=\"color:#7CAFC2\" align=\"left\"><font size=\"5\">");
                     	  printf("%i.%i  ",numsection,numsubsection);
 			  fprintf(contentsfp,"<div align=\"left\"><font size=\"5\">  %i.%i   ",
 				  numsection,numsubsection);
@@ -99,18 +99,18 @@ subsection_s : SUBSECTION {
 			  accolades_std
 			  {
 			  fprintf(contentsfp,"</reference>");
-			  mode2=NONE; 
-			  fprintf(contentsfp,"</div></font><br>"); 
+			  mode2=NONE;
+			  fprintf(contentsfp,"</div></font><br>");
 			  printf("</div></font>");
 			  lockAlinea=true;
 		     	  }
-			
+
 	     ;
 subsubsection_s : SUBSUBSECTION {
                           lockAlinea=false;
 			  mode2=SECTIONSMODE;
 	    	     	  numsubsubsection++;
-	    	    	  printf("<div align=\"left\"><font size=\"4\">");
+	    	    	  printf("<div style=\"color:#7CAFC2\" align=\"left\"><font size=\"4\">");
                     	  printf("%i.%i.%i  ",numsection,numsubsection,numsubsubsection);
 			  fprintf(contentsfp,"<div align=\"left\"><font size=\"4\">      %i.%i.%i   ",numsection,
 				  numsubsection,numsubsubsection);
@@ -120,12 +120,12 @@ subsubsection_s : SUBSUBSECTION {
 			  accolades_std
 			  {
 			  fprintf(contentsfp,"</reference>");
-			  mode2=NONE; 
-			  fprintf(contentsfp,"</div></font><br>"); 
+			  mode2=NONE;
+			  fprintf(contentsfp,"</div></font><br>");
 			  printf("</div></font>");
 			  lockAlinea=true;
 		     	  }
-			
+
 	     ;
 section_s : SECTION {
                      lockAlinea=false;
@@ -133,7 +133,7 @@ section_s : SECTION {
 	    	     numsubsection = 0;
 		     numsection++;
                      fprintf(contentsfp,"<div align=\"left\"><font size=\"6\">%i  ",numsection);
-	    	     printf("<div align=\"left\"><font size=\"6\">");
+	    	     printf("<div style=\"color:#7CAFC2\" align=\"left\"><font size=\"6\">");
                      printf("%i  ",numsection);
 		     fprintf(contentsfp,"<reference class=\"section%i\">",numsection);
 		     printf("<label class=\"section%i\"></label>",numsection);
@@ -150,7 +150,7 @@ section_s : SECTION {
 
 end_s : ENDS accolades_end
       | ENDS '{' TABULAR '}' {
-                              
+
       	     	 	      printf("</table>");
 			      mode=NONE;
 			      columns=0;
@@ -189,14 +189,14 @@ begin_s :  BEGINS accolades_begin
 							mode=TABULARMODE;
 							printf("<table border=\"1\"><tr>");
 					      		}
-						
+
         ;
-	
+
 content_tab : content_tab CONTENT {
 	      		  	  if (*$2=='l'||*$2=='c'||*$2=='m')
 	      		          columns++;
 			          }
-	    | 
+	    |
             ;
 
 label_s : LABEL {
@@ -209,7 +209,7 @@ label_s : LABEL {
 ref_s : REF {
              mode = REFMODE;
 	     printf("<reference class=\"");
-	     }  accolades_std { printf("\">"); } 
+	     }  accolades_std { printf("\">"); }
                 accolades_std { printf("</reference>"); }
       ;
 
@@ -266,7 +266,7 @@ author_s : AUTHOR {printf("<center><font size=\"4\">");} accolades_std
 
 title_s : TITLE {
                  lockAlinea=false;
-                 printf("<center><font size=\"10\">");
+                 printf("<center><color =\"#DC9656\"><font size=\"10\">");
 		} accolades_std
                 {printf("</center></font>");}
         ;
@@ -319,8 +319,8 @@ content_s :  {
 				   fprintf(contentsfp,"%s",$2);
 				}
 			      }
-			      
-			      
+
+
           | begin_env_types {printf("%s", $1);}
 	  | BREAKLINE {
 	    	      if(mode==TABULARMODE)
@@ -340,8 +340,8 @@ content_s :  {
 accolades_std : '{'  repeat_cont  '}'
 
 repeat_cont : content_s repeat_cont
-            | 
-            ;	
+            |
+            ;
 
 
 %%
@@ -360,7 +360,7 @@ void writeContents()
 
 void verify_end(char *s)
 {
-  
+
 }
 
 static int printBeginFile(int output) {
@@ -396,12 +396,12 @@ int main(int argc, char *argv[])
   stouck=createSymbolStack();
   contentsfp=fopen("contents.html","w+");
   fprintf(contentsfp,"<br><font size=\"6\"><center>Table of contents</font></center><br>");
-  int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);  
+  int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
 
   dup2(output, 1);
 
   int begin = printBeginFile(output);
-  
+
   yyparse();
 
   fflush(stdout);
@@ -413,16 +413,16 @@ int main(int argc, char *argv[])
      writeContents();
    }
 
-  int output2 = open("doc.html",O_WRONLY|O_APPEND,0666);  
+  int output2 = open("doc.html",O_WRONLY|O_APPEND,0666);
 
   dup2(output2,1);
-  
+
   int end = printEndFile(output2);
 
   close(begin);
   close(end);
   close(output2);
   yylex_destroy();
-  
+
   return 0;
 }
