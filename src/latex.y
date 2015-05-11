@@ -35,7 +35,7 @@ void writeContents();
 	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,REFMODE,NONE};
 enum modes mode;
 enum modes mode2;
-SymbolStack stouck;
+SymbolStack statesStack;
 void yyerror(char *);
 %}
 
@@ -247,7 +247,7 @@ accolades_begin  : '{' begin_env_types '}' {
                                                         <div align=\"center\"><i>");
 					       mode=EQUATIONETOILEMODE;
                                              }
-                                             pushSymbolStack(stouck,$2);
+                                             pushSymbolStack(statesStack,$2);
                                            }
                  ;
 
@@ -358,7 +358,7 @@ void setContent()
 
 void writeContents()
 {
-  FILE *dest=fopen("doc.html","a");
+  FILE *dest=fopen("latex.html","a");
   appendFile(dest,"contents.html");
   fclose(dest);
 }
@@ -398,10 +398,10 @@ int main(int argc, char *argv[])
   numequation=0;
   numsubsubsection=0;
   numenumerate=0;
-  stouck=createSymbolStack();
+  statesStack=createSymbolStack();
   contentsfp=fopen("contents.html","w+");
   fprintf(contentsfp,"<br><font size=\"6\"><center>Table of contents</font></center><br>");
-  int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
+  int output = open("latex.html",O_WRONLY|O_TRUNC|O_CREAT,0666);
 
   dup2(output, 1);
 
@@ -418,12 +418,15 @@ int main(int argc, char *argv[])
      writeContents();
    }
 
-  int output2 = open("doc.html",O_WRONLY|O_APPEND,0666);
+  int output2 = open("latex.html",O_WRONLY|O_APPEND,0666);
 
   dup2(output2,1);
 
   int end = printEndFile(output2);
 
+  while(!emptySymbolStack(statesStack))
+    popSymbolStack(statesStack);
+  destroySymbolStack(statesStack);
   close(begin);
   close(end);
   close(output2);

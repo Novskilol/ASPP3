@@ -113,7 +113,7 @@ A   [a-zA-Z_0-9]
                 }
 		
 "\\backslash"   {
-                 return BACKSLASH;
+                 printf("\\");
                 }
 
 "\\begin"       {
