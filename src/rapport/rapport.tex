@@ -24,12 +24,13 @@ Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{<bra
 
 \begin{verbatim}
 <block>
-	<braces>\{</braces>
+	<braces>{</braces>
 		<item>
 			<block>
+				// CONTENT
 			</block>
 		</item>
-	\}
+	}
 </block>
 \end{verbatim}
 
@@ -41,7 +42,7 @@ Chaque déclaration de variable ou de fonction est placé dans un tag \textit{<d
 Pour chaque déclaration, un indentifiant unique est choisi puis une classe portant cet identifiant est donnée à la balise html.
 
 \begin{verbatim}
-int <declaration class="1">function</declaration>()\{\}
+int <declaration class="1">function</declaration>(){ }
 
 <identifier class ="1">function</identifier>();
 \end{verbatim}
@@ -61,11 +62,11 @@ En effet, les variables globales d'un fichier étant de niveau de pile 0, on ne 
 
 \begin{verbatim}
 int i; // variable globale, niveau 0
-int function (int i, int j)\{ // argument de fonction, niveau 1
-    \{
+int function (int i, int j){ // argument de fonction, niveau 1
+    {
         int i; // déclaration dans un bloc dans une fonction, niveau 3
-    \}
-\}
+    }
+}
 \end{verbatim}
 
 On diminue d'un niveau à chaque fermeture d'accolades et à chaque fois que l'on a terminé d'écrire les arguments d'une fonction.
@@ -76,23 +77,41 @@ A chaque fois que l'on rencontre une déclaration, on la rajoute à la liste du 
 Pour cela, à chaque déclaration, on regarde dans la liste se trouvant en top de pile s'il n'existe pas déjà un \textit{identifier} avec le même nom. Si oui on lui donne alors la même classe, sinon on l'ajoute.
 
 \subsection{Gestion des types}
-Pour que notre programme fonctionne sur nos propres fichiers il a fallut prendre en compte les déclaration et définitions de type . Par exemple typedef . Ainsi nous avons une liste de type partagé entre tout nos fichiers nous permettant de différencier
+
+Pour que notre programme fonctionne sur nos propres fichiers il a fallut prendre en compte les déclarations et définitions de type : \textit{typedef} ou \textit{struct}.
+\\
+
+Ainsi nous avons une liste de types partagé entre tous nos fichiers.
+
 \subsection{Affichage prototype et documentation}
-Parse des balises doxygen :
+
+\subsubsection{Parse des balises doxygen}
+
 Pour pouvoir utiliser des commentaire de la forme doxygen à la fois dans les tooltips et dans la page de documentation des fonctions nous avons crée une structure dédié (functionParser) . A chaque fois que le fichier lex lit une balise de documentation il l'enregistre dans le fonction parser . Une fois que bison arrive en fin de déclaration ou de définition il parse le contenue de function parser puis flush le fonction parser . Le fonction parser est modulable puisqu'il contient des règle de parsing qui sont activé lorsqu'un motif spécifique est rencontré . Chaque règle se voit offert la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférencier ) .
 ****
  Au niveau de la consigne nous pensions qu'il s'agissait de parser les commentaires de façon différentes du rapport . Nous nous sommes rendu compte 1 jour avant le rendu écrit qu'il s'agissait d'utiliser le parseur latex pour la documentation.
+
+
+\subsubsection{Prototype}
+
+\subsubsection{Tooltip}
+
+Le Javascript se charge de créer un calque pour chaque \textit{identifier} à partir de l'attribut html \textit{title}.
+\\
+
+Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction.
+\\
+On crée ensuite une balise \textit{<docuForTooltip>} vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) et insère la documentation dans le \textit{title} de la balise.
+\\
+S'il n'existe pas de documentation pour une fonction, on utilise uniquement le prototype.
+Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
+Pour lier l'identifier et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque identifier ayant la meme classe.
+
 
 
 \subsection{Structures de données}
 Pour pouvoir stocker notre tables des symboles nous avons décidé de crée une structure de pile de liste de symbole . Nous avons donc crée une structure de pile et de liste et une structure chapeau de table des symboles qui est chargé de géré selon le niveau d'indentation les symboles ( pour savoir si un symbole similaire existe ) . Avec ce système on a pu coloré toutes les meme variable de la meme couleur en prenant en compte les niveau d'indentation.
 
 
-Prototype :
-
-Tooltip :
-Le Javascript se charge de créer un calque pour chaque identifier à partir de l'attribut html title. Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction. On crée ensuite une balise <titleForTooltip> vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) pour ayant pour title la documentation. S'il n'existe pas de documentation pour une fonction, on utilise uniquement le prototype.
-Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
-Pour lier l'identifier et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque identifier ayant la meme classe.
 
 \end{document}
