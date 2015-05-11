@@ -755,12 +755,10 @@ void closeBraces() {
 
 void endDeclaration()
 {
-  //printf("la");
   assert(saveLastIdentifier != NULL);
   if (typeLock == false && !emptyFunctionParser(functionParser)) {
-    //printf("ici");
     parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1);
- }
+  }
  resetFunctionParser(functionParser);
 }
 
@@ -954,11 +952,11 @@ int main(int argc, char *argv[])
     typeName = NULL;
     destroySymbolList(typeSymbolList);
     typeSymbolList = NULL;
+
+    yylex_destroy();
   }
 
   destroyFunctionParser(functionParser);
-
-  yylex_destroy();
 
   return 0;
 }
