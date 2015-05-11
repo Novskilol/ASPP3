@@ -6,12 +6,6 @@ char * b;
 
 typedef int * poto;
 
-int main(int a, char **** c){
-  struct toto t;
-  poto to;
-}
-
-
 void f() {
   main(42, "ddr");
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
