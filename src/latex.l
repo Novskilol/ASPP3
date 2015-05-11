@@ -74,6 +74,10 @@ A   [a-zA-Z_0-9]
 "\\label"       {
                  return LABEL;
                 }
+
+"\\ref"         {
+                 return REF;
+                }
 		
 "\\backslash"   {
                  return BACKSLASH;
