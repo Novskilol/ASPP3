@@ -18,7 +18,7 @@ int fileSize(const char *fileName)
 char *fileToChar(const char *fileName,int sizeFile)
 {
   FILE *f=fopen(fileName,"r");
-  char *ret = malloc(sizeof(char)*sizeFile);
+  char *ret = malloc( sizeof(char) * (sizeFile+1) );
   int i;
   int nb;
   char buffer;
@@ -27,6 +27,7 @@ char *fileToChar(const char *fileName,int sizeFile)
     for (i = 0 ; i < nb ; i++ )
       ret[i+sizeRead]=buffer;
   fclose(f);
+  ret[sizeFile] =0; 
   return ret;
 }
 char * copy(const char * s)
