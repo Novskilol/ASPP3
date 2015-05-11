@@ -27,7 +27,7 @@ FILE *contentsfp;
 bool contents;
 bool lockArray;
 
-enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,
+enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,VERBATIMMODE,
 	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,REFMODE,NONE};
 enum modes mode;
 enum modes mode2;
@@ -43,7 +43,7 @@ void yyerror(char *);
 %token <s> CONTENT BACKSLASH AUTHOR USEPACKAGE DOCUMENTCLASS TITLE
 %token <s> BEGINS DOCUMENT ENDS ABSTRACT TEXTIT TEXTBF SECTION EQUATION
 %token <s> SUBSECTION ENUMERATE ITEM ITEMIZE TABULAR BREAKLINE EQUATIONETOILE
-%token <s> SUBSUBSECTION LABEL REF
+%token <s> SUBSUBSECTION LABEL REF VERBATIM
   
 %type <s> begin_env_types
 
@@ -141,29 +141,23 @@ accolades_end : '{' begin_env_types '}' {
                                              {
 					      printf("</div>");
                                              }
-					 if (strcmp($2,"enumerate")==0)
-                                             {
-					     mode=NONE;
-                                             }
-					 if (strcmp($2,"itemize")==0)
-                                             {
-					     mode=NONE;
-                                             }
 					 if (strcmp($2,"tabular")==0)
                                              {
 					     printf("</table>");
-					     mode=NONE;
                                              }
 					 if (strcmp($2,"equation")==0)
                                              {
 					       printf("</p></i><p class=\"alignright\">(%i)</p></div><div style=\"clear: both;\"></div></font>",numequation);
-					       mode=NONE;
+                                             }
+					 if (strcmp($2,"verbatim")==0)
+                                             {
+					      printf("</div></CODE>");
                                              }
 					 if (strcmp($2,"equation*")==0)
                                              {
 					       printf("</i></div></font>");
-					       mode=NONE;
                                              }
+					 mode=NONE;
                                          }
               ;
 
@@ -212,6 +206,11 @@ accolades_begin  : '{' begin_env_types '}' {
                                              {
 					      mode=ITEMIZEMODE;
                                              }
+					     if (strcmp($2,"verbatim")==0)
+                                             {
+					      printf("<CODE><div class=\"codelatex\">");
+					      mode=VERBATIMMODE;
+                                             }
 					     if (strcmp($2,"equation")==0)
                                              {
 					       numequation++;
@@ -236,6 +235,7 @@ begin_env_types : DOCUMENT
 		| EQUATIONETOILE
 		| ENUMERATE
 		| ITEMIZE
+                | VERBATIM
                 ;
 
 author_s : AUTHOR {printf("<center><font size=\"4\">");} accolades_std
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
   numsubsubsection=0;
   numenumerate=0;
   stouck=createSymbolStack();
-  contentsfp=fopen("contents.html","r+");
+  contentsfp=fopen("contents.html","w+");
   fprintf(contentsfp,"<br><font size=\"6\"><center>Table of contents</font></center><br>");
   int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);

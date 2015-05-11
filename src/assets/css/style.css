@@ -17,7 +17,9 @@ html,body {
 }
 
 .latex {
-	margin-left: 16em;
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
 	font-family: DroidSansMono;
 }
 
@@ -140,4 +142,13 @@ label
 {
 	color: #7CAFC2;
 	font-size: 0.8em;
+}
+
+.codelatex
+{
+    color: #000000;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    background-color: #FFFFFF;
 }

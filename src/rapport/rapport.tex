@@ -1,9 +1,13 @@
-
+\documentclass{article}
+\begin{document}
 \section{Code C }
 
 
-\subsection{Indentation et mise en page
-Après avoir compilé et observé le fonctionnement du parseur fourni par le sujet nous nous sommes lancé dans l'indentation et la mise en page du code C . Notre première approche par rapport à l'indentation fut de modifier le fichier lex pour rajouté des balises NEWLINE en fin de point virgules et en fin de ligne ( en ayant au préalable supprimé par défaut tous les sauts de ligne ) . De plus à chaque fois que l'on rencontrait un { ou un } on modifier une variable représentant le niveau d'indentation . Ce fonctionnement posait certains problèmes dans des cas plus complexe comme par exemple un if suivi d'une instruction mais sans crochet . Nous avons donc décidé de reporter le travail d'indentation ainsi que de mise en page sur le fichier bison. Ainsi nous avons pu traiter les cas plus complexes de mises en pages . Nous nous sommes donc occupés des cas particuliers comme la présence de ; dans les for . 
+\subsection{Indentation et mise en page}
+
+
+
+Après avoir compilé et observé le fonctionnement du parseur fourni par le sujet nous nous sommes lancé dans l'indentation et la mise en page du code C . Notre première approche par rapport à l'indentation fut de modifier le fichier lex pour rajouté des balises NEWLINE en fin de point virgules et en fin de ligne ( en ayant au préalable supprimé par défaut tous les sauts de ligne ) . De plus à chaque fois que l'on rencontrait un \{ ou un \} on modifier une variable représentant le niveau d'indentation . Ce fonctionnement posait certains problèmes dans des cas plus complexe comme par exemple un if suivi d'une instruction mais sans crochet . Nous avons donc décidé de reporter le travail d'indentation ainsi que de mise en page sur le fichier bison. Ainsi nous avons pu traiter les cas plus complexes de mises en pages . Nous nous sommes donc occupés des cas particuliers comme la présence de ; dans les for . 
 
 \subsection{Code expand collapse}
 Le code expand/collaspe est géré entièrement en jQuery. Chaque accolade rencontrée dans le bison est disposé dans un tag <braces>. Un tag <block> est placé avant et après le bloc de code pour délimiter la zone à cacher/montrer.
@@ -13,7 +17,7 @@ ex.
 \subsection{Highlight et goto declaration}
 Chaque déclaration de variable ou de fonction est placé dans un tag <declaration> tandis que chaque variable ou appel de fonction est placé dans un tag <identifier>. Pour chaque déclaration, un indentifiant unique est choisi puis une classe portant cet identifiant est donné à la balise html.
 
-int<declaration class="1">function</declaration>(){}
+int<declaration class="1">function</declaration>()\{\}
 <identifier class ="1">function</identifier>();
 
 
@@ -25,11 +29,11 @@ On augmente notre niveau de pile à chaque ouverture d'accolade mais aussi lorsq
 En effet, les variables globales d'un fichier étant de niveau de pile 0, on ne peut pas avoir un même niveau de pile pour les arguments de fonctions.
 
 int i; // variable globale, niveau 0
-int function (int i, int j){ // argument de fonction, niveau 1
-    {
+int function (int i, int j)\{ // argument de fonction, niveau 1
+    \{
         int i; // déclaration dans un bloc dans une fonction, niveau 3
-    }
-}
+    \}
+\}
 
 On diminue d'un niveau à chaque fermeture d'accolades et à chaque fois que l'on a terminé d'écrire les arguments d'une fonction.
 
@@ -54,4 +58,4 @@ Le Javascript se charge de créer un calque pour chaque identifier à partir de 
 Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
 Pour lier l'identifier et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque identifier ayant la meme classe.
 
-
+\end{document}
