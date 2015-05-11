@@ -8,9 +8,30 @@
 
 A   [a-zA-Z_0-9]
 
+%x VERBATIMODE
+%x VERBATIMODEBR
 
 %%
-"\\maketitle"    {
+<VERBATIMODEBR>\} {
+                    BEGIN VERBATIMODE;
+                    return '}';
+                  }
+
+<VERBATIMODEBR>.|\n {
+                      BEGIN INITIAL;
+                      yylval.s = strdup(yytext);
+                      return CONTENT;
+                    }
+
+
+<VERBATIMODE>.|\n {ECHO;}
+
+<VERBATIMODE>"\\end"         {
+                              BEGIN INITIAL;
+                              return ENDS;
+                             }
+
+"\\maketitle"   {
                 }
 
 "\\documentclass{article}"
@@ -46,6 +67,7 @@ A   [a-zA-Z_0-9]
 
 "verbatim"	{
                 yylval.s = strdup(yytext);
+                BEGIN VERBATIMODEBR;
 		return VERBATIM;
 		}
 
@@ -107,8 +129,8 @@ A   [a-zA-Z_0-9]
                  return ABSTRACT;
                }
   
-"\\usepackage{graphicx}"
-"\\usepackage{amsmath}"
+"\\usepackage{graphicx}" 
+"\\usepackage{amsmath}" 
 
 \\\{           {
                  yylval.s = strdup(yytext+1);return CONTENT;
