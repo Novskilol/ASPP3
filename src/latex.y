@@ -151,7 +151,7 @@ accolades_end : '{' begin_env_types '}' {
                                              }
 					 if (strcmp($2,"verbatim")==0)
                                              {
-					      printf("</CODE>");
+					      printf("</div></CODE>");
                                              }
 					 if (strcmp($2,"equation*")==0)
                                              {
@@ -208,7 +208,7 @@ accolades_begin  : '{' begin_env_types '}' {
                                              }
 					     if (strcmp($2,"verbatim")==0)
                                              {
-					      printf("<CODE class='codelatex'>");
+					      printf("<CODE><div class=\"codelatex\">");
 					      mode=VERBATIMMODE;
                                              }
 					     if (strcmp($2,"equation")==0)
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
   numsubsubsection=0;
   numenumerate=0;
   stouck=createSymbolStack();
-  contentsfp=fopen("contents.html","r+");
+  contentsfp=fopen("contents.html","w+");
   fprintf(contentsfp,"<br><font size=\"6\"><center>Table of contents</font></center><br>");
   int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
   dup2(output, 1);
