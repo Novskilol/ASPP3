@@ -77,7 +77,7 @@ init :
 			    }
 			 if(mode==ITEMIZEMODE)
 			    {
-			    printf("<br>つ ◕_◕ つ ");
+			    printf("<br>%s%s%s%s◕ ", SPACE_C,SPACE_C,SPACE_C,SPACE_C);
 			    }
 		  	 }
 			 init
@@ -268,7 +268,7 @@ title_s : TITLE {
                  lockAlinea=false;
                  printf("<div style=\"color:#DC9656\"><center><font size=\"10\">");
 		} accolades_std
-                {printf("</font></center></div>");}
+                {printf("</font></center></div><br>");}
         ;
 
 ital_s : TEXTIT {printf("<i>");} accolades_std

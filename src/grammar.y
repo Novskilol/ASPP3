@@ -784,12 +784,22 @@ void atExitPrototype(char * functionName)
 }
 void refreshType(bool *a){
   if (*a == true){
-    if (typeIsStruct)
-      addSymbolList(typeSymbolList,concat("struct ",saveLastIdentifier));
-    else
-      addSymbolList(typeSymbolList,copy(saveLastIdentifier));
+    if (typeIsStruct) {
+      char * element = concat("struct ",saveLastIdentifier);
+      if (searchSymbolList(typeSymbolList,element) == NULL) {
+        addSymbolList(typeSymbolList,element);
+        // fprintf(stderr, "on add : %s\n", element);
+  }
+      else
+        free(element);
+    }
+    else {
+      if (searchSymbolList(typeSymbolList,saveLastIdentifier) == NULL) {
+        addSymbolList(typeSymbolList,copy(saveLastIdentifier));
+        // fprintf(stderr, "on add : %s\n", saveLastIdentifier);
+      }
+    }
     *a=false;
-    fprintf(stderr, "on add : %s\n", saveLastIdentifier);
   }
   typeIsStruct=false;
 }
@@ -799,12 +809,19 @@ void refreshType(bool *a){
 void addType()
 {
   if (typeIsStruct){
-    addSymbolList(typeSymbolList,  concat("struct ",saveLastIdentifier));
+    if (searchSymbolList(typeSymbolList,saveLastIdentifier) == NULL) {
+      char * element = concat("struct ",saveLastIdentifier);
+      addSymbolList(typeSymbolList, element);
+      // fprintf(stderr, "on add :%s\n", element);
+    }
     typeIsStruct=false;
   }
-  else
-    addSymbolList(typeSymbolList,  copy(saveLastIdentifier));
-    fprintf(stderr, "on add : %s\n", saveLastIdentifier);
+  else {
+    if (searchSymbolList(typeSymbolList,saveLastIdentifier) == NULL) {
+      addSymbolList(typeSymbolList,  copy(saveLastIdentifier));
+      // fprintf(stderr, "on add : %s\n", saveLastIdentifier);
+    }
+  }
 }
 
 void atExitDefinition()
@@ -872,7 +889,7 @@ bool searchSymbol(char * name) {
     printf("<identifier class=\"%d\">\n%s\n</identifier>\n",
       class, name);
     printDocumentation(functionParser,name,"",class,to);
-    
+
   }
   return true;
 }
