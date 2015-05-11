@@ -44,6 +44,11 @@ A   [a-zA-Z_0-9]
 		return ITEM;
 		}
 
+"verbatim"	{
+                yylval.s = strdup(yytext);
+		return VERBATIM;
+		}
+
 "itemize"    	{
 		 yylval.s = strdup(yytext);
 	  	 return ITEMIZE;
