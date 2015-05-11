@@ -40,4 +40,6 @@ void defaultBriefRule(FILE*,char *);
 
 void defaultParamRule(FILE*,char *);
 
+void printDocumentation(FunctionParser this, char *name, char *returnType, int id, TableObject to);
+
 #endif

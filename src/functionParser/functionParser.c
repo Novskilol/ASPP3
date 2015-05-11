@@ -182,7 +182,7 @@ static void parseRules(FunctionParser this,FILE *f)
   * @param returnType   The return type of our function or NULL if it's a variable
  * @param id            The html class to give to our element, it should be the same id for the corresponding identifier
  */
-static void printDocumentation(FunctionParser this, char *name, char *returnType, int id, TableObject to)
+void printDocumentation(FunctionParser this, char *name, char *returnType, int id, TableObject to)
 {
   if (to != NULL) {
 

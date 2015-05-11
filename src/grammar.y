@@ -871,6 +871,8 @@ bool searchSymbol(char * name) {
     int class = to->class;
     printf("<identifier class=\"%d\">\n%s\n</identifier>\n",
       class, name);
+    printDocumentation(functionParser,name,"",class,to);
+    
   }
   return true;
 }
