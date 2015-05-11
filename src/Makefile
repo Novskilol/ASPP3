@@ -5,7 +5,7 @@ LDIR=../lib
 
 all: testDir  compilation
 
-latex:commun/commun.o symbolStack/symbolStack.o latex.tab.o latex.yy.o
+latex:commun/commun.o symbolStack/symbolStack.o util/util.o latex.tab.o latex.yy.o 
 	$(CC) $^ $(LIBS) -o rapport_html
 	mv rapport_html ../bin
 
@@ -30,7 +30,8 @@ latex.tab.o: commun/commun.h util/util.h
 	bison -d -v latex.y
 	cp latex.tab.h $(INCDIR)
 	gcc -c -I$(INCDIR) latex.tab.c -o latex.tab.o
-latex.yy.o :
+
+latex.yy.o : util/util.h commun/commun.h
 	flex latex.l
 	mv lex.yy.c latex.yy.c
 	gcc -c -I$(INCDIR) latex.yy.c -o latex.yy.o

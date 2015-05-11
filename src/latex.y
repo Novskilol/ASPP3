@@ -10,7 +10,9 @@
 #include <assert.h>
 #include <stdbool.h>
 #include "symbolStack.h"
-  
+#include "util/util.h"
+#include "commun/commun.h"
+
 extern int yylex();
 extern int yylex_destroy();
 
@@ -26,6 +28,8 @@ int columns;
 FILE *contentsfp;
 bool contents;
 bool lockArray;
+bool lockAlinea;
+void writeContents();
 
 enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,VERBATIMMODE,
 	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,REFMODE,NONE};
@@ -65,6 +69,7 @@ init :
      | {printf("<br>");} subsection_s {printf("<br>");} init
      | {printf("<br>");} subsubsection_s {printf("<br>");} init
      | ITEM		{
+                         lockAlinea=false;
        	    		 if(mode==ENUMERATEMODE)
 			    {
 			    numenumerate++;
@@ -80,55 +85,72 @@ init :
      ;
 
 subsection_s : SUBSECTION {
+                          lockAlinea=false;
 	    	     	  numsubsection++;
+			  mode2=SECTIONSMODE;
 			  numsubsubsection = 0;
 	    	    	  printf("<div align=\"left\"><font size=\"5\">");
                     	  printf("%i.%i  ",numsection,numsubsection);
 			  fprintf(contentsfp,"<div align=\"left\"><font size=\"5\">  %i.%i   ",
 				  numsection,numsubsection);
+			  fprintf(contentsfp,"<reference class=\"section%ia%i\">",numsection,numsubsection);
+			  printf("<label class=\"section%ia%i\"></label>",numsection,numsubsection);
 		    	  }
 			  accolades_std
 			  {
+			  fprintf(contentsfp,"</reference>");
 			  mode2=NONE; 
 			  fprintf(contentsfp,"</div></font><br>"); 
 			  printf("</div></font>");
+			  lockAlinea=true;
 		     	  }
 			
 	     ;
 subsubsection_s : SUBSUBSECTION {
+                          lockAlinea=false;
+			  mode2=SECTIONSMODE;
 	    	     	  numsubsubsection++;
 	    	    	  printf("<div align=\"left\"><font size=\"4\">");
                     	  printf("%i.%i.%i  ",numsection,numsubsection,numsubsubsection);
 			  fprintf(contentsfp,"<div align=\"left\"><font size=\"4\">      %i.%i.%i   ",numsection,
 				  numsubsection,numsubsubsection);
-
+			  fprintf(contentsfp,"<reference class=\"section%ia%ia%i\">",numsection,numsubsection,numsubsubsection);
+			  printf("<label class=\"section%ia%ia%i\"></label>",numsection,numsubsection,numsubsubsection);
 		    	  }
 			  accolades_std
 			  {
+			  fprintf(contentsfp,"</reference>");
 			  mode2=NONE; 
 			  fprintf(contentsfp,"</div></font><br>"); 
 			  printf("</div></font>");
+			  lockAlinea=true;
 		     	  }
 			
 	     ;
 section_s : SECTION {
+                     lockAlinea=false;
                      mode2=SECTIONSMODE;
 	    	     numsubsection = 0;
 		     numsection++;
                      fprintf(contentsfp,"<div align=\"left\"><font size=\"6\">%i  ",numsection);
 	    	     printf("<div align=\"left\"><font size=\"6\">");
                      printf("%i  ",numsection);
+		     fprintf(contentsfp,"<reference class=\"section%i\">",numsection);
+		     printf("<label class=\"section%i\"></label>",numsection);
 		     }
 		     accolades_std
 		     {
 		     mode2=NONE;
+		     fprintf(contentsfp,"</reference>");
 		     fprintf(contentsfp,"</div></font><br>");
 		     printf("</div></font>");
+		     lockAlinea=true;
 		     }
           ;
 
 end_s : ENDS accolades_end
       | ENDS '{' TABULAR '}' {
+                              
       	     	 	      printf("</table>");
 			      mode=NONE;
 			      columns=0;
@@ -151,7 +173,7 @@ accolades_end : '{' begin_env_types '}' {
                                              }
 					 if (strcmp($2,"verbatim")==0)
                                              {
-					      printf("</div></CODE>");
+					      printf("</xmp></div></CODE>");
                                              }
 					 if (strcmp($2,"equation*")==0)
                                              {
@@ -208,7 +230,7 @@ accolades_begin  : '{' begin_env_types '}' {
                                              }
 					     if (strcmp($2,"verbatim")==0)
                                              {
-					      printf("<CODE><div class=\"codelatex\">");
+					      printf("<CODE><div class=\"codelatex\"><xmp>");
 					      mode=VERBATIMMODE;
                                              }
 					     if (strcmp($2,"equation")==0)
@@ -242,7 +264,10 @@ author_s : AUTHOR {printf("<center><font size=\"4\">");} accolades_std
 		  {printf("</center></font>");}
          ;
 
-title_s : TITLE {printf("<center><font size=\"10\">");} accolades_std
+title_s : TITLE {
+                 lockAlinea=false;
+                 printf("<center><font size=\"10\">");
+		} accolades_std
                 {printf("</center></font>");}
         ;
 
@@ -254,8 +279,17 @@ bold_s : TEXTBF {printf("<b>");} accolades_std
                 {printf("</b>");}
        ;
 
-content_s :  CONTENT	      {
-	    	      	      if(mode==TABULARMODE&&(*$1=='&'))
+content_s :  {
+                if(lockAlinea==true)
+		    {
+		      printf("%s%s%s",SPACE_C, SPACE_C, SPACE_C);
+		      lockAlinea=false;
+		    }
+              }
+		  CONTENT	      {
+                              if(lockAlinea==true)
+				printf("   ");
+	    	      	      if(mode==TABULARMODE&&(*$2=='&'))
 			      {
 				printf("</td>");
 				printf("<td>");
@@ -266,22 +300,24 @@ content_s :  CONTENT	      {
 				{
 				   lockArray=true;
 				   printf("<td>");
-				   printf("%s", $1);
+				   printf("%s", $2);
 				}
 				else
-				  printf("%s", $1);
+				  printf("%s", $2);
 			      }
 			      else if(mode==REFMODE||mode==LABELMODE)
 			      {
-				if (*$1!=':')
+				if (*$2!=':')
 				  {
-				  printf("%s", $1);
+				  printf("%s", $2);
 				  }
 			      }
 			      else
-				printf("%s", $1);
+				printf("%s", $2);
 			      if(mode2==SECTIONSMODE)
-				fprintf(contentsfp,"%s",$1);
+				{
+				   fprintf(contentsfp,"%s",$2);
+				}
 			      }
 			      
 			      
@@ -294,7 +330,10 @@ content_s :  CONTENT	      {
 		        printf("</tr><tr>");
 		      }
 		      else
+		      {
+			lockAlinea=true;
 			printf("<br>");
+		      }
 		      }
           ;
 
@@ -312,8 +351,11 @@ void setContent()
   contents=true;
 }
 
-static void writeContents()
+void writeContents()
 {
+  FILE *dest=fopen("doc.html","a");
+  appendFile(dest,"contents.html");
+  fclose(dest);
 }
 
 void verify_end(char *s)
@@ -343,6 +385,7 @@ int main(int argc, char *argv[])
 {
   mode=NONE;
   mode2=NONE;
+  lockAlinea=false;
   contents=false;
   columns=0;
   numsection=0;
@@ -353,24 +396,33 @@ int main(int argc, char *argv[])
   stouck=createSymbolStack();
   contentsfp=fopen("contents.html","w+");
   fprintf(contentsfp,"<br><font size=\"6\"><center>Table of contents</font></center><br>");
-  int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);    
+  int output = open("doc.html",O_WRONLY|O_TRUNC|O_CREAT,0666);  
+
   dup2(output, 1);
 
   int begin = printBeginFile(output);
   
   yyparse();
 
+  fflush(stdout);
+  close(output);
+  fclose(contentsfp);
+
   if (contents==true)
-    writeContents();
-    
+   {
+     writeContents();
+   }
+
+  int output2 = open("doc.html",O_WRONLY|O_APPEND,0666);  
+
+  dup2(output2,1);
   
-  int end = printEndFile(output);
+  int end = printEndFile(output2);
 
   close(begin);
   close(end);
-  close(output);
-  fclose(contentsfp);
-  
+  close(output2);
   yylex_destroy();
+  
   return 0;
 }

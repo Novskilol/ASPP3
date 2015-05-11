@@ -134,7 +134,7 @@ A   [a-zA-Z_0-9]
 
 \\\\ {return BREAKLINE;}
 
-"\n\n" {printf("<br>");}
+"\n\n" {return BREAKLINE;}
 
 "\n" 
 
