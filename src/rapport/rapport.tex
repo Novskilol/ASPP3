@@ -104,12 +104,16 @@ Pour donner un calque à une fonction, on doit parcourir toutes les balises doxy
 On crée ensuite une balise \textit{<docuForTooltip>} vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) et insère la documentation dans le \textit{title} de la balise.
 \\
 S'il n'existe pas de documentation pour une fonction, on utilise uniquement le prototype.
-Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
-Pour lier l'identifier et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque identifier ayant la meme classe.
+\\
 
+Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
+\\
+
+Pour lier l'\textit{identifier} et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
 
 
 \subsection{Structures de données}
+
 Pour pouvoir stocker notre tables des symboles nous avons décidé de crée une structure de pile de liste de symbole . Nous avons donc crée une structure de pile et de liste et une structure chapeau de table des symboles qui est chargé de géré selon le niveau d'indentation les symboles ( pour savoir si un symbole similaire existe ) . Avec ce système on a pu coloré toutes les meme variable de la meme couleur en prenant en compte les niveau d'indentation.
 
 

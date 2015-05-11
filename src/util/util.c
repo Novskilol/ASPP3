@@ -12,8 +12,8 @@ int fileSize(const char *fileName)
 
   fclose(f);
   return sizeFile;
-  
-  
+
+
 }
 char *fileToChar(const char *fileName,int sizeFile)
 {
@@ -27,7 +27,7 @@ char *fileToChar(const char *fileName,int sizeFile)
     for (i = 0 ; i < nb ; i++ )
       ret[i+sizeRead]=buffer;
   fclose(f);
-  ret[sizeFile] =0; 
+  ret[sizeFile] =0;
   return ret;
 }
 char * copy(const char * s)
@@ -101,7 +101,7 @@ void appendSidebar(FILE * dest, char **filesArray, int size, char *fileName, boo
 	{
 		fprintf(dest, "<li><a href='../%s.html'><span>%s</span></a></li>", filesArray[i], filesArray[i]);
 	}
-	fprintf(dest, "</ul></li><li><a href='../rapport/rapport.html' target='_blank'><span>Rapport</span></a></li></ul></div></div>");
+	fprintf(dest, "</ul></li><li><a href='latex.html' target='_blank'><span>Rapport</span></a></li></ul></div></div>");
 }
 
 char *concat(const char *a,const char *b)

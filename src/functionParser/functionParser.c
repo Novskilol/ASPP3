@@ -190,8 +190,6 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
 
     if (to->declaration == NULL) {
 
-      char * title;
-      char * tmp;
       FILE * t = fopen("documentation.tmp", "w");
 
       if (returnType != NULL) {
