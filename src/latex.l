@@ -1,6 +1,7 @@
 %{
 #include "latex.tab.h"
-
+#include <stdbool.h>
+bool verbatLock=false;
 %}
 
 %option yylineno
@@ -67,7 +68,14 @@ A   [a-zA-Z_0-9]
 
 "verbatim"	{
                 yylval.s = strdup(yytext);
-                BEGIN VERBATIMODEBR;
+                if(verbatLock==false)
+                  verbatLock=true;
+                else
+                  verbatLock=false;
+                if(verbatLock==true)
+                {
+                  BEGIN VERBATIMODEBR;
+                }
 		return VERBATIM;
 		}
 
@@ -108,7 +116,7 @@ A   [a-zA-Z_0-9]
                  return BACKSLASH;
                 }
 
-"\\begin"       {                 
+"\\begin"       {
                  return BEGINS;
                 }
 
