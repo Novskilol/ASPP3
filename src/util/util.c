@@ -1,5 +1,34 @@
 #include "util.h"
 
+
+int fileSize(const char *fileName)
+{
+  FILE *f=fopen(fileName,"r");
+  int nb;
+  char buffer;
+  int sizeFile;
+
+  for(sizeFile = 0 ;(nb = fread(&buffer,sizeof(char),1,f)) > 0 ; sizeFile+=nb );
+
+  fclose(f);
+  return sizeFile;
+  
+  
+}
+char *fileToChar(const char *fileName,int sizeFile)
+{
+  FILE *f=fopen(fileName,"r");
+  char *ret = malloc(sizeof(char)*sizeFile);
+  int i;
+  int nb;
+  char buffer;
+  int sizeRead;
+  for (sizeRead = 0;(nb = fread(&buffer,sizeof(char),1,f)) > 0 ; sizeRead +=nb)
+    for (i = 0 ; i < nb ; i++ )
+      ret[i+sizeRead]=buffer;
+  fclose(f);
+  return ret;
+}
 char * copy(const char * s)
 {
 	if (s == NULL)

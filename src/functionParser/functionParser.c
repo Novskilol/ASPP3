@@ -213,9 +213,12 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
       }
 
       parseRules(this, t);
+      fclose(t);
 
-
-      to->declaration = title;
+      int sizeFile=fileSize("documentation.tmp");
+      
+      to->declaration = fileToChar("documentation.tmp",sizeFile);
+      remove("documentation.tmp");
     }
 
     fprintf(stdout, "%s", to->declaration);
