@@ -101,7 +101,7 @@ void appendSidebar(FILE * dest, char **filesArray, int size, char *fileName, boo
 	{
 		fprintf(dest, "<li><a href='../%s.html'><span>%s</span></a></li>", filesArray[i], filesArray[i]);
 	}
-	fprintf(dest, "</ul></li><li><a href='latex.html' target='_blank'><span>Rapport</span></a></li></ul></div></div>");
+	fprintf(dest, "</ul></li><li><a href='../latex.html' target='_blank'><span>Rapport</span></a></li></ul></div></div>");
 }
 
 char *concat(const char *a,const char *b)
