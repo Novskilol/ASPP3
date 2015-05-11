@@ -184,17 +184,6 @@ static void parseRules(FunctionParser this,FILE *f)
  */
 static void printDocumentation(FunctionParser this, char *name, char *returnType, int id, TableObject to)
 {
-  // if (this->sizeElements <= 0) {
-  //   fprintf(stdout,"<protoForTooltip class=\"%d\"  title=\"",id);
-  //   if (returnType != NULL) {
-  //     printf("<titre>%s %s</titre><br><br>",returnType,name );
-  //   }
-  //   else {
-  //     printf("<titre>%s</titre><br><br>",name);
-  //   }
-  //   fprintf(stdout, "\"></protoForTooltip>");
-  // }
-
   if (to != NULL) {
 
     fprintf(stdout,"<docuForTooltip class=\"%d\"  title=\"",id);
@@ -213,18 +202,23 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
       }
 
       parseRules(this, t);
+      //      fprintf(stderr,"NB RULES%d\n\n",this->sizeElements);
       fclose(t);
 
       int sizeFile=fileSize("documentation.tmp");
 
       to->declaration = fileToChar("documentation.tmp",sizeFile);
-
+      //      fprintf(stderr,"NAME %s\n%s\n\n\n",name,to->declaration);
       remove("documentation.tmp");
     }
+    else
+      {
 
+	parseRules(this,stdout);
+
+      }
     fprintf(stdout, "%s", to->declaration);
 
-    //    parseRules(this,stdout);
     fprintf(stdout, "\"></docuForTooltip>");
   }
 
@@ -261,6 +255,7 @@ void parseFunction(FunctionParser this, char *functionName,char *returnType, cha
 {
   /* We do not create a function block if function has no specific comment */
   if  ( this->sizeElements <= 0 ) {
+    //fprintf(stderr,"FUNCITON NO DOC %s FILE %s\n",functionName,fileName);
     printDocumentation(this, functionName, returnType, id, to);
     return;
   }
