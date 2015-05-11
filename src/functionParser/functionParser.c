@@ -218,12 +218,13 @@ static void printDocumentation(FunctionParser this, char *name, char *returnType
       int sizeFile=fileSize("documentation.tmp");
 
       to->declaration = fileToChar("documentation.tmp",sizeFile);
+      
       remove("documentation.tmp");
     }
 
     fprintf(stdout, "%s", to->declaration);
 
-    parseRules(this,stdout);
+    //    parseRules(this,stdout);
     fprintf(stdout, "\"></docuForTooltip>");
   }
 

@@ -39,8 +39,9 @@ On diminue d'un niveau à chaque fermeture d'accolades et à chaque fois que l'o
 
 A chaque fois que l'on rencontre une déclaration, on la rajoute à la liste du niveau de pile adéquat. Il faut cependant différencier le cas où l'on rencontre la déclaration d'une fonction  du cas où l'on rencontre sa définition. Pour cela, à chaque déclaration, on regarde dans la liste se trouvant en top de pile s'il n'existe pas déjà un identifier avec le même nom. Si oui on lui donne alors la même classe, sinon on l'ajoute.
 
-
-\subsection{Affichage protptype et documentation}
+\subsection{Gestion des types}
+Pour que notre programme fonctionne sur nos propres fichiers il a fallut prendre en compte les déclaration et définitions de type . Par exemple typedef . Ainsi nous avons une liste de type partagé entre tout nos fichiers nous permettant de différencier 
+\subsection{Affichage prototype et documentation}
 Parse des balises doxygen :
 Pour pouvoir utiliser des commentaire de la forme doxygen à la fois dans les tooltips et dans la page de documentation des fonctions nous avons crée une structure dédié (functionParser) . A chaque fois que le fichier lex lit une balise de documentation il l'enregistre dans le fonction parser . Une fois que bison arrive en fin de déclaration ou de définition il parse le contenue de function parser puis flush le fonction parser . Le fonction parser est modulable puisqu'il contient des règle de parsing qui sont activé lorsqu'un motif spécifique est rencontré . Chaque règle se voit offert la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférencier ) . 
 ****
