@@ -266,9 +266,9 @@ author_s : AUTHOR {printf("<center><font size=\"4\">");} accolades_std
 
 title_s : TITLE {
                  lockAlinea=false;
-                 printf("<center><color =\"#DC9656\"><font size=\"10\">");
+                 printf("<div style=\"color:#DC9656\"><center><font size=\"10\">");
 		} accolades_std
-                {printf("</center></font>");}
+                {printf("</font></center></div>");}
         ;
 
 ital_s : TEXTIT {printf("<i>");} accolades_std
