@@ -11,10 +11,10 @@
   #include <unistd.h>
 
 
-  #include "commun/commun.h"
-  #include "symbolTable/symbolTable.h"
-  #include "functionParser.h"
-  #include "util/util.h"
+  #include <commun.h>
+  #include <symbolTable.h>
+  #include <functionParser.h>
+  #include <util.h>
 
   extern int yylex();
   extern int yylex_destroy();
@@ -49,6 +49,8 @@
   char *saveFunctionName=NULL;
   bool isFunction=false;
   int saveLastClass;
+  TableObject saveLastFunction;
+  TableObject saveLastVariable;
   bool typeIsStruct=false;
 
 %}
@@ -757,7 +759,7 @@ void endDeclaration()
 {
   assert(saveLastIdentifier != NULL);
   if (typeLock == false && !emptyFunctionParser(functionParser)) {
-    parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1);
+    parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1, saveLastVariable);
   }
  resetFunctionParser(functionParser);
 }
@@ -777,7 +779,7 @@ void atExitPrototype(char * functionName)
   isFunction = false;
   free(saveFunctionName);
   saveFunctionName=copy(functionName);
-  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass);
+  parseFunction(functionParser, functionName, typeName, fileName, saveLastClass, saveLastFunction);
   resetFunctionParser(functionParser);
 }
 void refreshType(bool *a){
@@ -833,8 +835,11 @@ void addNewSymbol(char * name) {
     int  class = to1->class;
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
            class, name);
-    if (indentLvl == 0)
+    if (indentLvl == 0) {
       saveLastClass = class;
+      saveLastFunction = to1;
+    }
+    saveLastVariable = to1;
   }
   else {
     int class = uniqueId;
@@ -845,8 +850,11 @@ void addNewSymbol(char * name) {
     printf("<declaration class=\"%d\">\n%s\n</declaration>\n",
            class, name);
 
-    if (indentLvl == 0)
+    if (indentLvl == 0) {
       saveLastClass = uniqueId;
+      saveLastFunction = to;
+    }
+    saveLastVariable = to;
     uniqueId++;
   }
 }
@@ -896,8 +904,12 @@ int main(int argc, char *argv[])
   }
 
  // push initial list
-  functionParser = createFunctionParser();
+  symbolTable = createSymbolTable();
+  pushSymbolTable(symbolTable);
   typeSymbolList = createSymbolList(compareChar,destroyChar);
+
+
+  functionParser = createFunctionParser();
   setDefaultRules(functionParser);
 
   createIndexFile(argv+1, argc-1);
@@ -916,9 +928,6 @@ int main(int argc, char *argv[])
     docFileName = concat(argv[i], doc);
     fileName=argv[i];
 
-    symbolTable = createSymbolTable();
-    pushSymbolTable(symbolTable);
-
     output = open(fullFileName,O_WRONLY|O_TRUNC|O_CREAT,0666);
 
     dup2(output, 1);
@@ -934,8 +943,6 @@ int main(int argc, char *argv[])
     appendFile(stdout, "assets/html/end.html");
 
     fflush(NULL);
-
-    destroySymbolTable(symbolTable);
 
     free(fullFileName);
     fullFileName = NULL;
@@ -954,6 +961,7 @@ int main(int argc, char *argv[])
     yylex_destroy();
   }
 
+  destroySymbolTable(symbolTable);
   destroySymbolList(typeSymbolList);
   destroyFunctionParser(functionParser);
 

@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "../symbolTable/symbolTable.h"
-#include "../functionParser/functionParser.h"
-#include "../symbolList/symbolList.h"
+#include <symbolTable.h>
+#include <functionParser.h>
+#include <symbolList.h>
 #define NEWLINE_C "<br>\n"
 #define SPACE_C "&nbsp"
 #define LESS_T_C "&lt"

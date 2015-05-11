@@ -1,4 +1,4 @@
-INCDIR="../../include"
+INCDIR=../../include
 CC = gcc -g -Wall -I$(INCDIR)
 
 all:util.o

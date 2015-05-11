@@ -17,6 +17,8 @@
  */
 char * copy(const char * src);
 
+int fileSize(const char *fileName);
+char *fileToChar(const char *fileName,int sizeFile);
 /**
  * @detail Copy and replace every occurrence of the character 'bad' from the string s by 'rep'
  * @param  s   The source string, untouched
@@ -33,6 +35,14 @@ char * replace(const char * s, char bad, const char * rep);
  */
 void appendFile(FILE * dest, char * src);
 
+/**
+ * @detail Add html code for sidebar, the number of element in the sidebar depends on the arguments passed to function main
+ * @param dest       Where to write
+ * @param filesArray Array of all the files passed to function main,
+ * @param size       Size of filesArray
+ * @param fileName   Current source file name
+ * @param isCode     Whether we are generating a sidebar for a documentation file or a source/header file
+ */
 void appendSidebar(FILE * dest, char **filesArray, int size, char *fileName, bool isCode);
 
 /**

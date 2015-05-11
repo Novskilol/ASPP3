@@ -56,7 +56,8 @@ html,body {
 }
 
 .code {
-	margin-left: 16em;
+	margin-left: 20em;
+	font-size: 0.8em;
 	font-family: DroidSansMono;
 }
 
@@ -110,7 +111,8 @@ html,body {
 
 .doc {
 	margin: 40px;
-	margin-left: 16em;
+	margin-left: 20em;
+	font-size: 0.8em;
 	font-family: DroidSansMono;
 	background-color: #282828;
 }
@@ -126,7 +128,7 @@ balise {
 
 description {
 	margin: 20px;
-	font-size: 0.8em;
+	font-size: 1em;
 }
 
 reference

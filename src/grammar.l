@@ -24,8 +24,8 @@ WS  [ \t\v\n\f]
 %{
 
     #include "grammar.tab.h"
-    #include "commun/commun.h"
-    #include "functionParser.h"
+    #include <commun.h>
+    #include <functionParser.h>
 
     extern int sym_type(const char *);  /* returns type from symbol table */
     extern void yyerror(const char *);  /* prints grammar violation message */
