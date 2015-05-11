@@ -77,6 +77,7 @@ function findTooltip(name){
 $(document).ready(function(){
 	gotoDeclaration(".code identifier", "declaration.");
 	gotoDeclaration(".doc reference", "label.");
+	gotoDeclaration(".latex reference", "label.");
 	findTooltip('identifier.');
 	findTooltip('declaration.');
 	simpleTooltip("tooltip");

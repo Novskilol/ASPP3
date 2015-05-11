@@ -28,9 +28,9 @@ bool contents;
 bool lockArray;
 
 enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,
-	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,NONE};
+	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,REFMODE,NONE};
 enum modes mode;
-
+enum modes mode2;
 SymbolStack stouck;
 void yyerror(char *);
 %}
@@ -43,8 +43,8 @@ void yyerror(char *);
 %token <s> CONTENT BACKSLASH AUTHOR USEPACKAGE DOCUMENTCLASS TITLE
 %token <s> BEGINS DOCUMENT ENDS ABSTRACT TEXTIT TEXTBF SECTION EQUATION
 %token <s> SUBSECTION ENUMERATE ITEM ITEMIZE TABULAR BREAKLINE EQUATIONETOILE
-%token <s> SUBSUBSECTION LABEL
- 
+%token <s> SUBSUBSECTION LABEL REF
+  
 %type <s> begin_env_types
 
 %start init
@@ -55,6 +55,7 @@ void yyerror(char *);
 init : 
      | content_s init
      | label_s init
+     | ref_s init
      | title_s init
      | {printf("<br>");} begin_s init end_s {printf("<br>");} init
      | author_s init
@@ -78,9 +79,7 @@ init :
 			 
      ;
 
-
 subsection_s : SUBSECTION {
-                          mode=SECTIONSMODE;
 	    	     	  numsubsection++;
 			  numsubsubsection = 0;
 	    	    	  printf("<div align=\"left\"><font size=\"5\">");
@@ -90,7 +89,7 @@ subsection_s : SUBSECTION {
 		    	  }
 			  accolades_std
 			  {
-			  mode=NONE; 
+			  mode2=NONE; 
 			  fprintf(contentsfp,"</div></font><br>"); 
 			  printf("</div></font>");
 		     	  }
@@ -106,14 +105,14 @@ subsubsection_s : SUBSUBSECTION {
 		    	  }
 			  accolades_std
 			  {
-			  mode=NONE; 
+			  mode2=NONE; 
 			  fprintf(contentsfp,"</div></font><br>"); 
 			  printf("</div></font>");
 		     	  }
 			
 	     ;
 section_s : SECTION {
-                     mode=SECTIONSMODE;
+                     mode2=SECTIONSMODE;
 	    	     numsubsection = 0;
 		     numsection++;
                      fprintf(contentsfp,"<div align=\"left\"><font size=\"6\">%i  ",numsection);
@@ -122,7 +121,7 @@ section_s : SECTION {
 		     }
 		     accolades_std
 		     {
-		     mode=NONE;
+		     mode2=NONE;
 		     fprintf(contentsfp,"</div></font><br>");
 		     printf("</div></font>");
 		     }
@@ -168,8 +167,8 @@ accolades_end : '{' begin_env_types '}' {
                                          }
               ;
 
-begin_s : BEGINS accolades_begin
-	| BEGINS '{' TABULAR '}' '{' content_tab '}'	{
+begin_s :  BEGINS accolades_begin
+	|  BEGINS '{' TABULAR '}' '{' content_tab '}'	{
 	  	     	     	     		 	lockArray=false;
 							mode=TABULARMODE;
 							printf("<table border=\"1\"><tr>");
@@ -184,10 +183,19 @@ content_tab : content_tab CONTENT {
 	    | 
             ;
 
-label_s : LABEL accolades_std {mode = LABELMODE;}
+label_s : LABEL {
+                  mode = LABELMODE;
+		  printf("<label class=\"");
+	  	} accolades_std { printf("\"></label>"); }
+
         ;
 
-
+ref_s : REF {
+             mode = REFMODE;
+	     printf("<reference class=\"");
+	     }  accolades_std { printf("\">"); } 
+                accolades_std { printf("</reference>"); }
+      ;
 
 accolades_begin  : '{' begin_env_types '}' {
                                              if (strcmp($2,"abstract")==0)
@@ -248,10 +256,10 @@ bold_s : TEXTBF {printf("<b>");} accolades_std
 
 content_s :  CONTENT	      {
 	    	      	      if(mode==TABULARMODE&&(*$1=='&'))
-				{
+			      {
 				printf("</td>");
 				printf("<td>");
-			        }
+			      }
 			      else if(mode==TABULARMODE)
 			      {
 				if (lockArray==false)
@@ -263,19 +271,21 @@ content_s :  CONTENT	      {
 				else
 				  printf("%s", $1);
 			      }
-			      else if (mode==LABELMODE)
+			      else if(mode==REFMODE||mode==LABELMODE)
 			      {
-				  
+				if (*$1!=':')
+				  {
+				  printf("%s", $1);
+				  }
 			      }
 			      else
 				printf("%s", $1);
-			      if (mode==SECTIONSMODE)
+			      if(mode2==SECTIONSMODE)
 				fprintf(contentsfp,"%s",$1);
 			      }
 			      
-			      content_s
 			      
-          | begin_env_types {printf("%s", $1);} content_s
+          | begin_env_types {printf("%s", $1);}
 	  | BREAKLINE {
 	    	      if(mode==TABULARMODE)
 		      {
@@ -286,12 +296,14 @@ content_s :  CONTENT	      {
 		      else
 			printf("<br>");
 		      }
-		      content_s 
-	  |
           ;
 
-accolades_std : '{'  content_s  '}'
- 
+accolades_std : '{'  repeat_cont  '}'
+
+repeat_cont : content_s repeat_cont
+            | 
+            ;	
+
 
 %%
 
@@ -302,7 +314,6 @@ void setContent()
 
 static void writeContents()
 {
-  printf("<!--include virtual=\"contents.html\"");
 }
 
 void verify_end(char *s)
@@ -331,6 +342,7 @@ static int printEndFile(int output) {
 int main(int argc, char *argv[])
 {
   mode=NONE;
+  mode2=NONE;
   contents=false;
   columns=0;
   numsection=0;
