@@ -1,0 +1,57 @@
+
+\section{Code C }
+
+
+\subsection{Indentation et mise en page
+Après avoir compilé et observé le fonctionnement du parseur fourni par le sujet nous nous sommes lancé dans l'indentation et la mise en page du code C . Notre première approche par rapport à l'indentation fut de modifier le fichier lex pour rajouté des balises NEWLINE en fin de point virgules et en fin de ligne ( en ayant au préalable supprimé par défaut tous les sauts de ligne ) . De plus à chaque fois que l'on rencontrait un { ou un } on modifier une variable représentant le niveau d'indentation . Ce fonctionnement posait certains problèmes dans des cas plus complexe comme par exemple un if suivi d'une instruction mais sans crochet . Nous avons donc décidé de reporter le travail d'indentation ainsi que de mise en page sur le fichier bison. Ainsi nous avons pu traiter les cas plus complexes de mises en pages . Nous nous sommes donc occupés des cas particuliers comme la présence de ; dans les for . 
+
+\subsection{Code expand collapse}
+Le code expand/collaspe est géré entièrement en jQuery. Chaque accolade rencontrée dans le bison est disposé dans un tag <braces>. Un tag <block> est placé avant et après le bloc de code pour délimiter la zone à cacher/montrer.
+
+ex.
+
+\subsection{Highlight et goto declaration}
+Chaque déclaration de variable ou de fonction est placé dans un tag <declaration> tandis que chaque variable ou appel de fonction est placé dans un tag <identifier>. Pour chaque déclaration, un indentifiant unique est choisi puis une classe portant cet identifiant est donné à la balise html.
+
+int<declaration class="1">function</declaration>(){}
+<identifier class ="1">function</identifier>();
+
+
+Pour lier une variable et sa déclaration, il suffit de donner le même numéro de classe à la déclaration et à toutes les occurences de la variable. Le code jQuery se charge de mettre les surbrillance toutes les occurences d'une même variable ou de déplacer la page vers la déclaration d'une variable. 
+
+Il faut faire attention aux niveaux d'indentation (i.e. dans quel bloc de code je me trouve) avant de déterminer quelle classe donner à ma déclaration ou ma variable. C'est ici qu'intervient la structure symbolTable. Il s'agit d'une pile où l'on insère des listes de symboles déclarés dans le code. Chaque niveau de la pile correspond à un niveau d'indentation.
+On augmente notre niveau de pile à chaque ouverture d'accolade mais aussi lorsque l'on déclare les arguments d'une fonction. 
+
+En effet, les variables globales d'un fichier étant de niveau de pile 0, on ne peut pas avoir un même niveau de pile pour les arguments de fonctions.
+
+int i; // variable globale, niveau 0
+int function (int i, int j){ // argument de fonction, niveau 1
+    {
+        int i; // déclaration dans un bloc dans une fonction, niveau 3
+    }
+}
+
+On diminue d'un niveau à chaque fermeture d'accolades et à chaque fois que l'on a terminé d'écrire les arguments d'une fonction.
+
+A chaque fois que l'on rencontre une déclaration, on la rajoute à la liste du niveau de pile adéquat. Il faut cependant différencier le cas où l'on rencontre la déclaration d'une fonction  du cas où l'on rencontre sa définition. Pour cela, à chaque déclaration, on regarde dans la liste se trouvant en top de pile s'il n'existe pas déjà un identifier avec le même nom. Si oui on lui donne alors la même classe, sinon on l'ajoute.
+
+
+\subsection{Affichage protptype et documentation}
+Parse des balises doxygen :
+Pour pouvoir utiliser des commentaire de la forme doxygen à la fois dans les tooltips et dans la page de documentation des fonctions nous avons crée une structure dédié (functionParser) . A chaque fois que le fichier lex lit une balise de documentation il l'enregistre dans le fonction parser . Une fois que bison arrive en fin de déclaration ou de définition il parse le contenue de function parser puis flush le fonction parser . Le fonction parser est modulable puisqu'il contient des règle de parsing qui sont activé lorsqu'un motif spécifique est rencontré . Chaque règle se voit offert la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférencier ) . 
+****
+ Au niveau de la consigne nous pensions qu'il s'agissait de parser les commentaires de façon différentes du rapport . Nous nous sommes rendu compte 1 jour avant le rendu écrit qu'il s'agissait d'utiliser le parseur latex pour la documentation.
+
+
+\subsection{Structures de données}
+Pour pouvoir stocker notre tables des symboles nous avons décidé de crée une structure de pile de liste de symbole . Nous avons donc crée une structure de pile et de liste et une structure chapeau de table des symboles qui est chargé de géré selon le niveau d'indentation les symboles ( pour savoir si un symbole similaire existe ) . Avec ce système on a pu coloré toutes les meme variable de la meme couleur en prenant en compte les niveau d'indentation.
+
+
+Prototype : 
+
+Tooltip :
+Le Javascript se charge de créer un calque pour chaque identifier à partir de l'attribut html title. Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction. On crée ensuite une balise <titleForTooltip> vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) pour ayant pour title la documentation. S'il n'existe pas de documentation pour une fonction, on utilise uniquement le prototype. 
+Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
+Pour lier l'identifier et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque identifier ayant la meme classe.
+
+
