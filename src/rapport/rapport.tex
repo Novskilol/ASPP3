@@ -5,7 +5,7 @@
 
 \subsection{Indentation et mise en page}
 
-Après avoir compilé et observé le fonctionnement du parseur fourni par le sujet nous nous sommes lancé dans l'indentation et la mise en page du code C .
+Après avoir compilé et observé le fonctionnement du parseur fourni par le sujet nous nous sommes lancé dans l'indentation et la mise en page du code C.
 \\
 
 Notre première approche par rapport à l'indentation fut de modifier le fichier lex pour rajouter des balises NEWLINE en fin de point-virgule et en fin de ligne (en ayant au préalable supprimer par défaut tous les sauts de ligne).
@@ -20,6 +20,7 @@ Ainsi nous avons pu traiter les cas plus complexes de mises en pages. Nous nous 
 
 Le code expand/collaspe est géré entièrement en jQuery.
 \\
+
 Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{<braces>}. Un tag \textit{<block>} est placé avant et après le bloc de code pour délimiter la zone à cacher/montrer.
 
 \begin{verbatim}
@@ -32,6 +33,7 @@ Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{<bra
 		</item>
 	}
 </block>
+
 \end{verbatim}
 
 \subsection{Highlight et goto declaration}
@@ -45,12 +47,13 @@ Pour chaque déclaration, un indentifiant unique est choisi puis une classe port
 int <declaration class="1">function</declaration>(){ }
 
 <identifier class ="1">function</identifier>();
+
 \end{verbatim}
 
 Pour lier une variable et sa déclaration, il suffit de donner le même numéro de classe à la déclaration et à toutes les occurences de la variable. Le code jQuery se charge de mettre les surbrillance toutes les occurences d'une même variable ou de déplacer la page vers la déclaration d'une variable.
 \\
 
-Il faut faire attention aux niveaux d'indentation (i.e. dans quel bloc de code je me trouve) avant de déterminer quelle classe donner à ma déclaration ou ma variable. C'est ici qu'intervient la structure symbolTable.
+Il faut faire attention aux niveaux d'indentation (i.e. dans quel bloc de code je me trouve) avant de déterminer quelle classe donner à ma déclaration ou ma variable. C'est ici qu'intervient la structure \textit{symbolTable}.
 \\
 
 Il s'agit d'une pile où l'on insère des listes de symboles déclarés dans le code. Chaque niveau de la pile correspond à un niveau d'indentation.
@@ -67,6 +70,7 @@ int function (int i, int j){ // argument de fonction, niveau 1
         int i; // déclaration dans un bloc dans une fonction, niveau 3
     }
 }
+
 \end{verbatim}
 
 On diminue d'un niveau à chaque fermeture d'accolades et à chaque fois que l'on a terminé d'écrire les arguments d'une fonction.
@@ -87,9 +91,23 @@ Ainsi nous avons une liste de types partagé entre tous nos fichiers.
 
 \subsubsection{Parse des balises doxygen}
 
-Pour pouvoir utiliser des commentaire de la forme doxygen à la fois dans les tooltips et dans la page de documentation des fonctions nous avons crée une structure dédié (functionParser) . A chaque fois que le fichier lex lit une balise de documentation il l'enregistre dans le fonction parser . Une fois que bison arrive en fin de déclaration ou de définition il parse le contenue de function parser puis flush le fonction parser . Le fonction parser est modulable puisqu'il contient des règle de parsing qui sont activé lorsqu'un motif spécifique est rencontré . Chaque règle se voit offert la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférencier ) .
-****
- Au niveau de la consigne nous pensions qu'il s'agissait de parser les commentaires de façon différentes du rapport . Nous nous sommes rendu compte 1 jour avant le rendu écrit qu'il s'agissait d'utiliser le parseur latex pour la documentation.
+Pour pouvoir utiliser des commentaires type doxygen à la fois dans les \textit{tooltip} et dans la page de documentation des fonctions, nous avons créé une structure dédié : \textit{functionParser}.
+\\
+
+A chaque fois que le fichier lex lit un ensemble de balises de documentation, il l'enregistre dans \textit{fonctionParser}.
+\\
+
+Une fois que bison arrive en fin de déclaration ou de définition, il parse le contenue de \textit{functionParser} et affiche dans un fichier \textit{nom_source.doc.html} tout le code html correspondant. Puis on vide \textit{fonctionParser}.
+\\
+
+La structure \textit{fonctionParser} est modulable puisqu'elle contient des règles de parsing qui sont activés lorsqu'un motif spécifique est rencontré .
+\\
+Chaque règle se voit offert la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférenciée).
+\\
+
+ Au niveau de la consigne nous pensions qu'il s'agissait de parser les commentaires indépendamment du parse latex. Nous nous sommes rendu compte 1 jour avant le rendu écrit qu'il s'agissait d'utiliser le parseur latex pour la documentation.
+ \\
+ Ceci n'a donc pas été implémenté.
 
 
 \subsubsection{Prototype}
@@ -110,12 +128,6 @@ Un travail similaire est aussi effectué pour les variables, on peut documenter 
 \\
 
 Pour lier l'\textit{identifier} et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
-
-
-\subsection{Structures de données}
-
-Pour pouvoir stocker notre tables des symboles nous avons décidé de crée une structure de pile de liste de symbole . Nous avons donc crée une structure de pile et de liste et une structure chapeau de table des symboles qui est chargé de géré selon le niveau d'indentation les symboles ( pour savoir si un symbole similaire existe ) . Avec ce système on a pu coloré toutes les meme variable de la meme couleur en prenant en compte les niveau d'indentation.
-
 
 
 \end{document}
