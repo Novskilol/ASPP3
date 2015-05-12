@@ -151,36 +151,42 @@ section_s : SECTION {
 
 end_s : ENDS accolades_end
       | ENDS '{' TABULAR '}' {
-
       	     	 	      printf("</table>");
-			      popSymbolStack(statesStack);
-			      mode=*(enum modes*)topSymbolStack(statesStack);
+			      if (getSizeSymbolStack(statesStack)!=0)
+				mode=*(enum modes*)topSymbolStack(statesStack);
+			      else
+				mode=NONE;
+			      free($3);
 			      columns=0;
 			      }
       ;
 
 accolades_end : '{' begin_env_types '}' {
 	      	    		    	 verify_end($2);
-                                         if (strcmp($2,"abstract")==0)
-                                             {
-					      printf("</div>");
-                                             }
-					 if (strcmp($2,"tabular")==0)
-                                             {
-					     printf("</table>");
-                                             }
-					 if (strcmp($2,"equation")==0)
-                                             {
-					       printf("</p></i><p class=\"alignright\">(%i)</p></div><div style=\"clear: both;\"></div></font>",numequation);
-                                             }
-					 if (strcmp($2,"verbatim")==0)
-                                             {
-					      printf("</xmp></div></CODE>");
-                                             }
-					 if (strcmp($2,"equation*")==0)
-                                             {
-					       printf("</i></div></font>");
-                                             }
+					 if($2!="")
+					   {
+					     if (strcmp($2,"abstract")==0)
+					       {
+						 printf("</div>");
+					       }
+					     if (strcmp($2,"tabular")==0)
+					       {
+						 printf("</table>");
+					       }
+					     if (strcmp($2,"equation")==0)
+					       {
+						 printf("</p></i><p class=\"alignright\">\
+                                                         (%i)</p></div><div style=\"clear: both;\"></div></font>",numequation);
+					       }
+					     if (strcmp($2,"verbatim")==0)
+					       {
+						 printf("</xmp></div></CODE>");
+					       }
+					     if (strcmp($2,"equation*")==0)
+					       {
+						 printf("</i></div></font>");
+					       }
+					   }
 					 free(popSymbolStack(statesStack));
 					 if (getSizeSymbolStack(statesStack)!=0)
 					   mode=*(enum modes*)topSymbolStack(statesStack);
@@ -241,39 +247,42 @@ ref_s : REF {
       ;
 
 accolades_begin  : '{' begin_env_types '}' {
-                                             if (strcmp($2,"abstract")==0)
-                                             {
-                                              printf("<font size=\"4\"><div align=\"center\">\
+                                             if ($2!="")
+					       {
+						 if (strcmp($2,"abstract")==0)
+						   {
+						     printf("<font size=\"4\"><div align=\"center\">\
                                                       <b>Abstract</b></font></div><div class=\"abstract\">");
-                                             }
-					     if (strcmp($2,"enumerate")==0)
-                                             {
-					      numenumerate=0;
-					      mode=ENUMERATEMODE;
-                                             }
-					     if (strcmp($2,"itemize")==0)
-                                             {
-					      mode=ITEMIZEMODE;
-                                             }
-					     if (strcmp($2,"verbatim")==0)
-                                             {
-					      printf("<CODE><div class=\"codelatex\"><xmp>");
-					      mode=VERBATIMMODE;
-                                             }
-					     if (strcmp($2,"equation")==0)
-                                             {
-					       numequation++;
-					       printf("<div id=\"equation\"><i><font size=\"4\">\
+						   }
+						 if (strcmp($2,"enumerate")==0)
+						   {
+						     numenumerate=0;
+						     mode=ENUMERATEMODE;
+						   }
+						 if (strcmp($2,"itemize")==0)
+						   {
+						     mode=ITEMIZEMODE;
+						   }
+						 if (strcmp($2,"verbatim")==0)
+						   {
+						     printf("<CODE><div class=\"codelatex\"><xmp>");
+						     mode=VERBATIMMODE;
+						   }
+						 if (strcmp($2,"equation")==0)
+						   {
+						     numequation++;
+						     printf("<div id=\"equation\"><i><font size=\"4\">\
                                                        <p class=\"alignleft\">  </p>\
                                                        <p class=\"aligncenter\">");
-					       mode=EQUATIONMODE;
-                                             }
-					     if (strcmp($2,"equation*")==0)
-                                             {
-					       printf("<font size=\"4\">\
+						     mode=EQUATIONMODE;
+						   }
+						 if (strcmp($2,"equation*")==0)
+						   {
+						     printf("<font size=\"4\">\
                                                         <div align=\"center\"><i>");
-					       mode=EQUATIONETOILEMODE;
-                                             }
+						     mode=EQUATIONETOILEMODE;
+						   }
+					       }
 					     enum modes *modeIn=modeget($2);
                                              pushSymbolStack(statesStack,modeIn);
 					     free($2);
@@ -351,7 +360,7 @@ content_s :  {
 			      }
 
 
-          | begin_env_types {printf("%s", $1);}
+          | begin_env_types {printf("%s", $1);free($1);}
 	  | BREAKLINE {
 	              if(mode==AUTHORMODE)
 			{
@@ -391,26 +400,29 @@ enum modes *modeget(char *s)
 {
   enum modes *ret=malloc(sizeof(enum modes));
   *ret=NONE;
-  if (strcmp(s,"equation")==0) 
-    *ret=EQUATIONMODE;
-  if (strcmp(s,"equation*")==0) 
-    *ret=EQUATIONETOILEMODE;
-  if (strcmp(s,"label")==0) 
-    *ret=LABELMODE;
-  if (strcmp(s,"verbatim")==0) 
-    *ret=VERBATIMMODE;
-  if (strcmp(s,"tabular")==0) 
-    *ret=TABULARMODE;
-  if (strcmp(s,"itemize")==0) 
-    *ret=ITEMIZEMODE;
-  if (strcmp(s,"author")==0) 
-    *ret=AUTHORMODE;
-  if (strcmp(s,"enumerate")==0) 
-    *ret=ENUMERATEMODE;
-  if (strcmp(s,"ref")==0) 
-    *ret=REFMODE;
-  if (strcmp(s,"document")==0) 
-    *ret=NONE;
+  if (s!=NULL)
+    {
+      if (strcmp(s,"equation")==0) 
+	*ret=EQUATIONMODE;
+      if (strcmp(s,"equation*")==0) 
+	*ret=EQUATIONETOILEMODE;
+      if (strcmp(s,"label")==0) 
+	*ret=LABELMODE;
+      if (strcmp(s,"verbatim")==0) 
+	*ret=VERBATIMMODE;
+      if (strcmp(s,"tabular")==0) 
+	*ret=TABULARMODE;
+      if (strcmp(s,"itemize")==0) 
+	*ret=ITEMIZEMODE;
+      if (strcmp(s,"author")==0) 
+	*ret=AUTHORMODE;
+      if (strcmp(s,"enumerate")==0) 
+	*ret=ENUMERATEMODE;
+      if (strcmp(s,"ref")==0) 
+	*ret=REFMODE;
+      if (strcmp(s,"document")==0) 
+	*ret=NONE;
+    }
   return ret;
 }
 
