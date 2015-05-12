@@ -10,7 +10,7 @@ Pour réaliser la partie latex, nous avons choisit d'utiliser un flex et un biso
 L'implémentation des sauts de lignes / des espaces n'ont pas posé de problèmes particuliers, en revanche begin et end ont posé la question des environnements et de graves problèmes de conflits ont commencés à s'immisser dans la grammaire sans que nous ne nous en rendions compte.L'implementation des differents types \textit{ITEM,ABSTRACT,ENUMERATE,EQUATION,EQUATION*,} posa de nombreux problèmes:
 \begin{itemize}
 \item ABSTRACT : écrire du texte centré, et il pose aussi la question de pouvoir utiliser le mot abstract ainsi que les autres mots clés en dehors d'un \backslashbegin : \ref{abs1}{exemple}
-\item ITEM :   item a posé la question des petits points, vite résolue.
+\item ITEM : item a posé la question des petits points, vite résolue, énumerate et itemize ont été traités de façon similaire
 \item EQUATION : le fait d'utiliser les labels pour numéroter les équations qui doivent être centrées et le nombre qui doit être a droite a posé des questions par rapport aux balises div : exemple
 \begin{equation}
  x+y=5
