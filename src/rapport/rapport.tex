@@ -139,14 +139,15 @@ Le Javascript se charge de créer un calque pour chaque \textit{identifier} à p
 Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction.
 \\
 On crée ensuite une balise \textit{<docuForTooltip>} vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) et insère la documentation dans le \textit{title} de la balise.
+
 \begin{verbatim}
-int 							// le type de retour
+int // le type de retour
 	<declaration class='1'>
 		main
 	</declaration>
-(int argc, char ** argv) 		// le prototype
+(int argc, char ** argv) // le prototype
 	<docuForTooltip title='ici se trouve la documentation parsée' class='1'>
-	<docuForTooltip>
+	</docuForTooltip>
 \end{verbatim}
 S'il n'existe pas de documentation pour une fonction, on utilise uniquement le prototype.
 \\
@@ -182,8 +183,11 @@ Il suffit alors de stocker la classe d'un \textit{identifier} uniquement au nive
 
 
 \subsection{Debuggage}
+
 Au fur et à mesure de l'avancement du projet nous avons fait attention à ne pas avoir de fuites mémoires. Nous avons donc utilisé valgrind pour supprimer les erreurs et les fuites mémoires.
+
 \subsection{Améliorations possibles}
+
 Le projet final fonctionne assez bien sur des fichiers sources C et les headers, cependant de nombreuses améliorations sont possibles notamment :
 \begin{itemize}
 \item Pouvoir cliquer sur les définitions de fonctions pour allez sur la documentation (on peut pour le moment cliquer sur les déclarations pour revenir au niveau de la définition dans un même fichier)
