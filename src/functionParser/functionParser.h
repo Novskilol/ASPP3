@@ -17,12 +17,21 @@ FunctionParser createFunctionParser();
 
 void addStatement(FunctionParser this,char *statementName,char *data);
 
+/**
+ * @brief Create documentation and tooltip for a function
+ */
 void parseFunction(FunctionParser this,char *functionName,char *returntype, char *fileName,int id, TableObject to);
 
+/**
+ * @brief Reset the function parser , should be called every time parse function is called
+ */
 void resetFunctionParser(FunctionParser this);
 
 void destroyFunctionParser(FunctionParser this);
 
+/**
+ * @brief Set a action triggered by statementName
+ */
 void setRuleForStatement(FunctionParser this,char *statementName,FunParserRule rule);
 
 /**
