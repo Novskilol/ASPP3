@@ -276,6 +276,7 @@ accolades_begin  : '{' begin_env_types '}' {
                                              }
 					     enum modes *modeIn=modeget($2);
                                              pushSymbolStack(statesStack,modeIn);
+					     free($2);
                                            }
                  ;
 
@@ -369,7 +370,7 @@ content_s :  {
 			printf("<br>");
 		      }
 		      }
-          | TABULAR   {printf("%s",$1);free($1)}
+          | TABULAR   {printf("%s",$1);free($1);}
           ;
 
 accolades_std : '{'  repeat_cont  '}'

@@ -1,6 +1,7 @@
+\begin{document}
 \begin{abstract}
 \label{abs1}
-ceci est un extrait
+un sage a dit un jour 
 \end{abstract}
 \section{premiers pas avec grammar.y}
 En ce qui concerne la grammaire, nous n'étions pas du tout certains de son fonctionnement, cela nous a pris du temps pour choisir la façon d'implémenter les balises, notamment pour la surbrillance et les définitions des fonctions et des variables, nous avons d'abord pensé a du javascript qui parserai tout le fichier rempli de balises, ensuite nous avons implémenté un postlex qui était appliqué après le premier yyparse pour transformer les marqueurs. Finalement Marc Zeitoun nous a expliqué plus précisement le fonctionnement de la grammaire bison et nous avons préféré cette solution.\\
@@ -36,3 +37,5 @@ Nous nous sommes rendus compte trop tard que ceci pouvait poser problème, nous 
 \item Traiter les arguments optionnels de begin
 \item Retravailler la stack des empilements des états
 \end{itemize}
+
+\end{document}
