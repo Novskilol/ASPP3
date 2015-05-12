@@ -14,6 +14,9 @@ Le dépôt est lui disponible en copiant la commande suivante :
 git clone https://github.com/Novskilol/ASPP3
 \end{verbatim}
 
+\section{Premiers pas avec grammar.y}
+En ce qui concerne la grammaire, nous n'étions pas du tout certains de son fonctionnement, cela nous a pris du temps pour choisir la façon d'implémenter les balises, notamment pour la surbrillance et les définitions des fonctions et des variables, nous avons d'abord pensé a du javascript qui parserai tout le fichier rempli de balises, ensuite nous avons implémenté un postlex qui était appliqué après le premier yyparse pour transformer les marqueurs. Finalement Marc Zeitoun nous a expliqué plus précisement le fonctionnement de la grammaire bison et nous avons préféré cette solution.\\
+
 \section{Code C }
 
 \subsection{Indentation et mise en page}
@@ -181,14 +184,56 @@ En considérant le point abordé précédemment, on peut dire qu'aucune déclara
 Il suffit alors de stocker la classe d'un \textit{identifier} uniquement au niveau d'indentation (ou niveau de pile) 0.
 \end{enumerate}
 
+\section{Latex}
+Pour réaliser la partie latex, nous avons choisit d'utiliser un flex et un bison, au début nous faisions tout dans le flex mais nous nous sommes vites rendus compte que cela allait poser de gros problèmes et qu'une grammaire serait très pratique.\\
 
-\subsection{Debuggage}
+\subsection{Sauts de lignes et begin}
+L'implémentation des sauts de lignes / des espaces n'ont pas posé de problèmes particuliers, en revanche begin et end ont posé la question des environnements et de graves problèmes de conflits ont commencés à s'immisser dans la grammaire sans que nous ne nous en rendions compte.L'implementation des differents types \textit{ITEM,ABSTRACT,ENUMERATE,EQUATION,EQUATION*,} posa de nombreux problèmes: \\
+\begin{itemize}
+\item ABSTRACT : écrire du texte centré, et il pose aussi la question de pouvoir utiliser le mot abstract ainsi que les autres mots clés en dehors d'un \backslashbegin
+\item ITEM : item a posé la question des petits points, vite résolue, énumerate et itemize ont été traités de façon similaire
+\item EQUATION : le fait d'utiliser les labels pour numéroter les équations qui doivent être centrées et le nombre qui doit être a droite a posé des questions par rapport aux balises div : exemple
+\begin{equation}
+ x+y=5
+\end{equation}
+\end{itemize}
+\subsection{Titre et auteurs}
+Ces deux commandes ont posé quelques problèmes de centrage.
+\\
+\subsection{Tabular}
+Tabular ne fut pas une partie de plaisir, le fait de compter le nombre de 'l' 'c' et 'r' posa des problèmes de grammaire, puis l'implémentation d'un tableau en html faisait qu'il y avait toujours un problème par rapport a la dernière case du tableau du au fait qu'il était impossible de savoir si on allait rencontrer une nouvelle ligne ou non.
+
+\\Un verrou nous a finalement permis de régler ce petit problème. De plus tabular ajouta un problème en tant que titre de subsection (non prévu dans la grammaire -> grammaire modifiée).
+\\
+\subsection{Conflits}
+Le projet avancant sans problème de compilation et n'ayant pas trop prêté attention aux warnings, les conflits sont devenus de plus en plus nombreux sournoisement jusqu'à atteindre le nombre record de 284 conflits S/R et 84 conflits R/R qu'il a fallut débugger.
+
+\\Après analyse du fichier \textbf{latex.output} puis une reconstruction minutieuse de la grammaire règle par règle il a suffit de changer une règle pour la rendre non récursive droite et non effaçable pour effacer l'intégralité des conflits d'un seul coup.
+\\
+\subsection{Le cas Verbatim}
+Après de longues reflexions par rapport a verbatim, ce que nous avons choisit de faire fut de ne pas toucher à ce qui se trouve a l'intérieur des balises, ainsi il a fallut modifier le fichier latex.l afin d'y ajouter un système qui permet de laisser passer tout les caractères sauf le \backslashend ce qui provoqua des erreurs de syntaxe.
+
+\\Après une mise en place d'un système de verrous nous avons réussit a maitriser le problème en utilisant deux nouveaux modes et en traitant la parenthèse \} suivant le verbatim séparement.
+\\
+\subsection{Label et Ref}
+label et ref ont posé la question du déplacement via clic dans le fichier, nous avons utilisé du code jQuery et Javascript pour nous déplacer dans la documentation des fichiers c, nous avons donc réutilisé le code déja implémenté pour label et ref, les espaces et les : dans les accolades ont posé problème nous les avons donc supprimés.
+\\
+\subsection{Table of contents}
+La table des contenus fut difficile à implémenter, deja il fallait mettre des balises pour que les sections dans la table nous amènent directement aux sections réelles, ensuite il a fallut écrire à chaque section / sous section croisée a la fois dans le fichier rapport et dans un autre qui sert de table de contenus, puis au final a l'aide de plusieurs dup2 fopen et fflush venir greffer la table des contenus au bout du rapport.
+\\
+\subsection{Des begin dans des begin}
+Nous nous sommes rendus compte trop tard que ceci pouvait poser problème, nous avons donc choisit une stack permettant de se remettre au mode précédent a chaque mot clé rencontré puis passé.
+
+\\En fait, tout le texte rencontré est modifié en fonction du mode courant, il est donc essentiel de se rapeller des modes passés pour les remettre ensuite, mais cette solution n'est pas optimale et mériterais d'être améliorée.
+\\
+\section{Debuggage}
 
 Au fur et à mesure de l'avancement du projet nous avons fait attention à ne pas avoir de fuites mémoires. Nous avons donc utilisé valgrind pour supprimer les erreurs et les fuites mémoires.
 
-\subsection{Améliorations possibles}
+\section{Améliorations possibles}
 
 Le projet final fonctionne assez bien sur des fichiers sources C et les headers, cependant de nombreuses améliorations sont possibles notamment :
+\\
 \begin{itemize}
 \item Pouvoir cliquer sur les définitions de fonctions pour allez sur la documentation (on peut pour le moment cliquer sur les déclarations pour revenir au niveau de la définition dans un même fichier)
 \item Permettre d'aller au fichier contenant la définition d'une fonction en cliquant sur son nom.
@@ -196,6 +241,9 @@ Le projet final fonctionne assez bien sur des fichiers sources C et les headers,
 \item Donner la documentation doxygen à parser à notre parseur latex
 \item Donner les bouts de code C présents dans le document latex à parser à notre parseur C
 \item Ainsi que tout ce qui a été demandé dans le sujet et non réalisé (par manque de temps).
+\item Faire ce qui concerne mathML,citecode et les extensions
+\item Traiter les arguments optionnels de begin
+\item Retravailler la stack des empilements des états
 \end{itemize}
 
 

@@ -12,7 +12,7 @@
 #include "symbolStack.h"
 #include "util/util.h"
 #include "commun/commun.h"
-
+#define YYMAXDEPTH 20000
 extern int yylex();
 extern int yylex_destroy();
 
@@ -379,7 +379,12 @@ content_s :  {
 			printf("<br>");
 		      }
 		      }
-          | TABULAR   {printf("%s",$1);free($1);}
+          | TABULAR   {
+	               if(mode2==SECTION)
+			 fprintf(contentsfp,"%s",$1);
+		       printf("%s",$1);
+		       free($1);
+	               }
           ;
 
 accolades_std : '{'  repeat_cont  '}'
