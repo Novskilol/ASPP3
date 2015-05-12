@@ -310,7 +310,7 @@ content_s :  {
 		      lockAlinea=false;
 		    }
               }
-		  CONTENT	      {
+		  CONTENT     {
                               if(lockAlinea==true)
 				printf("   ");
 	    	      	      if(mode==TABULARMODE&&(*$2=='&'))
@@ -342,6 +342,7 @@ content_s :  {
 				{
 				   fprintf(contentsfp,"%s",$2);
 				}
+			      //free($2);
 			      }
 
 
@@ -384,8 +385,9 @@ void setContent()
 enum modes *modeget(char *s)
 {
   enum modes *ret=malloc(sizeof(enum modes));
+  *ret=NONE;
   if (strcmp(s,"equation")==0) 
-      *ret=EQUATIONMODE;
+    *ret=EQUATIONMODE;
   if (strcmp(s,"equation*")==0) 
     *ret=EQUATIONETOILEMODE;
   if (strcmp(s,"label")==0) 
