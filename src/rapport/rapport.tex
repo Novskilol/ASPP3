@@ -57,7 +57,7 @@ Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{&ltb
 Chaque déclaration de variable ou de fonction est placé dans un tag \textit{&ltdeclaration&gt} tandis que chaque variable ou appel de fonction est placé dans un tag \textit{&ltidentifier&gt}.
 \\
 
-Pour chaque déclaration, un indentifiant unique est choisi puis une classe portant cet identifiant est donnée à la balise html.
+Pour chaque déclaration, un identifiant unique est choisi puis une classe portant cet identifiant est donnée à la balise html.
 
 \begin{verbatim}
 int <declaration class="1">function</declaration>(){ }
@@ -98,30 +98,30 @@ Pour cela, à chaque déclaration, on regarde dans la liste se trouvant en top d
 
 \subsection{Gestion des types}
 
-Pour que notre programme fonctionne sur nos propres fichiers il a fallut prendre en compte les déclarations et définitions de type : \textit{typedef} ou \textit{struct}. Pour ce faire nous avons créé une liste de types contenant l'ensemble des types partagés entre tous nos fichiers.
+Pour que notre programme fonctionne sur nos propres fichiers il a fallu  prendre en compte les déclarations et définitions de type : \textit{typedef} ou \textit{struct}. Pour ce faire nous avons créé une liste de types contenant l'ensemble des types partagés entre tous nos fichiers. A chaque fois que l'on rencontre un typedef ou bien un extern on met un lock correspondant au fait que l'identifiant de fin d'instruction doit être enregistré . En fin d'instruction on enregistre le nouveau type dans notre liste et l'on déverouille le lock . Pour ce qui est des struct le fonctionnement est plus simple puisque le dernier identifiant est toujours enregistré , il suffit de lock les paramètres de la structure pour empecher notre identifiant d'être écrasé et d'enregistrer en fin de définition de structure notre nouveau type.
 \\
 
-Ainsi nous avons une liste de types commun à tous nos fichiers. Cependant les types dénifis dans des librairies externes (exemple : \textit{bool}, \textit{size_t}, \textit{FILE}...) ne sont pas reconnu par défaut. Nous avons ajouté une règle à flex pour accepter en plus ces trois types que nous utilisons dans nos fichiers.
+Ainsi nous avons une liste de types commune à tous nos fichiers. Cependant les types définis dans des librairies externes (exemple : \textit{bool}, \textit{size_t}, \textit{FILE}...) ne sont pas reconnus par défaut. Nous avons ajouté une règle à flex pour accepter en plus ces trois types que nous utilisons dans nos fichiers.
 
 \subsection{Affichage prototype et documentation}
 
 \subsubsection{Parse des balises doxygen}
 
-Pour pouvoir utiliser des commentaires type doxygen à la fois dans les \textit{tooltip} et dans la page de documentation des fonctions, nous avons créé une structure dédié : \textit{functionParser}.
+Pour pouvoir utiliser des commentaires type doxygen à la fois dans les \textit{tooltip} et dans la page de documentation des fonctions, nous avons créé une structure dédiée : \textit{functionParser}.
 \\
 
 A chaque fois que le fichier lex lit un ensemble de balises de documentation, il l'enregistre dans \textit{fonctionParser}.
 \\
 
-Une fois que bison arrive en fin de déclaration ou de définition, il parse le contenue de \textit{functionParser} et affiche dans un fichier \textit{nom_source.doc.html} tout le code html correspondant. Puis on vide \textit{fonctionParser}.
+Une fois que bison arrive en fin de déclaration ou de définition, il parse le contenu de \textit{functionParser} et affiche dans un fichier \textit{nom_source.doc.html} tout le code html correspondant. Puis on vide \textit{fonctionParser}.
 \\
 
-La structure \textit{fonctionParser} est modulable puisqu'elle contient des règles de parsing qui sont activés lorsqu'un motif spécifique est rencontré .
+La structure \textit{fonctionParser} est modulable puisqu'elle contient des règles de parsing qui sont activées lorsqu'un motif spécifique est rencontré .
 \\
-Chaque règle se voit offert la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférenciée).
+Chaque règle se voit offrir la possibilité d'écrire dans un fichier correspondant à la documentation et au tooltip ( de manière indifférenciée).
 \\
 
- Au niveau de la consigne nous pensions qu'il s'agissait de parser les commentaires indépendamment du parse latex. Nous nous sommes rendu compte 1 jour avant le rendu écrit qu'il s'agissait d'utiliser le parseur latex pour la documentation.
+ Au niveau de la consigne nous pensions qu'il s'agissait de parser les commentaires indépendamment du parse latex. Nous nous sommes rendus compte 1 jour avant le rendu écrit qu'il s'agissait d'utiliser le parseur latex pour la documentation.
  \\
  Ceci n'a donc pas été implémenté.
 
