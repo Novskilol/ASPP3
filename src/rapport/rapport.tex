@@ -161,13 +161,14 @@ void f() {
 	g();
 }
 \end{verbatim}
-
 \item Une déclaration et une définition de fonction sont toutes deux considérées par la grammaire comme une déclaration d'un \textit{identifier}. De plus on ne peut pas différencier une déclaration de variable d'une déclaration de fonction.
 \\
 Cela pose plusieurs problèmes car nous avons besoin de différencier ces deux cas pour récupérer le bon numéro de classe (celui de la dernière fonction déclarée).
 \\
-En considérant le point abordé précédemment, on peut dire qu'aucune déclaration ayant le même nom se trouve au même niveau d'indentation. Il suffit alors de stocker la classe d'un \textit{identifier} uniquement au niveau d'indentation (ou niveau de pile) 0.
-\end{itemize}
+En considérant le point abordé précédemment, on peut dire qu'aucune déclaration ayant le même nom se trouve au même niveau d'indentation.
+\\
+Il suffit alors de stocker la classe d'un \textit{identifier} uniquement au niveau d'indentation (ou niveau de pile) 0.
+\end{enumerate}
 
 
 \subsection{Debuggage}
