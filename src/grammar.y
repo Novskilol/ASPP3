@@ -257,7 +257,7 @@
  ;
 
  declaration_specifiers
- : storage_class_specifier declaration_specifiers {typeMustBeSave=true;}
+ : storage_class_specifier declaration_specifiers 
  | storage_class_specifier
  | type_specifier declaration_specifiers
  | type_specifier
@@ -280,9 +280,9 @@
  ;
 
  storage_class_specifier
- : TYPEDEF	      { printf("%s\n", $1); } /* identifiers must be flagged as TYPEDEF_NAME */
- | EXTERN         { printf("%s\n", $1); }
- | static
+ : TYPEDEF	      { printf("%s\n", $1);typeMustBeSave=true;} /* identifiers must be flagged as TYPEDEF_NAME */
+ | EXTERN         { printf("%s\n", $1);typeMustBeSave=true; }
+ | static          
  | THREAD_LOCAL   { printf("%s\n", $1); }
  | AUTO           { printf("%s\n", $1); }
  | REGISTER       { printf("%s\n", $1); }
@@ -676,9 +676,7 @@ identifier
   free(saveLastIdentifierNotF);
   saveLastIdentifierNotF=copy($1);
   searchSymbol($1);
-
 };
-
 string_literal
 : STRING_LITERAL {
   printf ("<string>\n%s\n</string>\n", $1);
