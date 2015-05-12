@@ -37,7 +37,7 @@ Ainsi nous avons pu traiter les cas plus complexes de mises en pages. Nous nous 
 Le code expand/collaspe est géré entièrement en jQuery.
 \\
 
-Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{<braces>}. Un tag \textit{<block>} est placé avant et après le bloc de code pour délimiter la zone à cacher/montrer.
+Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{&ltbraces&gt}. Un tag \textit{&ltblock&gt} est placé avant et après le bloc de code pour délimiter la zone à cacher/montrer.
 
 \begin{verbatim}
 <block>
@@ -54,7 +54,7 @@ Chaque accolade rencontrée dans le bison est disposée dans un tag \textit{<bra
 
 \subsection{Highlight et goto declaration}
 
-Chaque déclaration de variable ou de fonction est placé dans un tag \textit{<declaration>} tandis que chaque variable ou appel de fonction est placé dans un tag \textit{<identifier>}.
+Chaque déclaration de variable ou de fonction est placé dans un tag \textit{&ltdeclaration&gt} tandis que chaque variable ou appel de fonction est placé dans un tag \textit{&ltidentifier&gt}.
 \\
 
 Pour chaque déclaration, un indentifiant unique est choisi puis une classe portant cet identifiant est donnée à la balise html.
@@ -141,7 +141,7 @@ Le Javascript se charge de créer un calque pour chaque \textit{identifier} à p
 \end{verbatim}
 Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction.
 \\
-On crée ensuite une balise \textit{<docuForTooltip>} vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) et insère la documentation dans le \textit{title} de la balise.
+On crée ensuite une balise \textit{&ltdocuForTooltip&gt} vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) et insère la documentation dans le \textit{title} de la balise.
 
 \begin{verbatim}
 int // le type de retour
@@ -158,7 +158,7 @@ S'il n'existe pas de documentation pour une fonction, on utilise uniquement le p
 Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
 \\
 
-Pour lier la balise vide \textit{<docuForTooltip>} à l'\textit{identifier}, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
+Pour lier la balise vide \textit{&ltdocuForTooltip&gt} à l'\textit{identifier}, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
 \\
 
 Le problème étant de garder en mémoire la classe de la dernière fonction rencontrée.
