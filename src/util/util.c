@@ -12,9 +12,8 @@ int fileSize(const char *fileName)
 
   fclose(f);
   return sizeFile;
-
-
 }
+
 char *fileToChar(const char *fileName,int sizeFile)
 {
   FILE *f=fopen(fileName,"r");
@@ -30,6 +29,7 @@ char *fileToChar(const char *fileName,int sizeFile)
   ret[sizeFile] =0;
   return ret;
 }
+
 char * copy(const char * s)
 {
 	if (s == NULL)
@@ -42,14 +42,15 @@ char * copy(const char * s)
 
 	return res;
 }
+
 void destroyChar(void *a)
 {
   free(a);
 }
+
 int compareChar(void *a,void *b)
 {
   return strcmp((char*)a,(char*)b) == 0 ;
-
 }
 
 char * replace(const char * s, char bad, const char * replace) {

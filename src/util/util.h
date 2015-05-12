@@ -18,6 +18,7 @@
 char * copy(const char * src);
 
 int fileSize(const char *fileName);
+
 char *fileToChar(const char *fileName,int sizeFile);
 /**
  * @detail Copy and replace every occurrence of the character 'bad' from the string s by 'rep'

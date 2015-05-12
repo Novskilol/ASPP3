@@ -232,7 +232,7 @@ Au fur et à mesure de l'avancement du projet nous avons fait attention à ne pa
 
 \section{Améliorations possibles}
 
-Le projet final fonctionne assez bien sur des fichiers sources C et les headers, cependant de nombreuses améliorations sont possibles notamment :
+Le projet final fonctionne assez bien sur des fichiers sources C et les headers (à condition de passer en argument du programme, d'abord les .h puis les.c), cependant de nombreuses améliorations sont possibles notamment :
 \\
 \begin{itemize}
 \item Pouvoir cliquer sur les définitions de fonctions pour allez sur la documentation (on peut pour le moment cliquer sur les déclarations pour revenir au niveau de la définition dans un même fichier)
@@ -245,6 +245,10 @@ Le projet final fonctionne assez bien sur des fichiers sources C et les headers,
 \item Traiter les arguments optionnels de begin
 \item Retravailler la stack des empilements des états
 \end{itemize}
+\\
+L'utilisation de notre parseur C sur l'intégralité de nos fichiers (excepté les fichiers bison, flex, et javascript) provoque cependant 3 erreurs de syntaxes.
+\\
+En isolant la fonction causant ces erreurs, l'erreur de syntaxe disparait. Nous n'avons à ce jour pas réussi à cerner d'où pourrait provenir le bug causant ces erreurs.
 
 
 \end{document}

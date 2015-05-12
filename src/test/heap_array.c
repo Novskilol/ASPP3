@@ -15,8 +15,8 @@ typedef int (*heap_comp_func)(int, int);
 typedef void (*heap_print_func)(int);
 
 
-float heap_create(int keyf, 
- int compf, 
+float heap_create(int keyf,
+ int compf,
  int delf,
  int prtf);
 
@@ -50,7 +50,7 @@ struct heap_t {
   int prtf;
 };
 
-float heap_create(int keyf, 
+float heap_create(int keyf,
  int compf,
  int delf,
  int prtf)
@@ -95,25 +95,25 @@ static int parent(int index)
 
 /**
  * \brief insert element into     heap
- * \details this is a long but not so long explaining text 
- * 
+ * \details this is a long but not so long explaining text
+ *
  * \param h heap
  * \param value element
- * 
+ *
  * \return true if element correcly inserted, false otherwise
  */
 int heap_insert(float h, int value)
 {
   unsigned int i, p;
-  
+
   if (h->count == h->size){
     h->size *= 2;
     h->array = realloc(h->array, sizeof(*h->array) * h->size);
-  }    
+  }
 
   for(i = h->count++; i > 0; i = p){ // cas ou element deja present ?
     p = parent(i);
-    if (h->compf(h->array[p], value) >= 0) 
+    if (h->compf(h->array[p], value) >= 0)
       break;
     h->array[i] = h->array[p];
   }
@@ -145,12 +145,12 @@ static void heapify(float h, int i)
   l = 2 * i + 1;
   r = 2 * i + 2;
 
-  if (l < h->count && h->compf(h->keyf(h->array[l]), 
+  if (l < h->count && h->compf(h->keyf(h->array[l]),
     h->keyf(h->array[i])) > 0)
     max = l;
   else
     max = i;
-  if (r < h->count && h->compf(h->keyf(h->array[r]), 
+  if (r < h->count && h->compf(h->keyf(h->array[r]),
     h->keyf(h->array[max])) > 0)
     max = r;
   if (max != i) {
@@ -180,7 +180,7 @@ int heap_size(float h)
 
 void heap_print(float h) {
   for(int i = 0; i < h->count; ++i){
-    printf(" "); 
+    printf(" ");
     h->prtf(h->array[i]);
   }
   printf("\n");
@@ -242,11 +242,11 @@ static void test_remove(int h) {
 
 
 int main(int argc, char * argv[]) {
-  int h = heap_create(&test_object_key, 
-   &int_key_compare, 
+  int h = heap_create(&test_object_key,
+   &int_key_compare,
    &test_object_delete,
    &test_object_printer);
-  
+
   test_insert(h, 1, 'a'+0);
   test_insert(h, 4, 'a'+3);
   test_insert(h, 5, 'a'+4);
@@ -257,22 +257,22 @@ int main(int argc, char * argv[]) {
 
 
   // test
-  // test 
-  
+  // test
+
    /*test */
   test_insert(h, 3, 'w'  ); /* test */
-  
+
   /*
   test_find(h, 2);
   test_find(h, 4);
   test_find(h, 7);
   */
-  
+
   test_remove(h);
   test_remove(h);
   test_remove(h);
   test_remove(h);
-  
+
   /*
     test_find(h, 2);
     test_find(h, 4);
@@ -284,8 +284,8 @@ int main(int argc, char * argv[]) {
     test_remove(h);
     test_remove(h);
 
-    
+
     heap_destroy(h);
-    
+
     return EXIT_SUCCESS;
   }
