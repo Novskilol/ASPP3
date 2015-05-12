@@ -98,7 +98,7 @@ Pour cela, à chaque déclaration, on regarde dans la liste se trouvant en top d
 Pour que notre programme fonctionne sur nos propres fichiers il a fallut prendre en compte les déclarations et définitions de type : \textit{typedef} ou \textit{struct}. Pour ce faire nous avons créé une liste de types contenant l'ensemble des types partagés entre tous nos fichiers.
 \\
 
-Ainsi nous avons une liste de types commun à tous nos fichiers. Cependant les types dénifit dans des librairies externes (exemple : \textit{bool}, \textit{size_t}, \textit{FILE}...)
+Ainsi nous avons une liste de types commun à tous nos fichiers. Cependant les types dénifis dans des librairies externes (exemple : \textit{bool}, \textit{size_t}, \textit{FILE}...) ne sont pas reconnu par défaut. Nous avons ajouté une règle à flex pour accepter en plus ces trois types que nous utilisons dans nos fichiers.
 
 \subsection{Affichage prototype et documentation}
 
@@ -125,7 +125,7 @@ Chaque règle se voit offert la possibilité d'écrire dans un fichier correspon
 
 \subsubsection{Prototype}
 
-Chaque type rencontré (ainsi que les '*') est sauvegardé dans une variable, il sera donné plus tard à \textit{functionParser}.
+Chaque type rencontré (ainsi que les '*' désignant un type pointeur) est sauvegardé dans une variable, il sera donné plus tard à \textit{functionParser}.
 \\
 Pour les fonctions, on stocke tous les caractères rencontrés (les arguments de la fonction) jusqu'à ce qu'on arrive à la fin du prototype de la fonction puis on appelle \textit{functionParser}.
 
@@ -133,18 +133,29 @@ Pour les fonctions, on stocke tous les caractères rencontrés (les arguments de
 
 Le Javascript se charge de créer un calque pour chaque \textit{identifier} à partir de son attribut html \textit{title}.
 \\
-
+\begin{verbatim}
+<identifier title='ici se trouve le contenu du tooltip' class="1">main</identifier>
+\end{verbatim}
 Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction.
 \\
 On crée ensuite une balise \textit{<docuForTooltip>} vide ayant la même classe que la dernière fonction rencontrée (celle dont on cherche à générer un calque) et insère la documentation dans le \textit{title} de la balise.
-\\
+
+\begin{verbatim}
+int // le type de retour
+	<declaration class='1'>
+		main
+	</declaration>
+(int argc, char ** argv) // le prototype
+	<docuForTooltip title='ici se trouve la documentation parsée' class='1'>
+	</docuForTooltip>
+\end{verbatim}
 S'il n'existe pas de documentation pour une fonction, on utilise uniquement le prototype.
 \\
 
 Un travail similaire est aussi effectué pour les variables, on peut documenter une variable.
 \\
 
-Pour lier l'\textit{identifier} et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
+Pour lier la balise vide \textit{<docuForTooltip>} à l'\textit{identifier}, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
 \\
 
 Le problème étant de garder en mémoire la classe de la dernière fonction rencontrée.
@@ -172,8 +183,11 @@ Il suffit alors de stocker la classe d'un \textit{identifier} uniquement au nive
 
 
 \subsection{Debuggage}
+
 Au fur et à mesure de l'avancement du projet nous avons fait attention à ne pas avoir de fuites mémoires. Nous avons donc utilisé valgrind pour supprimer les erreurs et les fuites mémoires.
+
 \subsection{Améliorations possibles}
+
 Le projet final fonctionne assez bien sur des fichiers sources C et les headers, cependant de nombreuses améliorations sont possibles notamment :
 \begin{itemize}
 \item Pouvoir cliquer sur les définitions de fonctions pour allez sur la documentation (on peut pour le moment cliquer sur les déclarations pour revenir au niveau de la définition dans un même fichier)
