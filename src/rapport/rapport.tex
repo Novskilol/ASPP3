@@ -4,9 +4,16 @@
 \author{Charles Le Mero\\Louis Douriez\\Loris Lucido}
 \tableofcontents
 \section{Lien du projet}
+
+Vous trouverez dans les sources du projet, un fichier \textbf{README.md} qui contient les instructions de compilation, d'exécution et de test de notre programme.
+\\
+
+Le dépôt est lui disponible en copiant la commande suivante :
+\\
 \begin{verbatim}
 git clone https://github.com/Novskilol/ASPP3
 \end{verbatim}
+
 \section{Code C }
 
 \subsection{Indentation et mise en page}
@@ -118,9 +125,13 @@ Chaque règle se voit offert la possibilité d'écrire dans un fichier correspon
 
 \subsubsection{Prototype}
 
+Chaque type rencontré (ainsi que les '*') est sauvegardé dans une variable, il sera donné plus tard à \textit{functionParser}.
+\\
+Pour les fonctions, on stocke tous les caractères rencontrés (les arguments de la fonction) jusqu'à ce qu'on arrive à la fin du prototype de la fonction puis on appelle \textit{functionParser}.
+
 \subsubsection{Tooltip}
 
-Le Javascript se charge de créer un calque pour chaque \textit{identifier} à partir de l'attribut html \textit{title}.
+Le Javascript se charge de créer un calque pour chaque \textit{identifier} à partir de son attribut html \textit{title}.
 \\
 
 Pour donner un calque à une fonction, on doit parcourir toutes les balises doxygen, ainsi que l'intégralité du prototype de la fonction.
@@ -134,6 +145,29 @@ Un travail similaire est aussi effectué pour les variables, on peut documenter 
 \\
 
 Pour lier l'\textit{identifier} et la balise vide, on utilise jQuery qui va rechercher toutes ces balises, et donner le meme titre à chaque \textit{identifier} ayant la meme classe.
+\\
+
+Le problème étant de garder en mémoire la classe de la dernière fonction rencontrée.
+ Pour résoudre ce problème ainsi que pour implémenter les tooltip multi-fichiers (i.e. une fonction documentée dans une header se voit toute ses occurrences agrémentées d'un tooltip portant la même documentation) nous avons identifié quelques restrictions afin que tout fonctionne bien, à savoir :
+\begin{enumerate}
+\item Une même fonction ne peut être documentée qu'un seule fois, dans sa définition ou déclaration, dans un source C ou un header
+\item La grammaire fournie ne permet pas les déclarations de fonctions à l'intérieur même d'autres fonctions. Par exemple le cas ci-dessous provoque une erreur de syntaxe.
+
+\begin{verbatim}
+void f() {
+	void g() {
+
+	}
+	g();
+}
+\end{verbatim}
+
+\item Une déclaration et une définition de fonction sont toutes deux considérées par la grammaire comme une déclaration d'un \textit{identifier}. De plus on ne peut pas différencier une déclaration de variable d'une déclaration de fonction.
+\\
+Cela pose plusieurs problèmes car nous avons besoin de différencier ces deux cas pour récupérer le bon numéro de classe (celui de la dernière fonction déclarée).
+\\
+En considérant le point abordé précédemment, on peut dire qu'aucune déclaration ayant le même nom se trouve au même niveau d'indentation. Il suffit alors de stocker la classe d'un \textit{identifier} uniquement au niveau d'indentation (ou niveau de pile) 0.
+\end{itemize}
 
 
 \subsection{Debuggage}

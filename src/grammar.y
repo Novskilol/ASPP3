@@ -251,9 +251,9 @@
  ;
 
  declaration
- : declaration_specifiers semi_colon  { endDeclaration(); refreshType(&typeMustBeSave); }
- | declaration_specifiers init_declarator_list semi_colon { endDeclaration(); refreshType(&typeMustBeSave);}
- | static_assert_declaration { endDeclaration(); refreshType(&typeMustBeSave);}
+ : declaration_specifiers semi_colon  { endDeclaration(); }
+ | declaration_specifiers init_declarator_list semi_colon { endDeclaration(); }
+ | static_assert_declaration { endDeclaration(); }
  ;
 
  declaration_specifiers
@@ -309,9 +309,12 @@
  ;
 
  struct_or_union_specifier
- : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { typeIsStruct = true;addType();}
-| struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}' { typeIsStruct = true;addType(); }
- | struct_or_union identifier { typeIsStruct = true;addType();}
+ : struct_or_union maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
+ { typeIsStruct = true;addType(); }
+| struct_or_union identifier maybeNewlineForward '{' struct_declaration_list newlineBackward '}'
+{ typeIsStruct = true;addType(); }
+ | struct_or_union identifier
+ { typeIsStruct = true;addType();}
  ;
 
  struct_or_union
@@ -397,7 +400,7 @@
  ;
 
  direct_declarator
- : IDENTIFIER { free(saveLastIdentifier); saveLastIdentifier = copy($1);addNewSymbol($1); }
+ : IDENTIFIER { addNewSymbol($1); }
  | '(' declarator ')'
  | direct_declarator '[' ']'
  | direct_declarator '[' star ']'
@@ -762,6 +765,7 @@ void endDeclaration()
     parseVar(functionParser,saveLastIdentifier,fileName,uniqueId-1, saveLastVariable);
   }
  resetFunctionParser(functionParser);
+ refreshType(&typeMustBeSave);
 }
 
 void unlock()
@@ -782,6 +786,7 @@ void atExitPrototype(char * functionName)
   parseFunction(functionParser, functionName, typeName, fileName, saveLastClass, saveLastFunction);
   resetFunctionParser(functionParser);
 }
+
 void refreshType(bool *a){
   if (*a == true){
     if (typeIsStruct) {
@@ -844,7 +849,14 @@ void printType(char * type)
   printf("<type>\n%s\n</type>\n", type);
 }
 
+/**
+ * @brief Called when we encounted an identifier declaration, if it's a function (at indent level 0), we check if the function has already been declared, if not or if it's a variable or if the indent level is different than 0, we add the identifier in our symbolTable
+ * @param name Our identifier name
+ */
 void addNewSymbol(char * name) {
+  free(saveLastIdentifier);
+  saveLastIdentifier = copy(name);
+
   TableObject to1;
   to1 = searchFunctionSymbolTable(symbolTable, name, indentLvl);
   /* Check if a fonction has already been declared when we encounter its definition */
@@ -876,6 +888,11 @@ void addNewSymbol(char * name) {
   }
 }
 
+/**
+ * @brief Called when we encounter a variable, search for an already declared identifier with the same name at the proper indentation levels, if we found one, the variable is given the same class
+ * @param  name identifier name
+ * @return      true if element found
+ */
 bool searchSymbol(char * name) {
 
   TableObject to = searchSymbolTable(symbolTable, name, indentLvl);
@@ -895,8 +912,8 @@ bool searchSymbol(char * name) {
 }
 
 /**
- * change yyparse input
- * @param file Where to read C or Latex code
+ * @brief Change yyparse input
+ * @param file Where to read C code
  */
 static void parseFile(char * file)
 {
@@ -906,6 +923,10 @@ static void parseFile(char * file)
   yyparse();
 }
 
+/**
+ * @brief Create html index file
+ * @param fileArray Array of all our files
+ */
 static void createIndexFile(char ** fileArray, int size)
 {
   FILE *f = fopen("output/index.html", "w");
@@ -915,6 +936,10 @@ static void createIndexFile(char ** fileArray, int size)
   fclose(f);
 }
 
+/**
+ * @param  argc Number of files to be parsed
+ * @param  argv Array of all our files
+ */
 int main(int argc, char *argv[])
 {
   if (argc < 2) {

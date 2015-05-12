@@ -19,7 +19,7 @@ static void testPop(SymbolStack stack)
   popSymbolStack(stack);
 }
 
-int main (int argc, char* argv[]) 
+int main (int argc, char* argv[])
 {
   SymbolStack s=createSymbolStack();
   int a=1, b=2, c=3;
@@ -31,8 +31,8 @@ int main (int argc, char* argv[])
   testPop(s);
   testPop(s);
   testPop(s);
-  
+
   destroySymbolStack(s);
 
-  return 0;  
+  return 0;
 }

@@ -314,6 +314,7 @@ static int checkType(void)
         return ENUMERATION_CONSTANT;
         default:                          /* includes undefined */
         yylval.s = yytext;
+        /* check if type has already been defined by the user (struct or typedef */
         if (searchSymbolList(typeSymbolList,yylval.s) != NULL)
              return USER_TYPE;
 

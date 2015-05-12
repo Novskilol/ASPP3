@@ -5,8 +5,14 @@
 #include <symbolList.h>
 #include <util.h>
 
+/**
+ * @brief Stack filled with linked lists
+ */
 typedef SymbolStack SymbolTable;
 
+/**
+ * @brief Element of symbolList
+ */
 typedef struct {
 	char * name;
 	int class;

@@ -73,7 +73,7 @@ init :
        	    		 if(mode==ENUMERATEMODE)
 			    {
 			    numenumerate++;
-			    printf("<br>%i. ",numenumerate);
+			    printf("<br>%s%s%s%s%i. ",SPACE_C,SPACE_C,SPACE_C,SPACE_C,numenumerate);
 			    }
 			 if(mode==ITEMIZEMODE)
 			    {
