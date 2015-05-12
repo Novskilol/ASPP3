@@ -20,7 +20,7 @@ A   [a-zA-Z_0-9]
 
 <VERBATIMODEBR>.|\n {
                       BEGIN INITIAL;
-                      yylval.s = yytext;
+                      yylval.s = strdup(yytext);
                       return CONTENT;
                     }
 
@@ -67,7 +67,7 @@ A   [a-zA-Z_0-9]
 		}
 
 "verbatim"	{
-                yylval.s = yytext;
+                yylval.s = strdup(yytext);
                 if(verbatLock==false)
                   verbatLock=true;
                 else
@@ -80,27 +80,27 @@ A   [a-zA-Z_0-9]
 		}
 
 "itemize"    	{
-		 yylval.s = yytext;
+		 yylval.s = strdup(yytext);
 	  	 return ITEMIZE;
 		}
 		
 "tabular"    	{
-		 yylval.s = yytext;
+		 yylval.s = strdup(yytext);
 	  	 return TABULAR;
 		}		
 		
 "equation"      {
-		 yylval.s = yytext;
+		 yylval.s = strdup(yytext);
                  return EQUATION;
                 }
 		
 "equation\*"    {
-		 yylval.s = yytext;
+		 yylval.s = strdup(yytext);
                  return EQUATIONETOILE;
                 }
 		
 "enumerate"     {
-		 yylval.s = yytext;
+		 yylval.s = strdup(yytext);
                  return ENUMERATE;
                 }
 
@@ -129,11 +129,11 @@ A   [a-zA-Z_0-9]
                 }
 
 "document"     {
-                 yylval.s = yytext;
+                 yylval.s = strdup(yytext);
                  return DOCUMENT;
                }
 "abstract"     {
-                 yylval.s = yytext;
+                 yylval.s = strdup(yytext);
                  return ABSTRACT;
                }
   
@@ -141,11 +141,11 @@ A   [a-zA-Z_0-9]
 "\\usepackage{amsmath}" 
 
 \\\{           {
-                 yylval.s = yytext+1;return CONTENT;
+                 yylval.s = strdup(yytext+1);return CONTENT;
                }
 
 \\\}           {
-                 yylval.s = yytext+1;return CONTENT;
+                 yylval.s = strdup(yytext+1);return CONTENT;
                }
 
 \{             {
@@ -168,7 +168,7 @@ A   [a-zA-Z_0-9]
 
 "\n" 
 
-. {yylval.s = yytext;return CONTENT;}
+. {yylval.s = strdup(yytext);return CONTENT;}
 
 %%
 
