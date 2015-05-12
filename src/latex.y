@@ -186,6 +186,7 @@ accolades_end : '{' begin_env_types '}' {
 					   mode=*(enum modes*)topSymbolStack(statesStack);
 					 else
 					   mode=NONE;
+					 free($2);
                                          }
               ;
 
@@ -196,6 +197,7 @@ begin_s :  BEGINS accolades_begin
 							pushSymbolStack(statesStack,modeIn);
 							mode=TABULARMODE;
 							printf("<table border=\"1\"><tr>");
+							free($3);
 					      		}
 
         ;
@@ -203,6 +205,7 @@ begin_s :  BEGINS accolades_begin
 content_tab : content_tab CONTENT {
 	      		  	  if (*$2=='l'||*$2=='c'||*$2=='m')
 	      		          columns++;
+				  free($2);
 			          }
 	    |
             ;
@@ -217,7 +220,8 @@ label_s : LABEL {
 				  if (getSizeSymbolStack(statesStack)!=0)
 				    mode=*(enum modes*)topSymbolStack(statesStack);
 				  else
-				    mode=NONE;}
+				    mode=NONE;
+				  }
 
         ;
 
@@ -232,7 +236,7 @@ ref_s : REF {
 				if (getSizeSymbolStack(statesStack)!=0)
 				  mode=*(enum modes*)topSymbolStack(statesStack);
 				else
-				  mode=NONE; 
+				  mode=NONE;
 		              }
       ;
 
@@ -342,7 +346,7 @@ content_s :  {
 				{
 				   fprintf(contentsfp,"%s",$2);
 				}
-			      //free($2);
+				free($2);
 			      }
 
 
@@ -365,7 +369,7 @@ content_s :  {
 			printf("<br>");
 		      }
 		      }
-          | TABULAR   {printf("%s",$1);}
+          | TABULAR   {printf("%s",$1);free($1)}
           ;
 
 accolades_std : '{'  repeat_cont  '}'
