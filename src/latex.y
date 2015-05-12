@@ -31,10 +31,11 @@ bool lockArray;
 bool lockAlinea;
 void writeContents();
 
- enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,VERBATIMMODE,AUTHORMODE,
+enum modes{ENUMERATEMODE,ITEMIZEMODE,EQUATIONMODE,SECTIONSMODE,VERBATIMMODE,AUTHORMODE,
 	   EQUATIONETOILEMODE,TABULARMODE,LABELMODE,REFMODE,NONE};
 enum modes mode;
 enum modes mode2;
+enum modes *modeget(char *s);
 SymbolStack statesStack;
 void yyerror(char *);
 %}
@@ -152,7 +153,8 @@ end_s : ENDS accolades_end
       | ENDS '{' TABULAR '}' {
 
       	     	 	      printf("</table>");
-			      mode=NONE;
+			      popSymbolStack(statesStack);
+			      mode=*(enum modes*)topSymbolStack(statesStack);
 			      columns=0;
 			      }
       ;
@@ -179,13 +181,19 @@ accolades_end : '{' begin_env_types '}' {
                                              {
 					       printf("</i></div></font>");
                                              }
-					 mode=NONE;
+					 free(popSymbolStack(statesStack));
+					 if (getSizeSymbolStack(statesStack)!=0)
+					   mode=*(enum modes*)topSymbolStack(statesStack);
+					 else
+					   mode=NONE;
                                          }
               ;
 
 begin_s :  BEGINS accolades_begin
 	|  BEGINS '{' TABULAR '}' '{' content_tab '}'	{
 	  	     	     	     		 	lockArray=false;
+							enum modes *modeIn=modeget($3);
+							pushSymbolStack(statesStack,modeIn);
 							mode=TABULARMODE;
 							printf("<table border=\"1\"><tr>");
 					      		}
@@ -200,17 +208,32 @@ content_tab : content_tab CONTENT {
             ;
 
 label_s : LABEL {
+                  enum modes *modeIn=modeget($1);
+		  pushSymbolStack(statesStack,modeIn);
                   mode = LABELMODE;
 		  printf("<label class=\"");
-	  	} accolades_std { printf("\"></label>"); }
+	  	} accolades_std { printf("\"></label>"); 
+		                  free(popSymbolStack(statesStack));
+				  if (getSizeSymbolStack(statesStack)!=0)
+				    mode=*(enum modes*)topSymbolStack(statesStack);
+				  else
+				    mode=NONE;}
 
         ;
 
 ref_s : REF {
+             enum modes *modeIn=modeget($1);
+             pushSymbolStack(statesStack,modeIn);
              mode = REFMODE;
 	     printf("<reference class=\"");
 	     }  accolades_std { printf("\">"); }
-                accolades_std { printf("</reference>"); }
+                accolades_std { printf("</reference>");
+		                free(popSymbolStack(statesStack));
+				if (getSizeSymbolStack(statesStack)!=0)
+				  mode=*(enum modes*)topSymbolStack(statesStack);
+				else
+				  mode=NONE; 
+		              }
       ;
 
 accolades_begin  : '{' begin_env_types '}' {
@@ -247,7 +270,8 @@ accolades_begin  : '{' begin_env_types '}' {
                                                         <div align=\"center\"><i>");
 					       mode=EQUATIONETOILEMODE;
                                              }
-                                             pushSymbolStack(statesStack,$2);
+					     enum modes *modeIn=modeget($2);
+                                             pushSymbolStack(statesStack,modeIn);
                                            }
                  ;
 
@@ -340,6 +364,7 @@ content_s :  {
 			printf("<br>");
 		      }
 		      }
+          | TABULAR   {printf("%s",$1);}
           ;
 
 accolades_std : '{'  repeat_cont  '}'
@@ -354,6 +379,32 @@ repeat_cont : content_s repeat_cont
 void setContent()
 {
   contents=true;
+}
+
+enum modes *modeget(char *s)
+{
+  enum modes *ret=malloc(sizeof(enum modes));
+  if (strcmp(s,"equation")==0) 
+      *ret=EQUATIONMODE;
+  if (strcmp(s,"equation*")==0) 
+    *ret=EQUATIONETOILEMODE;
+  if (strcmp(s,"label")==0) 
+    *ret=LABELMODE;
+  if (strcmp(s,"verbatim")==0) 
+    *ret=VERBATIMMODE;
+  if (strcmp(s,"tabular")==0) 
+    *ret=TABULARMODE;
+  if (strcmp(s,"itemize")==0) 
+    *ret=ITEMIZEMODE;
+  if (strcmp(s,"author")==0) 
+    *ret=AUTHORMODE;
+  if (strcmp(s,"enumerate")==0) 
+    *ret=ENUMERATEMODE;
+  if (strcmp(s,"ref")==0) 
+    *ret=REFMODE;
+  if (strcmp(s,"document")==0) 
+    *ret=NONE;
+  return ret;
 }
 
 void writeContents()

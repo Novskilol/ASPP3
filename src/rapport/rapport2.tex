@@ -2,8 +2,6 @@
 \label{abs1}
 ceci est un extrait
 \end{abstract}
-\section{début du projet}
-Nous avons abordé le projet en travaillant tous ensemble a la compréhension des consignes et des differents fichiers : les fichiers de la grammaire lex et bison.\\
 \section{premiers pas avec grammar.y}
 En ce qui concerne la grammaire, nous n'étions pas du tout certains de son fonctionnement, cela nous a pris du temps pour choisir la façon d'implémenter les balises, notamment pour la surbrillance et les définitions des fonctions et des variables, nous avons d'abord pensé a du javascript qui parserai tout le fichier rempli de balises, ensuite nous avons implémenté un postlex qui était appliqué après le premier yyparse pour transformer les marqueurs. Finalement Marc Zeitoun nous a expliqué plus précisement le fonctionnement de la grammaire bison et nous avons préféré cette solution.\\
 \section{Latex}
@@ -11,8 +9,8 @@ Pour réaliser la partie latex, nous avons choisit d'utiliser un flex et un biso
 \subsection{Sauts de lignes et begin}
 L'implémentation des sauts de lignes / des espaces n'ont pas posé de problèmes particuliers, en revanche begin et end ont posé la question des environnements et de graves problèmes de conflits ont commencés à s'immisser dans la grammaire sans que nous ne nous en rendions compte.L'implementation des differents types \textit{ITEM,ABSTRACT,ENUMERATE,EQUATION,EQUATION*,} posa de nombreux problèmes:
 \begin{itemize}
-\item ABSTRACT : écrire du texte centré, et il pose aussi la question de pouvoir utiliser le mot abstract ainsi que les autres mots clés en dehors d'un \backslashbegin :
-\item ITEM :   item a posé la question des petits points, vite résolue.
+\item ABSTRACT : écrire du texte centré, et il pose aussi la question de pouvoir utiliser le mot abstract ainsi que les autres mots clés en dehors d'un \backslashbegin : \ref{abs1}{exemple}
+\item ITEM : item a posé la question des petits points, vite résolue, énumerate et itemize ont été traités de façon similaire
 \item EQUATION : le fait d'utiliser les labels pour numéroter les équations qui doivent être centrées et le nombre qui doit être a droite a posé des questions par rapport aux balises div : exemple
 \begin{equation}
  x+y=5
@@ -20,6 +18,8 @@ L'implémentation des sauts de lignes / des espaces n'ont pas posé de problème
 \end{itemize}
 \subsection{titre et auteurs}
 Ces deux commandes ont posé quelques problèmes de centrage.
+\subsection{tabular}
+Tabular ne fut pas une partie de plaisir, le fait de compter le nombre de 'l' 'c' et 'r' posa des problèmes de grammaire, puis l'implémentation d'un tableau en html faisait qu'il y avait toujours un problème par rapport a la dernière case du tableau du au fait qu'il était impossible de savoir si on allait rencontrer une nouvelle ligne ou non. Un verrou nous a finalement permis de régler ce petit problème. De plus tabular ajouta un problème en tant que titre de subsection (non prévu dans la grammaire -> grammaire modifiée).
 \subsection{conflits}
 Le projet avancant sans problème de compilation et n'ayant pas trop prêté attention aux warnings, les conflits sont devenus de plus en plus nombreux sournoisement jusqu'à atteindre le nombre record de 284 conflits S/R et 84 conflits R/R qu'il a fallut débugger. Après analyse du fichier \textbf{latex.output} puis une reconstruction minutieuse de la grammaire règle par règle il a suffit de changer une règle pour la rendre non récursive droite et non effaçable pour effacer l'intégralité des conflits d'un seul coup.
 \subsection{le cas Verbatim}
@@ -27,11 +27,12 @@ Après de longues reflexions par rapport a verbatim, ce que nous avons choisit d
 \subsection{label et ref}
 label et ref ont posé la question du déplacement via clic dans le fichier, nous avons utilisé du code jQuery et Javascript pour nous déplacer dans la documentation des fichiers sources, nous avons donc réutilisé le code déja implémenté pour label et ref, les espaces et les : ont posé problème nous les avons donc supprimés.
 \subsection{table of contents}
-La table des contenus fut difficile à implémenter, deja il fallait mettre des balises pour que les sections dans la table nous amènent directement aux sections, ensuite il a fallu écrire a chaque section / sous section croisée a la fois dans le fichier html et dans un autre qui sert de table de contenus, puis au final a l'aide de plusieurs dup2 fopen et fflush venir 
- 
+La table des contenus fut difficile à implémenter, deja il fallait mettre des balises pour que les sections dans la table nous amènent directement aux sections réelles, ensuite il a fallut écrire à chaque section / sous section croisée a la fois dans le fichier rapport et dans un autre qui sert de table de contenus, puis au final a l'aide de plusieurs dup2 fopen et fflush venir greffer la table des contenus au bout du rapport.
+\subsection{des begin dans des begin}
+Nous nous sommes rendus compte trop tard que ceci pouvait poser problème, nous avons donc choisit une stack permettant de se remettre au mode précédent a chaque mot clé rencontré puis passé.En fait, tout le texte rencontré est modifié en fonction du mode courant, il est donc essentiel de se rapeller des modes passés pour les remettre ensuite, mais cette solution n'est pas optimale et mériterais d'être améliorée.
 \subsection{amelioration possibles latex}
 \begin{itemize}
-\item faire ce qui concerne mathML,citecode et les extensions
-\item 
-\item
+\item Faire ce qui concerne mathML,citecode et les extensions
+\item Traiter les arguments optionnels de begin
+\item Retravailler la stack des empilements des états
 \end{itemize}
